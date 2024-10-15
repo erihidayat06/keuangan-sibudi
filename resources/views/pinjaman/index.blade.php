@@ -52,7 +52,16 @@
                 <div class="card-body">
 
                     <h5 class="card-title">Data Pinjaman</h5>
-                    <a href="/aset/pinjaman/create" class="btn btn-sm btn-primary"> Tambah Pinjaman</a>
+
+                    <div class="row cols-2 cols-lg-2">
+                        <div class="col">
+
+                            <a href="/aset/pinjaman/create" class="btn btn-sm btn-primary"> Tambah Pinjaman</a>
+                        </div>
+                        <div class="col text-end">
+                            <a href="/export-pdf/pinjaman" class="btn btn-danger"><i class="bi bi-filetype-pdf"></i> PDF</a>
+                        </div>
+                    </div>
                     <!-- Table with stripped rows -->
                     <table class="table datatable">
                         <thead>
@@ -148,7 +157,7 @@
                                                     <br class=" mt-3 mb-3">
                                                     <label for="bayar">Jumlah Realisasi</label>
                                                     <input type="text" name="realisasi" id="bayar"
-                                                        class="form-control">
+                                                        onkeyup="onlyNumberAmount(this)" class="form-control">
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Buk;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Persediaan;
 use Illuminate\Http\Request;
 
@@ -37,6 +38,42 @@ class PersediaanController extends Controller
             'total_laba' => $total_laba,
         ]);
     }
+
+    public function exportPdf()
+    {
+
+        $barangs = Persediaan::user()->get();
+
+        $total_nilai_awal = 0;
+        $total_nilai_akhir = 0;
+        $total_laba = 0;
+        foreach ($barangs as $barang) {
+            $nilai_awal = $barang->jml_awl * $barang->hpp;
+            $total_nilai_awal = $total_nilai_awal + $nilai_awal;
+
+            $jumlah_akhir = $barang->jml_awl - ($barang->masuk - $barang->keluar);
+
+            $nilai_akhir = $jumlah_akhir * $barang->hpp;
+            $total_nilai_akhir = $total_nilai_akhir + $nilai_akhir;
+
+            $laba = ($barang->jml_awl - $jumlah_akhir) * ($barang->nilai_jual - $barang->hpp);
+            $total_laba = $laba + $total_laba;
+        }
+        $data =
+            [
+                'barangs' => $barangs,
+                'total_nilai_awal' => $total_nilai_awal,
+                'total_nilai_akhir' => $total_nilai_akhir,
+                'total_laba' => $total_laba,
+            ];
+
+        // Gunakan facade PDF
+        $pdf = PDF::loadView('persediaan.pdf', $data)->setPaper('a3', 'portrait');
+
+        // Mengunduh PDF dengan nama "laporan.pdf"
+        return $pdf->stream('laporan.pdf');
+    }
+
 
     /**
      * Show the form for creating a new resource.

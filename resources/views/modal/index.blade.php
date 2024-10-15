@@ -58,7 +58,14 @@
                 <div class="card-body">
 
                     <h5 class="card-title">Data Modal</h5>
-                    <a href="/modal/create" class="btn btn-sm btn-primary"> Tambah Modal</a>
+                    <div class="row cols-2 cols-lg-2">
+                        <div class="col">
+                            <a href="/modal/create" class="btn btn-sm btn-primary"> Tambah Modal</a>
+                        </div>
+                        <div class="col text-end">
+                            <a href="/export-pdf/modal" class="btn btn-danger"><i class="bi bi-filetype-pdf"></i> PDF</a>
+                        </div>
+                    </div>
                     <!-- Table with stripped rows -->
                     <table class="table datatable">
 

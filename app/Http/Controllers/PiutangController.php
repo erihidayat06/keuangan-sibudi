@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Piutang;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class PiutangController extends Controller
@@ -19,6 +20,25 @@ class PiutangController extends Controller
             $sisa = $sisa + ($piutang->nilai - $piutang->pembayaran);
         }
         return view('piutang.index', ['piutangs' => $piutangs, 'sisa' => $sisa]);
+    }
+
+
+    public function exportPdf()
+    {
+
+        $piutangs = Piutang::user()->get();
+
+        $sisa = 0;
+        foreach ($piutangs as $piutang) {
+            $sisa = $sisa + ($piutang->nilai - $piutang->pembayaran);
+        }
+        $data = ['piutangs' => $piutangs, 'sisa' => $sisa];
+
+        // Gunakan facade PDF
+        $pdf = PDF::loadView('piutang.pdf', $data);
+
+        // Mengunduh PDF dengan nama "laporan.pdf"
+        return $pdf->stream('laporan.pdf');
     }
 
     /**
@@ -62,18 +82,19 @@ class PiutangController extends Controller
     public function bayar(Request $request, Piutang $piutang)
     {
 
+        $input_realisasi = str_replace('.', '', $request->pembayaran);
 
         if ($request->aksi == '+') {
-            $pembayaran = $piutang->pembayaran +  $request->pembayaran;
+            $pembayaran = $piutang->pembayaran +  $input_realisasi;
             $jenis = 'debit';
         } elseif ($request->aksi == '-') {
-            $pembayaran = $piutang->pembayaran -  $request->pembayaran;
+            $pembayaran = $piutang->pembayaran -  $input_realisasi;
             $jenis = 'kredit';
         }
 
 
         if (Piutang::where('id', $piutang->id)->update(['pembayaran' => $pembayaran])) {
-            bukuUmum('Setor ' . $piutang->kreditur, $jenis, 'kas', 'pendanaan', $request->pembayaran, null, null);
+            bukuUmum('Setor ' . $piutang->kreditur, $jenis, 'kas', 'pendanaan', $input_realisasi, null, null);
         };
         // Redirect with success message
         return redirect()->route('piutang.index')->with('success', 'piutang berhasil ditambahkan.');

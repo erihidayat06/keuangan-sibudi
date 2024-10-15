@@ -11,7 +11,8 @@
 
             <div class="card  overflow-auto">
                 <div class="card-body">
-
+                    <a href="/export-pdf/rincian-laba-rugi" class="btn btn-danger mt-3"><i class="bi bi-filetype-pdf"></i>
+                        PDF</a>
                     <table class="table table-bordered mt-4 ">
                         <thead>
 
@@ -72,7 +73,7 @@
                             </tr>
 
                             <tr class="fw-bold bg-success text-light">
-                                <td colspan="2">Total Pendapatan</td>
+                                <td colspan="2">Total_Pendapatan</td>
                                 @foreach ($pendapatanBulan['pu'] as $total)
                                     <td>{{ formatRupiah($total) }}</td>
                                 @endforeach
@@ -115,7 +116,7 @@
                                 <td>{{ formatRupiah($tahun['bo4']) }}</td>
                             </tr>
                             <tr class="bg-info fw-bold">
-                                <td colspan="2">Total Biaya Operasional</td>
+                                <td colspan="2">Total_Biaya_Operasional</td>
                                 @foreach ($pendapatanBulan['bo'] as $value)
                                     <td>{{ formatRupiah($value) }}</td>
                                 @endforeach
@@ -142,7 +143,7 @@
                             </tr>
                             <tr>
                                 <td></td>
-                                <td>Atk</td>
+                                <td>Rapat-rapat</td>
                                 @foreach ($pendapatan['bno3'] as $value)
                                     <td>{{ formatRupiah($value) }}</td>
                                 @endforeach
@@ -150,7 +151,7 @@
                             </tr>
                             <tr>
                                 <td></td>
-                                <td>Rapat-rapat</td>
+                                <td>Lain-lain</td>
                                 @foreach ($pendapatan['bno4'] as $value)
                                     <td>{{ formatRupiah($value) }}</td>
                                 @endforeach
@@ -165,7 +166,7 @@
                                 <td>{{ formatRupiah($akumulasi_penyusutan) }}</td>
                             </tr>
                             <tr class="bg-info fw-bold">
-                                <td colspan="2">Total Biaya Non Operasional</td>
+                                <td colspan="2">Total_Biaya_Non_Operasional</td>
                                 @foreach ($pendapatanBulan['bno'] as $value)
                                     <td>{{ formatRupiah($value) }}</td>
                                 @endforeach
@@ -181,7 +182,7 @@
                             </tr>
 
                             <tr class="bg-secondary fw-bold text-white">
-                                <td colspan="2">Laba/Rugi {{ $totalLabaRugi < 0 ? '(Rugi)' : '(Untung)' }}</td>
+                                <td colspan="2"> {{ $totalLabaRugi < 0 ? 'Rugi' : 'Laba' }}</td>
 
                                 @foreach ($labaRugi as $value)
                                     <td>{{ formatRupiah($value) }}</td>

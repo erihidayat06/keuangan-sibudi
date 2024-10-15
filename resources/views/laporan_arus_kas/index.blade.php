@@ -43,13 +43,16 @@
     }
 </style>
 @section('container')
-    <div class="card">
+    <div class="card overflow-auto">
         <div class="card-body">
+            <a href="/export-pdf/laporan-arus-kas" class="btn btn-danger mt-3"><i class="bi bi-filetype-pdf"></i>
+                PDF</a>
             <div class="card-title">3. LAPORAN ARUS KAS</div>
 
 
             <!-- Pendapatan Section -->
             <div class="report-section">
+
                 <table class="table-report">
 
 

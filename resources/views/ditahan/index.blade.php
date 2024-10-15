@@ -26,15 +26,23 @@
 
 
             </div>
-            <div class="card">
+            <div class="card overflow-auto">
                 <div class="card-body">
                     <div class="card-title">
                         Data laba ditahan
                     </div>
 
 
+                    <div class="row cols-2 cols-lg-2">
+                        <div class="col">
 
-                    <a href="/dithn/create" class="btn btn-sm btn-primary mb-3">Tambah Data</a>
+                            <a href="/dithn/create" class="btn btn-sm btn-primary mb-3">Tambah Data</a>
+                        </div>
+                        <div class="col text-end">
+                            <a href="/export-pdf/dithn" class="btn btn-danger"><i class="bi bi-filetype-pdf"></i> PDF</a>
+                        </div>
+                    </div>
+
 
                     <!-- Table with striped rows -->
                     <table class="table table-striped table-hover datatable">

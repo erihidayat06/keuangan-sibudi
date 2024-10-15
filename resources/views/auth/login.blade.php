@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Pages / Login - NiceAdmin Bootstrap Template</title>
+    <title>Halaman Login | Keuangan sibudi</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -38,6 +38,22 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+
+    <style>
+        @media (max-width: 768px) {
+            .custom-margin {
+                margin-top: 50px;
+                /* Set margin-top khusus untuk layar kecil */
+            }
+        }
+
+        @media (min-width: 769px) {
+            .custom-margin {
+                margin-top: 150px;
+                /* Set margin-top khusus untuk layar besar */
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -45,20 +61,24 @@
     <main>
         <div class="container">
 
-            <section
-                class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+            <section class="">
                 <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+                    <div class="row cols-1 cols-lg-2">
+                        <div class="col d-flex align-items-center justify-content-center d-none d-lg-block"
+                            style=" margin:auto; margin-top: 150px;">
+                            <div class="text-center">
+                                <h2 class="fw-bold">Selamat Datang</h2>
+                                <h2 class="fw-bold"> di Aplikasi SIBUDI</h2>
+                                <img src="/assets/img/akuntansi.png" alt="">
+                            </div>
+                        </div>
+                        <div class="text-center d-block d-lg-none mt-3">
+                            <h2 class="fw-bold">Selamat Datang</h2>
+                            <h2 class="fw-bold"> di Aplikasi SIBUDI</h2>
+                        </div>
+                        <div class="col-lg-4 mt-3 ">
 
-                            <div class="d-flex justify-content-center py-4">
-                                <a href="/login" class="logo d-flex align-items-center w-auto">
-
-                                    <span class="d-none d-lg-block">Keuangan Sibudi Kab Brebes</span>
-                                </a>
-                            </div><!-- End Logo -->
-
-                            <div class="card mb-3">
+                            <div class="card mb-3" style=" margin:auto; margin-top: 150px;">
 
                                 <div class="card-body">
 
@@ -100,14 +120,14 @@
                                             @enderror
                                             <div class="invalid-feedback">Please enter your password!</div>
                                         </div>
-
+                                        <a href="/password/reset">Lupa password</a>
 
                                         <div class="col-12 mt-3">
                                             <button class="btn btn-primary w-100" type="submit">Login</button>
                                         </div>
                                         <div class="col-12 mt-3">
-                                            <p class="small mb-0">Don't have account? <a href="/register">Create an
-                                                    account</a></p>
+                                            <p class="small mb-0">Tidak punya akun? <a href="/register">Buat akun
+                                                    baru</a></p>
                                         </div>
                                     </form>
 

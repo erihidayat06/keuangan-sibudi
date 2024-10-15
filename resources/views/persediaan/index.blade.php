@@ -69,7 +69,18 @@
             <div class="card overflow-auto">
                 <div class="card-body">
                     <h5 class="card-title">Daftar Barang</h5>
-                    <a href="/aset/persediaan/create" class="btn btn-sm btn-primary mb-3">Tambah Barang</a>
+
+
+                    <div class="row cols-2 cols-lg-2">
+                        <div class="col">
+                            <a href="/aset/persediaan/create" class="btn btn-sm btn-primary mb-3">Tambah Barang</a>
+
+                        </div>
+                        <div class="col text-end">
+                            <a href="/export-pdf/persediaan" class="btn btn-danger"><i class="bi bi-filetype-pdf"></i>
+                                PDF</a>
+                        </div>
+                    </div>
                     <!-- Table with stripped rows -->
                     <table class="table datatable  table-bordered">
                         <thead>

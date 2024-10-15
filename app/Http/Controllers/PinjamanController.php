@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pinjaman;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class PinjamanController extends Controller
@@ -28,6 +28,31 @@ class PinjamanController extends Controller
             'tunggakan' => $tunggakan,
             'saldo_bunga' => $saldo_bunga
         ]);
+    }
+
+    public function exportPdf()
+    {
+
+        $pinjamans = Pinjaman::user()->get();
+        $tunggakan = $pinjamans->sum('alokasi') - $pinjamans->sum('realisasi');
+        $saldo_bunga = 0;
+        foreach ($pinjamans as $pinjaman) {
+            $bunga = $pinjaman->alokasi * ($pinjaman->bunga / 100);
+            $total_bunga = $bunga * $pinjaman->angsuran;
+            $saldo_bunga = $saldo_bunga + $total_bunga;
+        }
+        $data =
+            [
+                'pinjamans' => $pinjamans,
+                'tunggakan' => $tunggakan,
+                'saldo_bunga' => $saldo_bunga
+            ];
+
+        // Gunakan facade PDF
+        $pdf = PDF::loadView('pinjaman.pdf', $data);
+
+        // Mengunduh PDF dengan nama "laporan.pdf"
+        return $pdf->stream('laporan.pdf');
     }
 
     /**
@@ -80,18 +105,21 @@ class PinjamanController extends Controller
     {
 
 
+
+        $input_realisasi = str_replace('.', '', $request->realisasi);
+
         if ($request->aksi == '+') {
-            $realisasi = $pinjaman->realisasi +  $request->realisasi;
+            $realisasi = $pinjaman->realisasi +  $input_realisasi;
             $angsuran = $pinjaman->angsuran + 1;
         } elseif ($request->aksi == '-') {
-            $realisasi = $pinjaman->realisasi -  $request->realisasi;
+            $realisasi = $pinjaman->realisasi -  $input_realisasi;
             $angsuran = $pinjaman->angsuran - 1;
         }
 
         $bunga = $pinjaman->alokasi * ($pinjaman->bunga / 100);
 
         bukuUmum('Bunga Storan ' . $pinjaman->nasabah, 'debit', 'pu3', 'operasional', $bunga, null, null);
-        bukuUmum('Storan ' . $pinjaman->nasabah, 'debit', 'kas', 'operasional', $request->realisasi, null, null);
+        bukuUmum('Storan ' . $pinjaman->nasabah, 'debit', 'kas', 'operasional', $input_realisasi, null, null);
 
 
         Pinjaman::where('id', $pinjaman->id)->update(['realisasi' => $realisasi, 'angsuran' => $angsuran]);

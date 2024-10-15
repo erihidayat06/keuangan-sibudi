@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Buk;
 use App\Models\Investasi;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class InvestasiController extends Controller
@@ -31,6 +32,35 @@ class InvestasiController extends Controller
             'akumulasi' => $akumulasi,
             'investasi' => $investasi
         ]);
+    }
+
+    public function exportPdf()
+    {
+
+        $asets = Investasi::user()->get();
+
+        $akumulasi = 0;
+        $investasi = 0;
+        foreach ($asets as $aset) {
+            $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
+            $saat_ini =
+                $aset->jumlah * $aset->nilai - $aset->masa_pakai * $penyusutan * $aset->jumlah;
+
+            $akumulasi = $akumulasi + $penyusutan;
+            $investasi = $investasi + $saat_ini;
+        }
+
+        $data = [
+            "asets" => $asets,
+            'akumulasi' => $akumulasi,
+            'investasi' => $investasi
+        ];
+
+        // Gunakan facade PDF
+        $pdf = PDF::loadView('investasi.pdf', $data);
+
+        // Mengunduh PDF dengan nama "laporan.pdf"
+        return $pdf->stream('laporan.pdf');
     }
 
     /**

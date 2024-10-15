@@ -72,7 +72,7 @@
 
     <script>
         function onlyNumberAmount(input) {
-            let v = input.value.replace(/\D+/g, ''); // Hapus semua karakter selain angka
+            let v = input.value.replace(/[^0-9\-\+]/g, ''); // Hapus semua karakter selain angka
             if (v.length > 14) v = v.slice(0, 14); // Batasi hingga 14 digit
             input.value = v.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Tambahkan titik sebagai pemisah ribuan
         }

@@ -1,11 +1,14 @@
 <?php
 
+use App\Models\Aktivalain;
+use App\Models\Bangunan;
+use App\Models\Bdmuk;
 use App\Models\Buk;
 use App\Models\Investasi;
 
 
 if (!function_exists('labaRugi')) {
-    function labaRugi()
+    function labaRugi($tahun_sekarang)
     {
 
         // Inisialisasi array untuk setiap jenis_lr
@@ -47,8 +50,8 @@ if (!function_exists('labaRugi')) {
             // Loop untuk setiap jenis_lr
             foreach (array_keys($pendapatan) as $jenis_lr) {
                 // Ambil data berdasarkan bulan, tahun, dan jenis_lr
-                $buku_kas = Buk::where('user_id', auth()->id()) // Filter berdasarkan user
-                    ->whereYear('created_at', '2024') // Filter berdasarkan tahun
+                $buku_kas = Buk::user()->where('user_id', auth()->id()) // Filter berdasarkan user
+                    ->user()->whereYear('created_at', $tahun_sekarang) // Filter berdasarkan tahun
                     ->whereMonth('created_at', $i) // Filter berdasarkan bulan
                     ->where('jenis_lr', $jenis_lr) // Filter berdasarkan jenis_lr
                     ->get();
@@ -93,7 +96,7 @@ if (!function_exists('labaRugi')) {
         ];
 
         // Mengambil semua transaksi dalam tahun yang dipilih
-        $transaksis = Buk::whereYear('created_at', '2024')->get();
+        $transaksis = Buk::user()->whereYear('created_at', $tahun_sekarang)->get();
 
         foreach ($transaksis as $transaksi) {
             $month = $transaksi->created_at->month;
@@ -117,10 +120,10 @@ if (!function_exists('labaRugi')) {
                 $tahun['bno'] += $nilai;
             }
         }
-        $asets = Investasi::user()->get();
-
         $akumulasi = 0;
         $investasi = 0;
+
+        $asets = Investasi::user()->whereYear('created_at', $tahun_sekarang)->get();
         foreach ($asets as $aset) {
             $penyusutan = $aset->nilai / $aset->wkt_ekonomis * $aset->masa_pakai;
             $saat_ini =
@@ -129,6 +132,40 @@ if (!function_exists('labaRugi')) {
             $akumulasi = $akumulasi + $penyusutan;
             $investasi = $investasi + $saat_ini;
         }
+
+        $asets = Bangunan::user()->whereYear('created_at', $tahun_sekarang)->get();
+        foreach ($asets as $aset) {
+            $penyusutan = $aset->nilai / $aset->wkt_ekonomis * $aset->masa_pakai;
+            $saat_ini =
+                $aset->jumlah * $aset->nilai - $aset->masa_pakai * $penyusutan * $aset->jumlah;
+
+            $akumulasi = $akumulasi + $penyusutan;
+            $investasi = $investasi + $saat_ini;
+        }
+        $asets = Bdmuk::user()->whereYear('created_at', $tahun_sekarang)->get();
+
+
+        foreach ($asets as $aset) {
+            $penyusutan = $aset->nilai / $aset->wkt_ekonomis * $aset->masa_pakai;
+            $saat_ini =
+                $aset->jumlah * $aset->nilai - $aset->masa_pakai * $penyusutan * $aset->jumlah;
+
+            $akumulasi = $akumulasi + $penyusutan;
+            $investasi = $investasi + $saat_ini;
+        }
+        $asets = Aktivalain::user()->whereYear('created_at', $tahun_sekarang)->get();
+
+
+        foreach ($asets as $aset) {
+            $penyusutan = $aset->nilai / $aset->wkt_ekonomis * $aset->masa_pakai;
+            $saat_ini =
+                $aset->jumlah * $aset->nilai - $aset->masa_pakai * $penyusutan * $aset->jumlah;
+
+            $akumulasi = $akumulasi + $penyusutan;
+            $investasi = $investasi + $saat_ini;
+        }
+
+
 
 
 

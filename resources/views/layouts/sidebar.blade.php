@@ -147,6 +147,23 @@
             </ul>
         </li><!-- End Charts Nav -->
 
+        <li class="nav-item">
+            <a class="nav-link {{ Request::is('export-pdf/cetak-laporan*') ? '' : 'collapsed' }}"
+                href="/export-pdf/cetak-laporan">
+                <i class="bi bi-filetype-pdf"></i>
+                <span>Cetak Laporan</span>
+            </a>
+        </li><!-- End Dashboard Nav -->
+
+        <li class="nav-heading">Langganan</li>
+        <li class="nav-item">
+            <a class="nav-link {{ Request::is('langganan*') ? '' : 'collapsed' }}" href="/langganan">
+                <i class="bi bi-bell"></i>
+                <span>Langganan</span>
+            </a>
+        </li><!-- End Dashboard Nav -->
+
+
 
 
 

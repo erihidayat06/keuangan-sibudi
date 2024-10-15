@@ -24,7 +24,7 @@
     </style>
 
     <div class="container mt-4">
-        <div class="card">
+        <div class="card overflow-auto">
             <div class="card-body m-5">
 
 
@@ -57,8 +57,8 @@
                         <label for="tambah_modal" class="col-sm-2 col-form-label">Tambah Modal</label>
                         <div class="col-sm-2">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Recipient's username"
-                                    id="tambah_modal" aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                <input type="text" class="form-control" placeholder="...%" id="tambah_modal"
+                                    aria-label="Recipient's username" aria-describedby="basic-addon2"
                                     value="{{ $ditahan->akumulasi }}" name="akumulasi">
                                 <span class="input-group-text" id="basic-addon2">%</span>
                             </div>

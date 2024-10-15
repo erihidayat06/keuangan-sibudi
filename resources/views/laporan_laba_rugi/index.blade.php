@@ -52,7 +52,9 @@
 </style>
 @section('container')
     <div class="card">
-        <div class="card-body">
+        <div class="card-body overflow-auto">
+            <a href="/export-pdf/laporan-laba-rugi" class="btn btn-danger mt-3"><i class="bi bi-filetype-pdf"></i>
+                PDF</a>
             <div class="card-title">2. LAPORAN LABA RUGI</div>
 
 
@@ -63,25 +65,25 @@
                         <th colspan="4">1 PENDAPATAN UNIT USAHA</th>
                     </tr>
                     <tr>
-                        <td>ATK</td>
+                        <td>{{ isset(unitUsaha()->unt_usaha1) ? unitUsaha()->unt_usaha1 : 'Unit 1' }}</td>
                         <td class="text-end"></td>
                         <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['pu1'])) }}</td>
                         <td></td>
                     </tr>
                     <tr>
-                        <td>Simpan Pinjam</td>
+                        <td>{{ isset(unitUsaha()->unt_usaha2) ? unitUsaha()->unt_usaha2 : 'Unit 2' }}</td>
                         <td class="text-end"></td>
                         <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['pu2'])) }}</td>
                         <td></td>
                     </tr>
                     <tr>
-                        <td>0</td>
+                        <td>{{ isset(unitUsaha()->unt_usaha3) ? unitUsaha()->unt_usaha3 : 'Unit 3' }}</td>
                         <td class="text-end"></td>
                         <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['pu3'])) }}</td>
                         <td></td>
                     </tr>
                     <tr>
-                        <td>0</td>
+                        <td>{{ isset(unitUsaha()->unt_usaha4) ? unitUsaha()->unt_usaha4 : 'Unit 4' }}</td>
                         <td class="text-end"></td>
                         <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['pu4'])) }}</td>
                         <td></td>
@@ -96,33 +98,33 @@
                         <th colspan="4">2 BIAYA</th>
                     </tr>
                     <tr>
-                        <td>Biaya Ops unit 1</td>
+                        <td>Biaya Ops {{ isset(unitUsaha()->unt_usaha1) ? unitUsaha()->unt_usaha1 : 'Unit 1' }}</td>
                         <td class="text-end"></td>
-                        <td class="text-end text-danger">{{ formatRupiah(array_sum($pendapatan['bo1'])) }}</td>
+                        <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['bo1'])) }}</td>
 
                     </tr>
                     <tr>
-                        <td>Biaya Ops unit 2</td>
+                        <td>Biaya Ops {{ isset(unitUsaha()->unt_usaha2) ? unitUsaha()->unt_usaha2 : 'Unit 2' }}</td>
                         <td class="text-end"></td>
-                        <td class="text-end text-danger">{{ formatRupiah(array_sum($pendapatan['bo2'])) }}</td>
+                        <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['bo2'])) }}</td>
 
                     </tr>
                     <tr>
-                        <td>Biaya Ops unit 3</td>
+                        <td>Biaya Ops {{ isset(unitUsaha()->unt_usaha3) ? unitUsaha()->unt_usaha3 : 'Unit 3' }}</td>
                         <td class="text-end"></td>
-                        <td class="text-end text-danger">{{ formatRupiah(array_sum($pendapatan['bo3'])) }}</td>
+                        <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['bo3'])) }}</td>
 
                     </tr>
                     <tr>
-                        <td>Biaya Ops unit 4</td>
+                        <td>Biaya Ops {{ isset(unitUsaha()->unt_usaha4) ? unitUsaha()->unt_usaha4 : 'Unit 4' }}</td>
                         <td class="text-end"></td>
-                        <td class="text-end text-danger">{{ formatRupiah(array_sum($pendapatan['bo4'])) }}</td>
+                        <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['bo4'])) }}</td>
 
                     </tr>
                     <tr class="fw-bold border-bottom">
                         <td>Total Biaya Operasional</td>
                         <td class="text-end"></td>
-                        <td class="text-end text-danger">{{ formatRupiah($pendapatanTahun['bo']) }}</td>
+                        <td class="text-end red-text">{{ formatRupiah($pendapatanTahun['bo']) }}</td>
                     </tr>
                     <tr>
                         <td>Gaji/Honor Pengurus</td>
@@ -152,7 +154,8 @@
                     <tr class="fw-bold border-bottom">
                         <td>Total Biaya Non Operasional</td>
                         <td class="text-end"></td>
-                        <td class="text-end red-text">{{ formatRupiah($pendapatanTahun['bno'] + $akumulasi_penyusutan) }}
+                        <td class="text-end red-text">
+                            {{ formatRupiah($pendapatanTahun['bno'] + $akumulasi_penyusutan) }}
                         </td>
                     </tr>
                     <tr class="fw-bold border-bottom">
@@ -163,7 +166,7 @@
                     <tr class="fw-bold">
                         <td colspan="2">
                             <p class="{{ $totalLabaRugi < 0 ? 'yellow-text' : 'green-text' }}">
-                                Total Laba/Rugi Berjalan {{ $totalLabaRugi < 0 ? '(Rugi)' : '(Untung)' }}
+                                Total {{ $totalLabaRugi < 0 ? 'Rugi' : 'Laba' }} Berjalan
                             </p>
                         </td>
                         <td class="text-end"></td>

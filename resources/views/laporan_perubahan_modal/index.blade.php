@@ -43,16 +43,23 @@
     }
 </style>
 @section('container')
-    <div class="card">
+    <div class="card overflow-auto">
         <div class="card-body">
+            <a href="/export-pdf/laporan-perubahan-modal" class="btn btn-danger mt-3"><i class="bi bi-filetype-pdf"></i>
+                PDF</a>
             <div class="card-title">4. LAPORAN PERUBAHAN MODAL</div>
 
 
             <!-- Pendapatan Section -->
             <div class="report-section">
+                @if (isset($ekuitas->akumulasi) and isset($ekuitas->pades) and isset($ekuitas->lainya))
+                    <form action="/laporan-keuangan/laporan-perubahan-modal/{{ $ekuitas->id }}" method="POST">
+                        @method('PUT')
+                    @else
+                        <form action="/laporan-keuangan/laporan-perubahan-modal/" method="POST">
+                @endif
+                @csrf
                 <table class="table-report">
-
-
                     <tr>
                         <td colspan="2">Penyertaan modal desa</td>
                         <td class="text-end"></td>
@@ -69,53 +76,84 @@
                     <tr>
                         <td colspan="2">Laba/Rugi ditahan</td>
                         <td class="text-end"></td>
-                        <td class="text-end">{{ formatRupiah($laba_ditahan) }}</td>
+                        <td class="text-end"></td>
 
                     </tr>
+
                     <tr>
                         <td>Laba Berjalan</td>
-                        <td class="text-end">2024</td>
-                        <td class="text-end">{{ formatRupiah($laba_berjalan) }}</td>
+                        <td class="text-end d-flex  justify-content-end"><input type="number" placeholder="Tahun"
+                                class="form-control" name="tahun" style="width: 50%"
+                                value="{{ !isset($ekuitas->tahun) ? session('selected_year', date('Y')) : old('tahun', $ekuitas) }}">
+                        </td>
+                        <td class="text-end red-text">{{ formatRupiah($laba_berjalan) }}</td>
 
                     </tr>
                     @php
-
-                        $tambah = $laba_berjalan * ($ditahan->akumulasi / 100);
-                        $pades = $laba_berjalan * ($ditahan->pades / 100);
-                        $lainya = $laba_berjalan * ($ditahan->lainya / 100);
-                        $modal_akhir = $tambah + $laba_ditahan + $modal_desa + $modal_masyarakat;
+                        $tambah = 0;
+                        $pades = 0;
+                        $lainya = 0;
+                        if (isset($ekuitas->akumulasi) and isset($ekuitas->pades) and isset($ekuitas->lainya)) {
+                            $tambah = $laba_berjalan * ($ekuitas->akumulasi / 100);
+                            $pades = $laba_berjalan * ($ekuitas->pades / 100);
+                            $lainya = $laba_berjalan * ($ekuitas->lainya / 100);
+                        }
+                        $modal_akhir = $tambah + $modal_desa + $modal_masyarakat;
                     @endphp
                     <tr class="">
 
                         <td>
                             <span class="ms-5"> Tambah Modal</span>
                         </td>
-                        <td class="text-end">40 %</td>
+                        <td class="text-end d-flex  justify-content-end">
+                            <div class="input-group" style="width: 50%">
+                                <input type="number" class="form-control" placeholder="...%" name="akumulasi"
+                                    value="{{ old('akumulasi', $ekuitas->akumulasi) }}">
+                                <span class="input-group-text" id="basic-addon2">%</span>
+                            </div>
+                        </td>
                         <td class="text-end"></td>
-                        <td class="text-end">{{ formatRupiah($tambah) }}</td>
+                        <td class="text-end red-text">{{ formatRupiah($tambah) }}</td>
                     </tr>
                     <tr>
                         <td> <span class="ms-5">PADes</span></td>
-                        <td class="text-end">40%</td>
-                        <td class="text-end">{{ formatRupiah($pades) }}</td>
+                        <td class="text-end d-flex  justify-content-end">
+                            <div class="input-group" style="width: 50%">
+                                <input type="number" placeholder="...%" class="form-control" name="pades"
+                                    value="{{ old('pades', $ekuitas->pades) }}" style="width: 50%">
+                                <span class="input-group-text" id="basic-addon2">%</span>
+                            </div>
+                        </td>
+                        <td class="text-end red-text">{{ formatRupiah($pades) }}</td>
                         <td class="text-end"></td>
 
                     </tr>
                     <tr>
                         <td> <span class="ms-5">Lain Lain</span></td>
-                        <td class="text-end">20%</td>
-                        <td class="text-end">{{ formatRupiah($lainya) }} </td>
+                        <td class="text-end d-flex  justify-content-end">
+                            <div class="input-group" style="width: 50%">
+                                <input type="number" placeholder="...%" class="form-control" name="lainya"
+                                    value="{{ old('lainya', $ekuitas->lainya) }}" style="width: 50%">
+                                <span class="input-group-text" id="basic-addon2">%</span>
+                            </div>
+                        </td>
+                        <td class="text-end red-text">{{ formatRupiah($lainya) }} </td>
                         <td class="text-end"></td>
 
                     </tr>
                     <tr>
                         <td>Modal Akhir 1 Januari</td>
+                        <td class=""> {{ $ekuitas->tahun + 1 }}</td>
                         <td class="text-end"></td>
-                        <td class="text-end"></td>
-                        <td class="text-end">{{ formatRupiah($modal_akhir) }}</td>
+                        <td class="text-end red-text">{{ formatRupiah($modal_akhir) }}</td>
                     </tr>
 
                 </table>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+                </form>
+                <a href="/laporan-keuangan/laporan-perubahan-modal/ditahan/{{ $ekuitas->id }}" class="btn btn-dark"
+                    onclick="return confirm('Yakin tambahkan ke laba ditahan')">Tambah
+                    laba ditahan</a>
             </div>
         </div>
     </div>

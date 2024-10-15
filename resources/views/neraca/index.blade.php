@@ -3,8 +3,10 @@
 @section('container')
     <div class="row">
         <div class="col-lg-10">
-            <div class="card">
+            <div class="card overflow-auto">
                 <div class="card-body">
+                    <a href="/export-pdf/neraca" class="btn btn-danger mt-3"><i class="bi bi-filetype-pdf"></i>
+                        PDF</a>
                     <div class="card-title">1. Laporan Neracha</div>
 
                     <table class="table">
@@ -46,15 +48,14 @@
                             <tr>
                                 <td>Biaya Dibayar di muka</td>
                                 <td>{{ formatRupiah($bayar_dimuka) }}</td>
-                                <td>Laba/Rugi ditahan <strong>
-                                        {{ $ditahan < 0 ? '(Rugi)' : '(Untung)' }}</strong></td>
+                                <td>{{ $ditahan < 0 ? 'Rugi' : 'Laba' }} ditahan </td>
                                 <td>{{ formatRupiah($ditahan) }}</td>
                             </tr>
                             <tr>
                                 <td>Investasi</td>
                                 <td>{{ formatRupiah($investasi) }}</td>
-                                <td>Laba/Rugi Berjalan <strong>
-                                        {{ $laba_rugi_berjalan < 0 ? '(Rugi)' : '(Untung)' }}</strong></td>
+                                <td>{{ $laba_rugi_berjalan < 0 ? 'Rugi' : 'Laba' }} Berjalan <strong>
+                                    </strong></td>
                                 <td>{{ formatRupiah($laba_rugi_berjalan) }}</td>
                             </tr>
                             <tr>

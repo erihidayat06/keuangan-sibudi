@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Buk;
-use App\Models\User;
 use App\Models\Modal;
-use App\Models\Bukbesar;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
 
 class ModalController extends Controller
 {
@@ -18,12 +16,22 @@ class ModalController extends Controller
     {
         $modals = Modal::user()->get();
 
-        return view(
-            'modal.index',
-            [
-                'modals'  => $modals,
-            ]
-        );
+        return view('modal.index', ['modals'  => $modals]);
+    }
+
+    public function exportPdf()
+    {
+
+        $modals = Modal::user()->get();
+        $data = [
+            'modals'  => $modals,
+        ];
+
+        // Gunakan facade PDF
+        $pdf = PDF::loadView('modal.pdf', $data);
+
+        // Mengunduh PDF dengan nama "laporan.pdf"
+        return $pdf->stream('laporan.pdf');
     }
 
     /**
@@ -50,7 +58,7 @@ class ModalController extends Controller
 
         $validate['user_id'] = auth()->user()->id;
         if (Modal::create($validate)) {
-            $user_id = auth()->user()->id;
+
             if (isset($validate['mdl_desa'])) {
                 bukuUmum('Modal Tambah dari desa', 'debit', 'kas', 'pendanaan', $request->mdl_desa,  'modal', Modal::latest()->first()->id);
             } elseif (isset($validate['mdl_masyarakat'])) {

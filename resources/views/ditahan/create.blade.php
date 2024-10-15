@@ -34,7 +34,7 @@
                             <label for="nilai" class="form-label">Nilai</label>
                             <input type="text" class="form-control" id="nilai" name="nilai"
                                 onkeyup="onlyNumberAmount(this)" required
-                                value="{{ old('nilai', formatNomor(labaRugi()['totalLabaRugi'])) }}">
+                                value="{{ old('nilai', formatNomor(labaRugi(session('selected_year', date('Y')))['totalLabaRugi'])) }}">
                             @error('nilai')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror

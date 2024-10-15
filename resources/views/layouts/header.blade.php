@@ -13,7 +13,20 @@
 
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
-
+            <li class="nav-item">
+                <form action="{{ route('setYear') }}" method="POST">
+                    @csrf
+                    <select name="tahun" id="tahun" class="form-select" onchange="this.form.submit()">
+                        <option value="" disabled selected>Pilih Tahun</option>
+                        @for ($i = date('Y'); $i >= date('Y') - 5; $i--)
+                            <option value="{{ $i }}"
+                                {{ session('selected_year', date('Y')) == $i ? 'selected' : '' }}>
+                                {{ $i }}
+                            </option>
+                        @endfor
+                    </select>
+                </form>
+            </li>
 
 
             @auth
@@ -41,13 +54,6 @@
 
                     </ul><!-- End Profile Dropdown Items -->
                 </li><!-- End Profile Nav -->
-            @else
-                <li class="nav-item pe-3">
-                    <a class="nav-link nav-icon search-bar-toggle " href="/login">
-                        Login <i class="bi bi-box-arrow-in-right"></i>
-                    </a>
-
-                </li>
             @endauth
 
 

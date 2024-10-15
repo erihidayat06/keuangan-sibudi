@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hutang;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class HutangController extends Controller
@@ -20,6 +21,25 @@ class HutangController extends Controller
         }
         return view('hutang.index', ['hutangs' => $hutangs, 'sisa' => $sisa]);
     }
+
+    public function exportPdf()
+    {
+
+        $hutangs = Hutang::user()->get();
+
+        $sisa = 0;
+        foreach ($hutangs as $hutang) {
+            $sisa = $sisa + ($hutang->nilai - $hutang->pembayaran);
+        }
+        $data = ['hutangs' => $hutangs, 'sisa' => $sisa];
+
+        // Gunakan facade PDF
+        $pdf = PDF::loadView('hutang.pdf', $data);
+
+        // Mengunduh PDF dengan nama "laporan.pdf"
+        return $pdf->stream('laporan.pdf');
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -40,13 +60,12 @@ class HutangController extends Controller
             'nilai' => 'required|numeric',
         ]);
         $validate['user_id'] = auth()->user()->id;
-        if (Hutang::create($validate)) {
-            bukuUmum('Hutang ' . $request->kreditur, 'debit', 'kas', $request->nilai);
-        };
+        Hutang::create($validate);
 
         // Redirect with success message
         return redirect()->route('hutang.index')->with('success', 'Hutang berhasil ditambahkan.');
     }
+
 
     /**
      * Display the specified resource.

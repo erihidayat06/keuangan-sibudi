@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bdmuk;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class BdmukController extends Controller
@@ -30,6 +31,34 @@ class BdmukController extends Controller
             'investasi' => $investasi
         ]);
     }
+
+    public function exportPdf()
+    {
+
+        $asets = Bdmuk::user()->get();
+
+        $akumulasi = 0;
+        $investasi = 0;
+        foreach ($asets as $aset) {
+            $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
+            $saat_ini = $aset->nilai - $aset->masa_pakai * $penyusutan;
+
+            $akumulasi = $akumulasi + $penyusutan;
+            $investasi = $investasi + $saat_ini;
+        }
+        $data = [
+            "asets" => $asets,
+            'akumulasi' => $akumulasi,
+            'investasi' => $investasi
+        ];
+
+        // Gunakan facade PDF
+        $pdf = PDF::loadView('bayar_dimuka.pdf', $data);
+
+        // Mengunduh PDF dengan nama "laporan.pdf"
+        return $pdf->stream('laporan.pdf');
+    }
+
 
     /**
      * Show the form for creating a new resource.

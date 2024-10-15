@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dithn;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class DithnController extends Controller
@@ -21,6 +22,26 @@ class DithnController extends Controller
         }
         return view('ditahan.index', ['dithns' => $dithns, 'total' => $total]);
     }
+
+    public function exportPdf()
+    {
+
+        $dithns = Dithn::user()->get();
+
+
+        $total = 0;
+        foreach ($dithns as $dithn) {
+            $total = $total + ($dithn->nilai * ($dithn->akumulasi / 100));
+        }
+        $data = ['dithns' => $dithns, 'total' => $total];
+
+        // Gunakan facade PDF
+        $pdf = PDF::loadView('ditahan.pdf', $data);
+
+        // Mengunduh PDF dengan nama "laporan.pdf"
+        return $pdf->stream('laporan.pdf');
+    }
+
 
     /**
      * Show the form for creating a new resource.

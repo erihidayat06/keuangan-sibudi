@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Aktivalain;
 use Illuminate\Http\Request;
 
@@ -31,6 +32,36 @@ class AktivalainController extends Controller
         ]);
     }
 
+
+    public function exportPdf()
+    {
+
+
+        $asets = Aktivalain::user()->get();
+
+        $akumulasi = 0;
+        $investasi = 0;
+        foreach ($asets as $aset) {
+            $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
+            $saat_ini = $aset->nilai - $aset->masa_pakai * $penyusutan;
+
+            $akumulasi = $akumulasi + $penyusutan;
+            $investasi = $investasi + $saat_ini;
+        }
+        $data = [
+            "asets" => $asets,
+            'akumulasi' => $akumulasi,
+            'investasi' => $investasi
+        ];
+
+        // Gunakan facade PDF
+        $pdf = PDF::loadView('aktiva.pdf', $data)->setPaper('a4', 'portrait');
+
+        // Mengunduh PDF dengan nama "laporan.pdf"
+        return $pdf->stream('laporan.pdf');
+    }
+
+
     /**
      * Show the form for creating a new resource.
      */
@@ -51,6 +82,7 @@ class AktivalainController extends Controller
             'wkt_ekonomis' => 'required|min:1',
         ]);
         $validasi['user_id'] = auth()->user()->id;
+        $validasi['masa_pakai'] = 1;
         // Simpan data ke database
         if (Aktivalain::create($validasi)) {
             bukuUmum('Aktiva Lain ' . $request->jenis, 'kredit', 'kas', 'operasional', $request->nilai, 'aktiva_lain', Aktivalain::latest()->first()->id);

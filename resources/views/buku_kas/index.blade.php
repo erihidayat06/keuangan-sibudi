@@ -26,13 +26,21 @@
 
 
             </div>
-            <div class="card">
+            <div class="card overflow-auto">
                 <div class="card-body">
                     <div class="card-title">
                         Buku Kas
                     </div>
 
-                    <a href="/aset/buk/create" class="btn btn-sm btn-primary mb-3">Tambah Data</a>
+
+                    <div class="row cols-2 cols-lg-2">
+                        <div class="col">
+                            <a href="/aset/buk/create" class="btn btn-sm btn-primary mb-3">Tambah Data</a>
+                        </div>
+                        <div class="col text-end">
+                            <a href="/export-pdf/buk" class="btn btn-danger"><i class="bi bi-filetype-pdf"></i> PDF</a>
+                        </div>
+                    </div>
 
                     <!-- Table with stripped rows -->
                     <table class="table table-striped table-hover  table-bordered">
@@ -54,6 +62,23 @@
                                 $i = 1;
                                 $saldo = 0;
                             @endphp
+                            @if ($saldo_lalu != 0)
+                                @php
+                                    $saldo = $saldo_lalu;
+                                @endphp
+
+                                <tr>
+                                    <th scope="row">{{ $i++ }}</th>
+                                    <td>1 januari {{ session('selected_year', date('Y')) }}</td>
+                                    <td>Saldo Awal</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ formatRupiah($saldo) }}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            @endif
                             @foreach ($transaksis as $transaksi)
                                 @php
                                     if ($transaksi->jenis == 'debit') {
@@ -82,7 +107,13 @@
 
                                     <td>{{ formatRupiah($transaksi->nilai) }}</td>
                                     <td>{{ formatRupiah($saldo) }}</td>
-                                    <td>{{ $transaksi->jenis_lr }}</td>
+                                    <td>
+                                        @foreach (namaUnitUsaha() as $key => $value)
+                                            @if ($transaksi->jenis_lr == $key)
+                                                {{ $value }}
+                                            @endif
+                                        @endforeach
+                                    </td>
                                     <td>
                                         <div class="d-flex justify-content-start">
                                             <a href="/aset/buk/{{ $transaksi->id }}/edit" class="btn btn-sm btn-success">

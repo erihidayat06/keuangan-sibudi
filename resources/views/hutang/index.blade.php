@@ -21,7 +21,7 @@
                                     <i class="bi bi-cash-stack"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>{{ $sisa }}</h6>
+                                    <h6>{{ formatRupiah($sisa) }}</h6>
                                 </div>
                             </div>
                         </div>
@@ -36,7 +36,16 @@
                 <div class="card-body">
 
                     <h5 class="card-title">Data Hutang</h5>
-                    <a href="/hutang/create" class="btn btn-sm btn-primary"> Tambah Hutang</a>
+
+                    <div class="row cols-2 cols-lg-2">
+                        <div class="col">
+
+                            <a href="/hutang/create" class="btn btn-sm btn-primary"> Tambah Hutang</a>
+                        </div>
+                        <div class="col text-end">
+                            <a href="/export-pdf/hutang" class="btn btn-danger"><i class="bi bi-filetype-pdf"></i> PDF</a>
+                        </div>
+                    </div>
                     <!-- Table with stripped rows -->
                     <table class="table datatable">
                         <thead>

@@ -28,7 +28,7 @@
                     <div class="card info-card sales-card">
 
                         <div class="card-body">
-                            <h5 class="card-title">Total <span>| Investasi</span></h5>
+                            <h5 class="card-title">Total <span>| Inventaris</span></h5>
 
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -44,13 +44,24 @@
                 </div><!-- End Nilai Investasi Card -->
             </div>
 
-            <div class="card">
+            <div class="card overflow-auto">
                 <div class="card-body">
                     <div class="card-title">
                         Data Aset
                     </div>
 
-                    <a href="/aset/aktivalain/create" class="btn btn-sm btn-primary mb-3">Tambah Data</a>
+
+                    <div class="row cols-2 cols-lg-2">
+                        <div class="col">
+
+                            <a href="/aset/aktivalain/create" class="btn btn-sm btn-primary mb-3">Tambah Data</a>
+
+                        </div>
+                        <div class="col text-end">
+                            <a href="/export-pdf/aktivalain" class="btn btn-danger"><i class="bi bi-filetype-pdf"></i>
+                                PDF</a>
+                        </div>
+                    </div>
 
                     <!-- Table with stripped rows -->
                     <table class="table table-striped table-hover datatable">

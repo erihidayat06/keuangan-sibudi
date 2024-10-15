@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Buk;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class BuksController extends Controller
@@ -12,17 +13,52 @@ class BuksController extends Controller
      */
     public function index()
     {
-        $transaksis = Buk::user()->get();
+
+
+        $transaksis_lalu = Buk::user()->whereYear('created_at', session('selected_year', date('Y')) - 1)->get();
+        $debit_lalu = $transaksis_lalu->where('jenis', 'debit')->sum('nilai');
+        $kredit_lalu = $transaksis_lalu->where('jenis', 'kredit')->sum('nilai');
+        $saldo_lalu = $debit_lalu - $kredit_lalu;
+
+        $transaksis = Buk::user()->whereYear('created_at', session('selected_year', date('Y')))->get();
         $debit = $transaksis->where('jenis', 'debit')->sum('nilai');
         $kredit = $transaksis->where('jenis', 'kredit')->sum('nilai');
         $saldo = $debit - $kredit;
-
+        $saldo = $saldo + $saldo_lalu;
 
         return view('buku_kas.index', [
             'transaksis' => $transaksis,
             'saldo' => $saldo,
+            'saldo_lalu' => $saldo_lalu,
 
         ]);
+    }
+
+    public function exportPdf()
+    {
+
+        $transaksis_lalu = Buk::user()->whereYear('created_at', session('selected_year', date('Y')) - 1)->get();
+        $debit_lalu = $transaksis_lalu->where('jenis', 'debit')->sum('nilai');
+        $kredit_lalu = $transaksis_lalu->where('jenis', 'kredit')->sum('nilai');
+        $saldo_lalu = $debit_lalu - $kredit_lalu;
+
+        $transaksis = Buk::user()->whereYear('created_at', session('selected_year', date('Y')))->get();
+        $debit = $transaksis->where('jenis', 'debit')->sum('nilai');
+        $kredit = $transaksis->where('jenis', 'kredit')->sum('nilai');
+        $saldo = $debit - $kredit;
+        $saldo = $saldo + $saldo_lalu;
+        $data = [
+            'transaksis' => $transaksis,
+            'saldo' => $saldo,
+            'saldo_lalu' => $saldo_lalu,
+
+        ];
+
+        // Gunakan facade PDF
+        $pdf = PDF::loadView('buku_kas.pdf', $data)->setPaper('a2', 'portrait');
+
+        // Mengunduh PDF dengan nama "laporan.pdf"
+        return $pdf->stream('laporan.pdf');
     }
 
     /**
