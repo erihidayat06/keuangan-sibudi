@@ -32,7 +32,6 @@
     },
     "files": [
         "app/helpers/rupiah_helper.php",
-        "app/helpers/buku_besar_helper.php",
         "app/helpers/buku_umum_helper.php",
         "app/helpers/neraca_helper.php",
         "app/helpers/laba_rugi_helper.php",

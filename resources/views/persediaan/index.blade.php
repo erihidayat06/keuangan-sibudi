@@ -92,8 +92,8 @@
                                 <th scope="col">Nilai_Jual</th>
                                 <th scope="col">Jumlah_Awal</th>
                                 <th scope="col">Nilai_Awal</th>
-                                <th scope="col">______Masuk______</th>
-                                <th scope="col">______Keluar_____</th>
+                                <th scope="col">______Penjualan______</th>
+                                <th scope="col">______Pembelian_____</th>
                                 <th scope="col">Jumlah_Akhir</th>
                                 <th scope="col">Nilai_Akhir</th>
                                 <th scope="col">Laba</th>

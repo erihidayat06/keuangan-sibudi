@@ -69,13 +69,13 @@
 
                                 <!-- Row 5: Nama Sekretaris -->
                                 <tr>
-                                    <td><label for="nm_sekertaris">Nama Sekretaris</label></td>
+                                    <td><label for="nm_serkertaris">Nama Sekretaris</label></td>
                                     <td>
                                         <input type="text"
-                                            class="form-control @error('nm_sekertaris') is-invalid @enderror"
-                                            id="nm_sekertaris" name="nm_sekertaris"
-                                            value="{{ old('nm_sekertaris', $profil) }}">
-                                        @error('nm_sekertaris')
+                                            class="form-control @error('nm_serkertaris') is-invalid @enderror"
+                                            id="nm_serkertaris" name="nm_serkertaris"
+                                            value="{{ old('nm_serkertaris', $profil) }}">
+                                        @error('nm_serkertaris')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </td>
@@ -122,119 +122,13 @@
                                     </td>
                                 </tr>
 
-                                <!-- Row 9: Unit Usaha 1 -->
-                                <tr>
-                                    <td><label for="unt_usaha1">Unit Usaha 1</label></td>
-                                    <td>
-                                        <input type="text" class="form-control @error('unt_usaha1') is-invalid @enderror"
-                                            id="unt_usaha1" name="unt_usaha1" value="{{ old('unt_usaha1', $profil) }}"
-                                            placeholder="Unit usaha persediaan">
-                                        @error('unt_usaha1')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </td>
-                                </tr>
-
-                                <!-- Row 10: Nama Kepala Unit 1 -->
-                                <tr>
-                                    <td><label for="nm_kepyun1">Nama Kepala Unit 1</label></td>
-                                    <td>
-                                        <input type="text" class="form-control @error('nm_kepyun1') is-invalid @enderror"
-                                            id="nm_kepyun1" name="nm_kepyun1" value="{{ old('nm_kepyun1', $profil) }}">
-                                        @error('nm_kepyun1')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </td>
-                                </tr>
-
-                                <!-- Row 11: Unit Usaha 2 -->
-                                <tr>
-                                    <td><label for="unt_usaha2">Unit Usaha 2</label></td>
-                                    <td>
-                                        <input type="text"
-                                            class="form-control @error('unt_usaha2') is-invalid @enderror" id="unt_usaha2"
-                                            name="unt_usaha2" value="{{ old('unt_usaha2', $profil) }}"
-                                            placeholder="Unit usaha simpan pinjam">
-                                        @error('unt_usaha2')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </td>
-                                </tr>
-
-                                <!-- Row 12: Nama Kepala Unit 2 -->
-                                <tr>
-                                    <td><label for="nm_kepyun2">Nama Kepala Unit 2</label></td>
-                                    <td>
-                                        <input type="text"
-                                            class="form-control @error('nm_kepyun2') is-invalid @enderror" id="nm_kepyun2"
-                                            name="nm_kepyun2" value="{{ old('nm_kepyun2', $profil) }}">
-                                        @error('nm_kepyun2')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </td>
-                                </tr>
-
-                                <!-- Row 13: Unit Usaha 3 -->
-                                <tr>
-                                    <td><label for="unt_usaha3">Unit Usaha 3</label></td>
-                                    <td>
-                                        <input type="text"
-                                            class="form-control @error('unt_usaha3') is-invalid @enderror" id="unt_usaha3"
-                                            name="unt_usaha3" value="{{ old('unt_usaha3', $profil) }}"
-                                            placeholder="Unit usaha lainya">
-                                        @error('unt_usaha3')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </td>
-                                </tr>
-
-                                <!-- Row 14: Nama Kepala Unit 3 -->
-                                <tr>
-                                    <td><label for="nm_kepyun3">Nama Kepala Unit 3</label></td>
-                                    <td>
-                                        <input type="text"
-                                            class="form-control @error('nm_kepyun3') is-invalid @enderror"
-                                            id="nm_kepyun3" name="nm_kepyun3" value="{{ old('nm_kepyun3', $profil) }}">
-                                        @error('nm_kepyun3')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </td>
-                                </tr>
-
-                                <!-- Row 15: Unit Usaha 4 -->
-                                <tr>
-                                    <td><label for="unt_usaha4">Unit Usaha 4</label></td>
-                                    <td>
-                                        <input type="text"
-                                            class="form-control @error('unt_usaha4') is-invalid @enderror"
-                                            id="unt_usaha4" name="unt_usaha4" value="{{ old('unt_usaha4', $profil) }}"
-                                            placeholder="Unit usaha lainya">
-                                        @error('unt_usaha4')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </td>
-                                </tr>
-
-                                <!-- Row 16: Nama Kepala Unit 4 -->
-                                <tr>
-                                    <td><label for="nm_kepyun4">Nama Kepala Unit 4</label></td>
-                                    <td>
-                                        <input type="text"
-                                            class="form-control @error('nm_kepyun4') is-invalid @enderror"
-                                            id="nm_kepyun4" name="nm_kepyun4" value="{{ old('nm_kepyun4', $profil) }}">
-                                        @error('nm_kepyun4')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </td>
-                                </tr>
 
                                 <!-- Row 17: No Badan -->
                                 <tr>
                                     <td><label for="no_badan">No Badan</label></td>
                                     <td>
-                                        <input type="text"
-                                            class="form-control @error('no_badan') is-invalid @enderror" id="no_badan"
-                                            name="no_badan" value="{{ old('no_badan', $profil) }}">
+                                        <input type="text" class="form-control @error('no_badan') is-invalid @enderror"
+                                            id="no_badan" name="no_badan" value="{{ old('no_badan', $profil) }}">
                                         @error('no_badan')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -245,9 +139,8 @@
                                 <tr>
                                     <td><label for="no_perdes">No Perdes</label></td>
                                     <td>
-                                        <input type="text"
-                                            class="form-control @error('no_perdes') is-invalid @enderror" id="no_perdes"
-                                            name="no_perdes" value="{{ old('no_perdes', $profil) }}">
+                                        <input type="text" class="form-control @error('no_perdes') is-invalid @enderror"
+                                            id="no_perdes" name="no_perdes" value="{{ old('no_perdes', $profil) }}">
                                         @error('no_perdes')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror

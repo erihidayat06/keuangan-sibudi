@@ -13,7 +13,7 @@ class TahunController extends Controller
     {
         // Validasi input tahun
         $request->validate([
-            'tahun' => 'required|integer|min:2000|max:' . date('Y'), // Menyesuaikan validasi tahun
+            'tahun' => 'required|integer|min:2000|max:' . date('Y') + 1, // Menyesuaikan validasi tahun
         ]);
 
         // Simpan tahun yang dipilih ke dalam session

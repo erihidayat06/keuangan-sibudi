@@ -12,7 +12,7 @@
                         <!-- Tahun Field -->
                         <div class="mb-3">
                             <label for="tahun" class="form-label">Tahun</label>
-                            <input type="date" class="form-control @error('tahun') is-invalid @enderror" id="tahun"
+                            <input type="text" class="form-control @error('tahun') is-invalid @enderror" id="tahun"
                                 name="tahun" value="{{ old('tahun') }}">
                             @error('tahun')
                                 <div class="invalid-feedback">{{ $message }}</div>

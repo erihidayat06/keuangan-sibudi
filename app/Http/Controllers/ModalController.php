@@ -47,21 +47,22 @@ class ModalController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = $request->validate([
+
+        $validated  = $request->validate([
             'tahun' => 'required',
             'sumber' => 'required|string|max:100',
             'mdl_desa' => 'max:11',
             'mdl_masyarakat' => 'max:11',
         ]);
 
+        $validated['created_at'] = created_at();
 
+        $validated['user_id'] = auth()->user()->id;
+        if (Modal::create($validated)) {
 
-        $validate['user_id'] = auth()->user()->id;
-        if (Modal::create($validate)) {
-
-            if (isset($validate['mdl_desa'])) {
+            if (isset($validated['mdl_desa'])) {
                 bukuUmum('Modal Tambah dari desa', 'debit', 'kas', 'pendanaan', $request->mdl_desa,  'modal', Modal::latest()->first()->id);
-            } elseif (isset($validate['mdl_masyarakat'])) {
+            } elseif (isset($validated['mdl_masyarakat'])) {
                 bukuUmum('Modal Tambah dari masyarakat', 'debit', 'kas', 'pendanaan',  $request->mdl_masyarakat, 'modal', Modal::latest()->first()->id);
             }
         };
@@ -93,7 +94,7 @@ class ModalController extends Controller
      */
     public function update(Request $request, modal $modal)
     {
-        $validate = $request->validate([
+        $validated = $request->validate([
             'tahun' => 'required',
             'sumber' => 'required|string|max:100',
             'mdl_desa' => 'max:11',
@@ -101,9 +102,9 @@ class ModalController extends Controller
         ]);
 
 
-        $validate['user_id'] = auth()->user()->id;
+        $validated['user_id'] = auth()->user()->id;
 
-        if (Modal::where('id', $modal->id)->update($validate)) {
+        if (Modal::where('id', $modal->id)->update($validated)) {
             if ($modal->mdl_desa != null) {
                 updateBukuUmum('modal', $modal->id, $request->mdl_desa);
             } elseif ($modal->mdl_masyarakat != null) {

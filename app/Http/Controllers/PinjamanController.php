@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pinjaman;
+use App\Models\Unit;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
@@ -22,13 +23,37 @@ class PinjamanController extends Controller
             $total_bunga = $bunga * $pinjaman->angsuran;
             $saldo_bunga = $saldo_bunga + $total_bunga;
         }
-
-        return view('pinjaman.index', [
-            'pinjamans' => $pinjamans,
-            'tunggakan' => $tunggakan,
-            'saldo_bunga' => $saldo_bunga
-        ]);
+        $unit = Unit::user()->where('kode', 'pj2345')->get()->first();
+        if (!isset($unit->kode)) {
+            return view('pinjaman.unit');
+        } else {
+            return view('pinjaman.index', [
+                'pinjamans' => $pinjamans,
+                'tunggakan' => $tunggakan,
+                'saldo_bunga' => $saldo_bunga
+            ]);
+        }
     }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function storeUnit(Request $request)
+    {
+        $validated =  $request->validate([
+            'nm_unit' => 'required|string|max:255',
+            'kepala_unit' => 'required|string|max:255',
+            'kode' => 'required',
+        ]);
+
+        $validated['user_id'] = auth()->user()->id;
+
+
+        Unit::create($validated);
+
+        return redirect('/aset/pinjaman')->with('success', 'Unit berhasil ditambahkan!');
+    }
+
 
     public function exportPdf()
     {
@@ -68,16 +93,17 @@ class PinjamanController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = $request->validate([
+        $validated  = $request->validate([
             'nasabah' => 'required|string|max:255',
             'tgl_pinjam' => 'required|date',
             'alokasi' => 'required|string|max:255',
             'bunga' => 'required|numeric|min:0|max:100',
         ]);
 
-        $validate['user_id'] = auth()->user()->id;
+        $validated['user_id'] = auth()->user()->id;
+        $validated['created_at'] = created_at();
 
-        if (Pinjaman::create($validate)) {
+        if (Pinjaman::create($validated)) {
             bukuUmum('Pinjaman ' . $request->nasabah, 'kredit', 'kas', 'operasional', $request->alokasi, 'pinjaman', Pinjaman::latest()->first()->id);
         };
 
@@ -118,7 +144,7 @@ class PinjamanController extends Controller
 
         $bunga = $pinjaman->alokasi * ($pinjaman->bunga / 100);
 
-        bukuUmum('Bunga Storan ' . $pinjaman->nasabah, 'debit', 'pu3', 'operasional', $bunga, null, null);
+        bukuUmum('Bunga Storan ' . $pinjaman->nasabah, 'debit', 'pupj2345', 'operasional', $bunga, null, null);
         bukuUmum('Storan ' . $pinjaman->nasabah, 'debit', 'kas', 'operasional', $input_realisasi, null, null);
 
 
@@ -132,14 +158,14 @@ class PinjamanController extends Controller
      */
     public function update(Request $request, Pinjaman $pinjaman)
     {
-        $validate = $request->validate([
+        $validated = $request->validate([
             'nasabah' => 'required|string|max:255',
             'tgl_pinjam' => 'required|date',
             'alokasi' => 'required|string|max:255',
             'bunga' => 'required|numeric|min:0|max:100',
         ]);
 
-        if (Pinjaman::where('id', $pinjaman->id)->update($validate)) {
+        if (Pinjaman::where('id', $pinjaman->id)->update($validated)) {
             updateBukuUmum('pinjaman', $pinjaman, $request->alokasi);
         };
 

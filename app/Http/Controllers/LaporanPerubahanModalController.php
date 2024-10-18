@@ -85,10 +85,11 @@ class LaporanPerubahanModalController extends Controller
             'tahun' => $ekuit->tahun,
             'hasil' => $hasil,
             'nilai' => $labaRugi,
-            'pades' => $ekuit->pades,
-            'lainya' => $ekuit->lainya,
-            'akumulasi' => $ekuit->akumulasi,
-            'user_id' => auth()->user()->id
+            'pades' => $labaRugi * ($ekuit->pades / 100),
+            'lainya' => $labaRugi * ($ekuit->lainya / 100),
+            'akumulasi' => $labaRugi * ($ekuit->akumulasi / 100),
+            'user_id' => auth()->user()->id,
+            'created_at' => created_at()
         ]);
 
         Hutang::insert([
@@ -96,13 +97,15 @@ class LaporanPerubahanModalController extends Controller
                 'kreditur' => 'pemdes',
                 'keterangan' => 'PADes',
                 'nilai' => $labaRugi * ($ekuit->pades / 100),
-                'user_id' => auth()->user()->id
+                'user_id' => auth()->user()->id,
+                'created_at' => created_at()
             ],
             [
                 'kreditur' => 'pengelola BUMDes',
                 'keterangan' => 'SHU',
                 'nilai' => $labaRugi * ($ekuit->lainya / 100),
-                'user_id' => auth()->user()->id
+                'user_id' => auth()->user()->id,
+                'created_at' => created_at()
             ]
         ]);
 

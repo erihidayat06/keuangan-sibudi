@@ -49,11 +49,11 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Tanggal</th>
                                 <th scope="col">Transaksi</th>
-                                <th scope="col">(Debit/Kredit)</th>
+                                <th scope="col">(Masuk/Keluar)</th>
                                 <th scope="col">Jenis Dana</th>
                                 <th scope="col">Nilai</th>
                                 <th scope="col">Saldo</th>
-                                <th scope="col">Jenis LR</th>
+                                <th scope="col">Pembukuan</th>
                                 <th scope="col">Aksi</th>
                             </tr>
                         </thead>
@@ -96,7 +96,7 @@
                                     <td>
                                         <p
                                             class="{{ $transaksi->jenis == 'debit' ? 'text-success' : 'text-danger' }} fw-bold">
-                                            {{ $transaksi->jenis }}</p>
+                                            {{ $transaksi->jenis == 'debit' ? 'Masuk' : 'Keluar' }}</p>
                                     </td>
                                     <td>
                                         <p

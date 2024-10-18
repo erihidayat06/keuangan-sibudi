@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -16,12 +17,12 @@ return new class extends Migration
             $table->string('transaksi', 100);
             $table->string('jenis', 100);
             $table->enum('jenis_dana', ['operasional', 'iventasi', 'pendanaan'])->default('operasional');
-            $table->enum('jenis_lr', ['pu1', 'pu2', 'pu3', 'pu4', 'bo1', 'bo2', 'bo3', 'bo4', 'bno1', 'bno2', 'bno3', 'bno4', 'kas']);
+            $table->varchar('jenis_lr');
             $table->integer('nilai');
-            $table->date('tanggal');
-            $table->string('akun', 100);
-            $table->integer('id_akun');
-            $table->foreignId('user_id');
+            $table->date('tanggal')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->string('akun', 100)->nullable();
+            $table->integer('id_akun')->nullable();
+            $table->foreignId('user_id')->nullable();
             $table->timestamps();
         });
     }

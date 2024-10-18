@@ -130,42 +130,22 @@
                             <tr>
                                 <td colspan="15" class="fw-bold">Pendapatan</td>
                             </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>{{ isset(unitUsaha()->unt_usaha1) ? unitUsaha()->unt_usaha1 : 'Unit 1' }}</td>
-                                @foreach ($pendapatan['pu1'] as $value)
-                                    <td>{{ formatRupiah($value) }}</td>
-                                @endforeach
-                                <td>{{ formatRupiah($tahun['pu1']) }}</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>{{ isset(unitUsaha()->unt_usaha2) ? unitUsaha()->unt_usaha2 : 'Unit 2' }}</td>
-
-                                @foreach ($pendapatan['pu2'] as $value)
-                                    <td>{{ formatRupiah($value) }}</td>
-                                @endforeach
-                                <td>{{ formatRupiah($tahun['pu2']) }}</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>{{ isset(unitUsaha()->unt_usaha3) ? unitUsaha()->unt_usaha3 : 'Unit 3' }}</td>
-                                @foreach ($pendapatan['pu3'] as $value)
-                                    <td>{{ formatRupiah($value) }}</td>
-                                @endforeach
-                                <td>{{ formatRupiah($tahun['pu3']) }}</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>{{ isset(unitUsaha()->unt_usaha4) ? unitUsaha()->unt_usaha4 : 'Unit 4' }}</td>
-                                @foreach ($pendapatan['pu4'] as $value)
-                                    <td>{{ formatRupiah($value) }}</td>
-                                @endforeach
-                                <td>{{ formatRupiah($tahun['pu4']) }}</td>
-                            </tr>
+                            @php
+                                $i = 1;
+                            @endphp
+                            @foreach ($units as $unit)
+                                <tr>
+                                    <td>{{ $i++ }}</td>
+                                    <td>{{ $unit->nm_unit }}</td>
+                                    @foreach ($pendapatan['pu' . $unit->kode] as $value)
+                                        <td>{{ formatRupiah($value) }}</td>
+                                    @endforeach
+                                    <td>{{ formatRupiah($tahun['pu' . $unit->kode]) }}</td>
+                                </tr>
+                            @endforeach
 
                             <tr class="fw-bold bg-success text-light">
-                                <td colspan="2">Total Pendapatan</td>
+                                <td colspan="2">Total_Pendapatan</td>
                                 @foreach ($pendapatanBulan['pu'] as $total)
                                     <td>{{ formatRupiah($total) }}</td>
                                 @endforeach
@@ -175,40 +155,19 @@
                             <tr>
                                 <td colspan="15" class="fw-bold">Biaya Oprasional (Verbal)</td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td>Biaya oprasional unit 1</td>
-                                @foreach ($pendapatan['bo1'] as $value)
-                                    <td>{{ formatRupiah($value) }}</td>
-                                @endforeach
-                                <td>{{ formatRupiah($tahun['bo1']) }}</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Biaya oprasional unit 2</td>
-                                @foreach ($pendapatan['bo2'] as $value)
-                                    <td>{{ formatRupiah($value) }}</td>
-                                @endforeach
-                                <td>{{ formatRupiah($tahun['bo2']) }}</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Biaya oprasional unit 3</td>
-                                @foreach ($pendapatan['bo3'] as $value)
-                                    <td>{{ formatRupiah($value) }}</td>
-                                @endforeach
-                                <td>{{ formatRupiah($tahun['bo3']) }}</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Biaya oprasional unit 4</td>
-                                @foreach ($pendapatan['bo4'] as $value)
-                                    <td>{{ formatRupiah($value) }}</td>
-                                @endforeach
-                                <td>{{ formatRupiah($tahun['bo4']) }}</td>
-                            </tr>
+                            @foreach ($units as $unit)
+                                <tr>
+                                    <td></td>
+                                    <td>Biaya oprasional {{ $unit->nm_unit }}</td>
+                                    @foreach ($pendapatan['bo' . $unit->kode] as $value)
+                                        <td>{{ formatRupiah($value) }}</td>
+                                    @endforeach
+                                    <td>{{ formatRupiah($tahun['bo' . $unit->kode]) }}</td>
+                                </tr>
+                            @endforeach
+
                             <tr class="bg-info fw-bold">
-                                <td colspan="2">Total Biaya Operasional</td>
+                                <td colspan="2">Total_Biaya_Operasional</td>
                                 @foreach ($pendapatanBulan['bo'] as $value)
                                     <td>{{ formatRupiah($value) }}</td>
                                 @endforeach
@@ -258,7 +217,7 @@
                                 <td>{{ formatRupiah($akumulasi_penyusutan) }}</td>
                             </tr>
                             <tr class="bg-info fw-bold">
-                                <td colspan="2">Total Biaya Non Operasional</td>
+                                <td colspan="2">Total_Biaya_Non_Operasional</td>
                                 @foreach ($pendapatanBulan['bno'] as $value)
                                     <td>{{ formatRupiah($value) }}</td>
                                 @endforeach

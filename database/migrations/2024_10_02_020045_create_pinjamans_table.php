@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('nasabah');
             $table->date('tgl_pinjam');
             $table->integer('alokasi');
-            $table->integer('realisasi');
+            $table->integer('realisasi')->nullable();
             $table->integer('bunga');
-            $table->integer('angsuran')->default(null);
+            $table->integer('angsuran')->nullable();
             $table->foreignId('user_id');
             $table->timestamps();
         });

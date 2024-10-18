@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Buk;
 use App\Models\Ekuit;
 use App\Models\Modal;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -13,6 +14,7 @@ class CetakLaporanController extends Controller
     public function exportPdf()
     {
         $bukuUmum = Buk::user()->get();
+        $units = Unit::user()->get();
 
         $kas_awal = $bukuUmum->where('transaksi', 'Saldo Awal')->first();
         $masuk = $bukuUmum->where('jenis', 'debit');
@@ -59,11 +61,12 @@ class CetakLaporanController extends Controller
             'masuk' => $masuk,
             'keluar' => $keluar,
             'kas_akhir' => $kas_akhir,
-            'perubahan_kas' => $perubahan_kas
+            'perubahan_kas' => $perubahan_kas,
+            'units' => $units
         ];
 
         // Gunakan facade PDF
-        $pdf = PDF::loadView('laporan_keuangan.pdf', $data);
+        $pdf = PDF::loadView('laporan_keuangan.pdf', $data)->setPaper('f4', 'portrait');;
 
         // Mengunduh PDF dengan nama "laporan.pdf"
         return $pdf->stream('laporan.pdf');

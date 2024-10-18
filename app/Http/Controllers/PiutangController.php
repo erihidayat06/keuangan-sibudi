@@ -54,13 +54,14 @@ class PiutangController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = $request->validate([
+        $validated = $request->validate([
             'kreditur' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
             'nilai' => 'required|numeric',
         ]);
-        $validate['user_id'] = auth()->user()->id;
-        if (Piutang::create($validate)) {
+        $validated['user_id'] = auth()->user()->id;
+        $validated['created_at'] = created_at();
+        if (Piutang::create($validated)) {
             bukuUmum('Piutang', 'kredit', 'kas', 'operasional', $request->nilai, 'piutang', Piutang::latest()->first()->id);
         };
 
@@ -113,15 +114,15 @@ class PiutangController extends Controller
      */
     public function update(Request $request, Piutang $piutang)
     {
-        $validate = $request->validate([
+        $validated = $request->validate([
             'kreditur' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
             'nilai' => 'required|numeric',
         ]);
-        $validate['user_id'] = auth()->user()->id;
+        $validated['user_id'] = auth()->user()->id;
 
 
-        if (Piutang::where('id', $piutang->id)->update($validate)) {
+        if (Piutang::where('id', $piutang->id)->update($validated)) {
             updateBukuUmum('piutang', $piutang->id, $request->nilai);
         };
 

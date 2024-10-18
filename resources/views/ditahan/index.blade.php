@@ -60,19 +60,14 @@
                         </thead>
                         <tbody>
                             @foreach ($dithns as $dithn)
-                                @php
-                                    $pades = $dithn->nilai * ($dithn->pades / 100);
-                                    $lainya = $dithn->nilai * ($dithn->lainya / 100);
-                                    $akumulasi = $dithn->nilai * ($dithn->akumulasi / 100);
-                                @endphp
                                 <tr>
                                     <th scope="row">{{ $loop->iteration }}</th>
                                     <td>{{ $dithn->tahun }}</td>
                                     <td>{{ $dithn->hasil }}</td>
                                     <td>{{ formatRupiah($dithn->nilai) }}</td>
-                                    <td>{{ formatRupiah($pades) }}</td>
-                                    <td>{{ formatRupiah($lainya) }}</td>
-                                    <td>{{ formatRupiah($akumulasi) }}</td>
+                                    <td>{{ formatRupiah($dithn->pades) }}</td>
+                                    <td>{{ formatRupiah($dithn->lainya) }}</td>
+                                    <td>{{ formatRupiah($dithn->akumulasi) }}</td>
                                     <td>
                                         <div class="d-flex justify-content-start">
                                             <a href="/dithn/{{ $dithn->id }}/edit" class="btn btn-sm btn-success">

@@ -73,16 +73,17 @@ class BangunanController extends Controller
     public function store(Request $request)
     {
         // Validasi input
-        $validasi =  $request->validate([
+        $validated =  $request->validate([
             'jenis' => 'required|string|max:255',
             'nilai' => 'required|numeric',
             'wkt_ekonomis' => 'required|min:1',
         ]);
-        $validasi['user_id'] = auth()->user()->id;
-        $validasi['masa_pakai'] = 1;
+        $validated['user_id'] = auth()->user()->id;
+        $validated['masa_pakai'] = 1;
+        $validated['created_at'] = created_at();
 
         // Simpan data ke database
-        if (Bangunan::create($validasi)) {
+        if (Bangunan::create($validated)) {
             bukuUmum('Bangunan ' . $request->jenis, 'kredit', 'kas', 'operasional', $request->nilai, 'bangunan', Bangunan::latest()->first()->id);
         };
 
@@ -132,15 +133,15 @@ class BangunanController extends Controller
     public function update(Request $request, Bangunan $bangunan)
     {
         // Validasi input
-        $validasi =  $request->validate([
+        $validated =  $request->validate([
             'jenis' => 'required|string|max:255',
             'nilai' => 'required|numeric',
             'wkt_ekonomis' => 'required|min:1',
             'masa_pakai' => '',
         ]);
-        $validasi['user_id'] = auth()->user()->id;
+        $validated['user_id'] = auth()->user()->id;
         // Simpan data ke database
-        if (Bangunan::where('id', $bangunan->id)->update($validasi)) {
+        if (Bangunan::where('id', $bangunan->id)->update($validated)) {
             updateBukuUmum('bangunan', $bangunan->id, $request->nilai);
         };
 

@@ -76,7 +76,7 @@ class InvestasiController extends Controller
      */
     public function store(Request $request)
     {
-        $validasi =  $request->validate([
+        $validated =  $request->validate([
             'item' => 'required|string|max:255',
             'tgl_beli' => 'required|date',
             'jumlah' => 'required|integer|min:1',
@@ -84,12 +84,13 @@ class InvestasiController extends Controller
             'wkt_ekonomis' => 'required|integer|min:1',
         ]);
 
-        $validasi['masa_pakai'] = 1;
+        $validated['masa_pakai'] = 1;
 
-        $validasi['user_id'] = auth()->user()->id;
+        $validated['user_id'] = auth()->user()->id;
+        $validated['created_at'] = created_at();
 
-        if (Investasi::create($validasi)) {
-            bukuUmum('Investasi ' . $request->item, 'kredit', 'kas', 'investasi', $request->nilai * $request->jumlah, 'investasi', Investasi::latest()->first()->id);
+        if (Investasi::create($validated)) {
+            bukuUmum('Investasi ' . $request->item, 'kredit', 'kas', 'iventasi', $request->nilai * $request->jumlah, 'investasi', Investasi::latest()->first()->id);
         };
 
 
@@ -139,7 +140,7 @@ class InvestasiController extends Controller
      */
     public function update(Request $request, Investasi $investasi)
     {
-        $validasi =  $request->validate([
+        $validated =  $request->validate([
             'item' => 'required|string|max:255',
             'tgl_beli' => 'required|date',
             'jumlah' => 'required|integer|min:1',
@@ -148,9 +149,9 @@ class InvestasiController extends Controller
             'masa_pakai' => '',
         ]);
 
-        $validasi['user_id'] = auth()->user()->id;
+        $validated['user_id'] = auth()->user()->id;
 
-        if (Investasi::where('id', $investasi->id)->update($validasi)) {
+        if (Investasi::where('id', $investasi->id)->update($validated)) {
             updateBukuUmum('investasi', $investasi->id, $request->nilai);
         };
 

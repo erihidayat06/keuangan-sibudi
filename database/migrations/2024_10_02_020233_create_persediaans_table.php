@@ -18,8 +18,8 @@ return new class extends Migration
             $table->integer('hpp');
             $table->integer('nilai_jual');
             $table->integer('jml_awl');
-            $table->integer('masuk')->default(null);
-            $table->integer('keluar')->default(null);
+            $table->integer('masuk')->nullable();
+            $table->integer('keluar')->nullable();
             $table->foreignId('user_id');
             $table->timestamps();
         });

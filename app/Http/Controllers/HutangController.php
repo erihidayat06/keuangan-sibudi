@@ -54,13 +54,13 @@ class HutangController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = $request->validate([
+        $validated = $request->validate([
             'kreditur' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
             'nilai' => 'required|numeric',
         ]);
-        $validate['user_id'] = auth()->user()->id;
-        Hutang::create($validate);
+        $validated['user_id'] = auth()->user()->id;
+        Hutang::create($validated);
 
         // Redirect with success message
         return redirect()->route('hutang.index')->with('success', 'Hutang berhasil ditambahkan.');
@@ -106,13 +106,13 @@ class HutangController extends Controller
      */
     public function update(Request $request, Hutang $hutang)
     {
-        $validate = $request->validate([
+        $validated = $request->validate([
             'kreditur' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
             'nilai' => 'required|numeric',
         ]);
-        $validate['user_id'] = auth()->user()->id;
-        Hutang::where('id', $hutang->id)->update($validate);
+        $validated['user_id'] = auth()->user()->id;
+        Hutang::where('id', $hutang->id)->update($validated);
 
         // Redirect with success message
         return redirect()->route('hutang.index')->with('success', 'Hutang berhasil diubah.');

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Buk;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Unit;
 use App\Models\Persediaan;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PersediaanController extends Controller
 {
@@ -31,13 +32,39 @@ class PersediaanController extends Controller
             $laba = ($barang->jml_awl - $jumlah_akhir) * ($barang->nilai_jual - $barang->hpp);
             $total_laba = $laba + $total_laba;
         }
-        return view('persediaan.index', [
-            'barangs' => $barangs,
-            'total_nilai_awal' => $total_nilai_awal,
-            'total_nilai_akhir' => $total_nilai_akhir,
-            'total_laba' => $total_laba,
-        ]);
+        $unit = Unit::user()->where('kode', 'pd9876')->get()->first();
+        if (!isset($unit->kode)) {
+            return view('persediaan.unit');
+        } else {
+            return view('persediaan.index', [
+                'barangs' => $barangs,
+                'total_nilai_awal' => $total_nilai_awal,
+                'total_nilai_akhir' => $total_nilai_akhir,
+                'total_laba' => $total_laba,
+            ]);
+        }
     }
+
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function storeUnit(Request $request)
+    {
+        $validated =  $request->validate([
+            'nm_unit' => 'required|string|max:255',
+            'kepala_unit' => 'required|string|max:255',
+            'kode' => 'required',
+        ]);
+
+        $validated['user_id'] = auth()->user()->id;
+
+
+        Unit::create($validated);
+
+        return redirect('/aset/persediaan')->with('success', 'Unit berhasil ditambahkan!');
+    }
+
 
     public function exportPdf()
     {
@@ -89,7 +116,7 @@ class PersediaanController extends Controller
     public function store(Request $request)
     {
 
-        $validatedData = $request->validate([
+        $validated = $request->validate([
             'item' => 'required|string|max:255',
             'satuan' => 'required|string|max:50',
             'hpp' => 'required|numeric|min:0',
@@ -97,11 +124,12 @@ class PersediaanController extends Controller
             'jml_awl' => 'required|integer|min:0',
         ]);
 
-        $validatedData['user_id'] = auth()->user()->id;
+        $validated['user_id'] = auth()->user()->id;
+        $validated['created_at'] = created_at();
 
-        $total_harga = $validatedData['hpp'] * $validatedData['jml_awl'];
+        $total_harga = $validated['hpp'] * $validated['jml_awl'];
 
-        if (Persediaan::create($validatedData)) {
+        if (Persediaan::create($validated)) {
             bukuUmum('Persediaan ' . $request->item, 'kredit', 'kas', 'operasional', $total_harga, 'persediaan', Persediaan::latest()->first()->id);
         };
         return redirect('/aset/persediaan')->with('success', 'Barang berhasil ditambahkan!');
@@ -129,7 +157,7 @@ class PersediaanController extends Controller
 
             $masuk = $request->masuk - $persediaan->masuk;
 
-            bukuUmum($transasksi, 'debit', 'pu1', 'operasional', $laba, null, null);
+            bukuUmum($transasksi, 'debit', 'pupd9876', 'operasional', $laba, null, null);
             bukuUmum($transasksi, 'debit', 'kas', 'operasional', $persediaan->hpp * $masuk, null, null);
             Persediaan::where('id', $persediaan->id)->update(['masuk' => $request->masuk]);
         }
@@ -137,7 +165,7 @@ class PersediaanController extends Controller
             $transasksi = 'Kembalikan ' . $request->keluar - $persediaan->keluar . ' ' . $persediaan->item;
             $laba = ($request->keluar - $persediaan->keluar) * ($persediaan->nilai_jual - $persediaan->hpp);
             $keluar = $request->keluar - $persediaan->keluar;
-            bukuUmum('Kas ' .  $transasksi, 'kredit', 'pu1', 'operasional', $laba, null, null);
+            bukuUmum('Kas ' .  $transasksi, 'kredit', 'pupd9876', 'operasional', $laba, null, null);
             bukuUmum($transasksi, 'kredit', 'kas', 'operasional', $persediaan->hpp * $keluar, null, null);
             Persediaan::where('id', $persediaan->id)->update(['keluar' => $request->keluar]);
         }
@@ -158,7 +186,7 @@ class PersediaanController extends Controller
     public function update(Request $request, Persediaan $persediaan)
     {
 
-        $validatedData = $request->validate([
+        $validated = $request->validate([
             'item' => 'required|string|max:255',
             'satuan' => 'required|string|max:50',
             'hpp' => 'required|numeric|min:0',
@@ -168,7 +196,7 @@ class PersediaanController extends Controller
             'keluar' => '',
         ]);
 
-        if (Persediaan::where('id', $persediaan->id)->update($validatedData)) {
+        if (Persediaan::where('id', $persediaan->id)->update($validated)) {
             updateBukuUmum('persediaan', $persediaan->id, $request->jml_awl * $request->hpp);
         };
         return redirect('/aset/persediaan')->with('success', 'Barang berhasil diubah!');

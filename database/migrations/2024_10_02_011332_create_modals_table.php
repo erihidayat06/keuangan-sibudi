@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('modals', function (Blueprint $table) {
             $table->id();
-            $table->date('tahun');
+            $table->string('tahun');
             $table->string('sumber');
-            $table->integer('mdl_desa');
-            $table->integer('mdl_masyarakat');
+            $table->integer('mdl_desa')->nullable();
+            $table->integer('mdl_masyarakat')->nullable();
             $table->foreignId('user_id');
             $table->timestamps();
         });

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use DateTime;
 use App\Models\Dithn;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DithnController extends Controller
 {
@@ -16,9 +17,10 @@ class DithnController extends Controller
         $dithns = Dithn::user()->get();
 
 
+
         $total = 0;
         foreach ($dithns as $dithn) {
-            $total = $total + ($dithn->nilai * ($dithn->akumulasi / 100));
+            $total = $total + $dithn->akumulasi;
         }
         return view('ditahan.index', ['dithns' => $dithns, 'total' => $total]);
     }

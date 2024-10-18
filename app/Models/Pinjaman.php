@@ -14,6 +14,6 @@ class Pinjaman extends Model
 
     public function scopeUser($query)
     {
-        return $query->where('user_id', auth()->user()->id);
+        return $query->where('user_id', auth()->user()->id)->whereYear('created_at', '<=', session('selected_year', date('Y')));
     }
 }

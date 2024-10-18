@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('kreditur', 100);
             $table->text('keterangan');
             $table->integer('nilai');
-            $table->integer('pembayaran')->default(null);
+            $table->integer('pembayaran')->nullable();
             $table->foreignId('user_id');
             $table->timestamps();
         });

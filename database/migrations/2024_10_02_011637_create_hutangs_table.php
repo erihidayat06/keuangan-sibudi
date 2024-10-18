@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('hutangs', function (Blueprint $table) {
             $table->id();
             $table->string('kreditur', 100);
-            $table->text('keterangan')->default(null);
+            $table->text('keterangan')->nullable();
             $table->integer('nilai');
-            $table->integer('pembayaran')->default(null);
+            $table->integer('pembayaran')->nullable();
             $table->foreignId('user_id');
             $table->timestamps();
         });

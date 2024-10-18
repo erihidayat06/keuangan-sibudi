@@ -31,10 +31,10 @@
 
                         <!-- Jenis Field -->
                         <div class="mb-3">
-                            <label for="jenis" class="form-label">Jenis (Debit/Kredit)</label>
+                            <label for="jenis" class="form-label">Masuk/Keluar</label>
                             <select class="form-select @error('jenis') is-invalid @enderror" id="jenis" name="jenis">
-                                <option value="debit" {{ old('jenis') == 'debit' ? 'selected' : '' }}>Debit</option>
-                                <option value="kredit" {{ old('jenis') == 'kredit' ? 'selected' : '' }}>Kredit</option>
+                                <option value="debit" {{ old('jenis') == 'debit' ? 'selected' : '' }}>Masuk</option>
+                                <option value="kredit" {{ old('jenis') == 'kredit' ? 'selected' : '' }}>Keluar</option>
                             </select>
                             @error('jenis')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -79,31 +79,23 @@
                                 <option value="kas" {{ old('jenis_lr') == 'kas' ? 'selected' : '' }}>Kas
                                 </option>
                                 <hr>
-                                <option value="pu1" {{ old('jenis_lr') == 'pu1' ? 'selected' : '' }}>Pendapatan
-                                    {{ isset(unitUsaha()->unt_usaha1) ? unitUsaha()->unt_usaha1 : 'Unit 1' }}
-                                </option>
-                                <option value="pu2" {{ old('jenis_lr') == 'pu2' ? 'selected' : '' }}>Pendapatan
-                                    {{ isset(unitUsaha()->unt_usaha2) ? unitUsaha()->unt_usaha2 : 'Unit 2' }}
-                                </option>
-                                <option value="pu3" {{ old('jenis_lr') == 'pu3' ? 'selected' : '' }}>Pendapatan
-                                    {{ isset(unitUsaha()->unt_usaha3) ? unitUsaha()->unt_usaha3 : 'Unit 3' }}
-                                </option>
-                                <option value="pu4" {{ old('jenis_lr') == 'pu4' ? 'selected' : '' }}>Pendapatan
-                                    {{ isset(unitUsaha()->unt_usaha4) ? unitUsaha()->unt_usaha4 : 'Unit 4' }}
-                                </option>
+                                @foreach ($units as $unit)
+                                    <option value="pu{{ $unit->kode }}"
+                                        {{ old('jenis_lr') == 'pu' . $unit->kode ? 'selected' : '' }}>
+                                        Pendapatan
+                                        {{ $unit->nm_unit }}
+                                    </option>
+                                @endforeach
                                 <hr>
-                                <option value="bo1" {{ old('jenis_lr') == 'bo1' ? 'selected' : '' }}>Biaya Operasional
-                                    unit 1
-                                </option>
-                                <option value="bo2" {{ old('jenis_lr') == 'bo2' ? 'selected' : '' }}>Biaya Operasional
-                                    unit 2
-                                </option>
-                                <option value="bo3" {{ old('jenis_lr') == 'bo3' ? 'selected' : '' }}>Biaya Operasional
-                                    unit 3
-                                </option>
-                                <option value="bo4" {{ old('jenis_lr') == 'bo4' ? 'selected' : '' }}>Biaya Operasional
-                                    unit 4
-                                </option>
+                                @foreach ($units as $unit)
+                                    <option value="bo{{ $unit->kode }}"
+                                        {{ old('jenis_lr') == 'bo' . $unit->kode ? 'selected' : '' }}>
+                                        Biaya
+                                        Operasional
+                                        {{ $unit->nm_unit }}
+                                    </option>
+                                @endforeach
+
                                 <hr>
                                 <option value="bno1" {{ old('jenis_lr') == 'bno1' ? 'selected' : '' }}>Gaji Pengurus
 

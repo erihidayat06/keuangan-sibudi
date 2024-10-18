@@ -5,45 +5,48 @@ use App\Models\Bangunan;
 use App\Models\Bdmuk;
 use App\Models\Buk;
 use App\Models\Investasi;
-
+use App\Models\Unit;
 
 if (!function_exists('labaRugi')) {
     function labaRugi($tahun_sekarang)
     {
 
+        $unit_usaha = Unit::user()->get();
+        $array_pendapatan = [];
+        $array_pendapatan_tahun = [];
+        $jenis_lr_pu = [];
+        $jenis_lr_bo = [];
+        $jenis_lr_bno = [];
+
+        // Loop untuk setiap unit usaha
+        foreach ($unit_usaha as $unit) {
+            $array_pendapatan['pu' . strtolower($unit->kode)] = [];
+            $array_pendapatan_tahun['pu' . strtolower($unit->kode)] = 0;
+            $jenis_lr_pu[] =  'pu' . strtolower($unit->kode);
+        }
+        // Loop untuk setiap unit usaha
+        foreach ($unit_usaha as $unit) {
+            $array_pendapatan['bo' . strtolower($unit->kode)] = [];
+            $array_pendapatan_tahun['bo' . strtolower($unit->kode)] = 0;
+            $jenis_lr_bo[] =  'bo' . strtolower($unit->kode);
+        }
+
+        // Tambahan untuk 'bno' keys secara manual
+        for ($i = 1; $i <= 5; $i++) {
+            $array_pendapatan['bno' . $i] = [];
+            $array_pendapatan_tahun['bno' . $i] = 0;
+            $jenis_lr_bno[] = 'bno' . $i;
+        }
+
+
         // Inisialisasi array untuk setiap jenis_lr
-        $pendapatan = [
-            'pu1' => [],
-            'pu2' => [],
-            'pu3' => [],
-            'pu4' => [],
-            'bo1' => [],
-            'bo2' => [],
-            'bo3' => [],
-            'bo4' => [],
-            'bno1' => [],
-            'bno2' => [],
-            'bno3' => [],
-            'bno4' => [],
-            'bno5' => [],
-        ];
+        $pendapatan = $array_pendapatan;
+
+
 
         // Inisialisasi variabel untuk akumulasi tahunan
-        $totalPendapatanTahun = [
-            'pu1' => 0,
-            'pu2' => 0,
-            'pu3' => 0,
-            'pu4' => 0,
-            'bo1' => 0,
-            'bo2' => 0,
-            'bo3' => 0,
-            'bo4' => 0,
-            'bno1' => 0,
-            'bno2' => 0,
-            'bno3' => 0,
-            'bno4' => 0,
-            'bno5' => 0,
-        ];
+        $totalPendapatanTahun = $array_pendapatan_tahun;
+
 
         // Loop untuk setiap bulan (1 - 12)
         for ($i = 1; $i <= 12; $i++) {
@@ -51,8 +54,8 @@ if (!function_exists('labaRugi')) {
             foreach (array_keys($pendapatan) as $jenis_lr) {
                 // Ambil data berdasarkan bulan, tahun, dan jenis_lr
                 $buku_kas = Buk::user()->where('user_id', auth()->id()) // Filter berdasarkan user
-                    ->user()->whereYear('created_at', $tahun_sekarang) // Filter berdasarkan tahun
-                    ->whereMonth('created_at', $i) // Filter berdasarkan bulan
+                    ->user()->whereYear('tanggal', $tahun_sekarang) // Filter berdasarkan tahun
+                    ->whereMonth('tanggal', $i) // Filter berdasarkan bulan
                     ->where('jenis_lr', $jenis_lr) // Filter berdasarkan jenis_lr
                     ->get();
 
@@ -64,7 +67,7 @@ if (!function_exists('labaRugi')) {
                     if ($transaksi->jenis == 'debit') {
                         // Jika debit, tambahkan nilainya
                         $totalNilai += $transaksi->nilai;
-                    } elseif ($transaksi->jenis == 'kredit' and in_array($jenis_lr, ['pu1', 'pu2', 'pu3', 'pu4'])) {
+                    } elseif ($transaksi->jenis == 'kredit' and in_array($jenis_lr, $jenis_lr_pu)) {
                         // Jika kredit, kurangi nilainya
                         $totalNilai -= $transaksi->nilai;
                     } else {
@@ -96,42 +99,46 @@ if (!function_exists('labaRugi')) {
         ];
 
         // Mengambil semua transaksi dalam tahun yang dipilih
-        $transaksis = Buk::user()->whereYear('created_at', $tahun_sekarang)->get();
+        $transaksis = Buk::user()->whereYear('tanggal', $tahun_sekarang)->get();
+
 
         foreach ($transaksis as $transaksi) {
             $month = $transaksi->created_at->month;
             $jenis_lr = strtolower($transaksi->jenis_lr); // Mengkonversi ke lowercase untuk kemudahan
             $nilai = $transaksi->nilai;
-
             // Jika jenis_lr adalah kredit, nilai akan negatif
-            if ($transaksi->jenis == 'kredit' && in_array($jenis_lr, ['pu1', 'pu2', 'pu3', 'pu4'])) {
+            if ($transaksi->jenis == 'kredit' && in_array($jenis_lr, $jenis_lr_pu)) {
                 $nilai = -$nilai;
             }
-
+            // dd($nilai);
             // Menambah nilai transaksi ke bulan dan jenis_lr yang sesuai
-            if (in_array($jenis_lr, ['pu1', 'pu2', 'pu3', 'pu4'])) {
+            if (in_array($jenis_lr, $jenis_lr_pu)) {
                 $pendapatanBulan['pu'][$month] += $nilai;
                 $tahun['pu'] += $nilai;
-            } elseif (in_array($jenis_lr, ['bo1', 'bo2', 'bo3', 'bo4'])) {
+            } elseif (in_array($jenis_lr, $jenis_lr_bo)) {
                 $pendapatanBulan['bo'][$month] += $nilai;
                 $tahun['bo'] += $nilai;
-            } elseif (in_array($jenis_lr, ['bno1', 'bno2', 'bno3', 'bno4', 'bno5'])) {
+            } elseif (in_array($jenis_lr, $jenis_lr_bno)) {
                 $pendapatanBulan['bno'][$month] += $nilai;
                 $tahun['bno'] += $nilai;
             }
         }
+
+
+
         $akumulasi = 0;
         $investasi = 0;
 
         $asets = Investasi::user()->whereYear('created_at', $tahun_sekarang)->get();
         foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis * $aset->masa_pakai;
+            $penyusutan = $aset->nilai / $aset->wkt_ekonomis * $aset->masa_pakai * $aset->jumlah;
             $saat_ini =
-                $aset->jumlah * $aset->nilai - $aset->masa_pakai * $penyusutan * $aset->jumlah;
+                ($aset->jumlah * $aset->nilai) - ($aset->masa_pakai * $penyusutan * $aset->jumlah);
 
             $akumulasi = $akumulasi + $penyusutan;
             $investasi = $investasi + $saat_ini;
         }
+
 
         $asets = Bangunan::user()->whereYear('created_at', $tahun_sekarang)->get();
         foreach ($asets as $aset) {
@@ -164,7 +171,6 @@ if (!function_exists('labaRugi')) {
             $akumulasi = $akumulasi + $penyusutan;
             $investasi = $investasi + $saat_ini;
         }
-
 
 
 

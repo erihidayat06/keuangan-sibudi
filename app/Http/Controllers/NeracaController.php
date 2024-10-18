@@ -2,18 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Buk;
-use App\Models\Bdmuk;
-use App\Models\Dithn;
-use App\Models\Modal;
-use App\Models\Hutang;
-use App\Models\Piutang;
-use App\Models\Bangunan;
-use App\Models\Pinjaman;
-use App\Models\Investasi;
-use App\Models\Aktivalain;
-use App\Models\Bukbesar;
-use App\Models\Persediaan;
+
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 

@@ -73,17 +73,18 @@ class BdmukController extends Controller
      */
     public function store(Request $request)
     {
+
         // Validasi input
-        $validasi =  $request->validate([
+        $validated =  $request->validate([
             'keterangan' => 'required|string|max:255',
             'nilai' => 'required|numeric',
             'wkt_ekonomis' => 'required|min:1',
         ]);
-        $validasi['user_id'] = auth()->user()->id;
-
+        $validated['user_id'] = auth()->user()->id;
+        $validated['created_at'] = created_at();
 
         // Simpan data ke database
-        if (Bdmuk::create($validasi)) {
+        if (Bdmuk::create($validated)) {
             bukuUmum('Dibayar di Muka ' . $request->keterangan, 'kredit', 'kas', 'operasional', $request->nilai, 'bdmuk', Bdmuk::latest()->first()->id);
         };
 
@@ -132,15 +133,15 @@ class BdmukController extends Controller
     public function update(Request $request, Bdmuk $bdmuk)
     {
         // Validasi input
-        $validasi =  $request->validate([
+        $validated =  $request->validate([
             'keterangan' => 'required|string|max:255',
             'nilai' => 'required|numeric',
             'wkt_ekonomis' => 'required|min:1',
             'masa_pakai' => '',
         ]);
-        $validasi['user_id'] = auth()->user()->id;
+        $validated['user_id'] = auth()->user()->id;
         // Simpan data ke database
-        if (Bdmuk::where('id', $bdmuk->id)->update($validasi)) {
+        if (Bdmuk::where('id', $bdmuk->id)->update($validated)) {
             updateBukuUmum('bdmuk', $bdmuk->id, $request->nilai);
         };
 

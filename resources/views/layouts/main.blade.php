@@ -88,6 +88,38 @@
         });
     </script>
 
+
+    <script>
+        $(document).ready(function() {
+            // Tanggal akhir langganan (format YYYY-MM-DD)
+            var endDate = new Date("{{ auth()->user()->tgl_langganan }}T00:00:00").getTime();
+
+            // Update countdown setiap 1 detik
+            var countdownInterval = setInterval(function() {
+                // Waktu saat ini
+                var now = new Date().getTime();
+
+                // Hitung selisih waktu
+                var distance = endDate - now;
+
+                // Hitung waktu untuk hari, jam, menit, dan detik
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Tampilkan hasil hitung mundur
+                $('#countdown').html(days + " Hari ");
+
+                // Jika hitungan selesai, tampilkan pesan
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    $('#countdown').html("Langganan telah berakhir");
+                }
+            }, 1000);
+        });
+    </script>
+
 </body>
 
 </html>

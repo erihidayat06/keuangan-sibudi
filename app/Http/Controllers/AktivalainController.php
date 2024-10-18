@@ -76,15 +76,16 @@ class AktivalainController extends Controller
     public function store(Request $request)
     {
         // Validasi input
-        $validasi =  $request->validate([
+        $validated =  $request->validate([
             'jenis' => 'required|string|max:255',
             'nilai' => 'required|numeric',
             'wkt_ekonomis' => 'required|min:1',
         ]);
-        $validasi['user_id'] = auth()->user()->id;
-        $validasi['masa_pakai'] = 1;
+        $validated['user_id'] = auth()->user()->id;
+        $validated['masa_pakai'] = 1;
+        $validated['created_at'] = created_at();
         // Simpan data ke database
-        if (Aktivalain::create($validasi)) {
+        if (Aktivalain::create($validated)) {
             bukuUmum('Aktiva Lain ' . $request->jenis, 'kredit', 'kas', 'operasional', $request->nilai, 'aktiva_lain', Aktivalain::latest()->first()->id);
         };
 
@@ -136,15 +137,15 @@ class AktivalainController extends Controller
     public function update(Request $request, Aktivalain $aktivalain)
     {
         // Validasi input
-        $validasi =  $request->validate([
+        $validated =  $request->validate([
             'jenis' => 'required|string|max:255',
             'nilai' => 'required|numeric',
             'wkt_ekonomis' => 'required|min:1',
             'masa_pakai' => '',
         ]);
-        $validasi['user_id'] = auth()->user()->id;
+        $validated['user_id'] = auth()->user()->id;
         // Simpan data ke database
-        if (Aktivalain::where('id', $aktivalain->id)->update($validasi)) {
+        if (Aktivalain::where('id', $aktivalain->id)->update($validated)) {
             updateBukuUmum('aktiva_lain', $aktivalain->id, $request->nilai);
         };
 

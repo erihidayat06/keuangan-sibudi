@@ -1,35 +1,61 @@
 <style>
+    body {
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    }
+
     table {
         width: 100%;
     }
 
     .text-end {
         text-align: right;
+        font-size: 12px
+    }
+
+    .font-size {
+        font-size: 12px
     }
 
     #tandatangan tr td {
 
         border: 1px solid black;
-        padding: 5px;
         vertical-align: bottom;
     }
 
     #tandatangan {
-        text-align: center;
+
         border-collapse: collapse;
         margin-top: 50px;
+        font-size: 12px
+    }
+
+    .border-laporan {
+        border: 1px solid black;
+        margin-bottom: 5px;
+    }
+
+    .page-break {
+        page-break-after: always;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .fw {
+        font-weight: bold
     }
 </style>
 
 <table>
     <tr>
-        <td colspan="2">
-            <h2>H. Laporan Keuangan</h2>
+        <td colspan="2" class="font-size fw">
+            H. Laporan Keuangan
         </td>
     </tr>
     <tr>
-        <td>
-            <p>{{ unitUsaha()['nm_bumdes'] }}</p>
+        <td class="font-size">
+            <p style="padding: 0">{{ unitUsaha()['nm_bumdes'] }}</p>
         </td>
 
         <td class="text-end">
@@ -38,15 +64,21 @@
     </tr>
 </table>
 
+<div class="border-laporan">
+    @include('neraca.pdf')
+</div>
+<div class="border-laporan">
+    @include('laporan_laba_rugi.pdf')
+</div>
+<!-- Halaman baru untuk total -->
+<div class="page-break"></div>
+<div class="border-laporan">
+    @include('laporan_arus_kas.pdf')
+</div>
+<div class="border-laporan">
+    @include('laporan_perubahan_modal.pdf')
+</div>
 
-@include('neraca.pdf')
-<hr>
-@include('laporan_laba_rugi.pdf')
-<hr>
-@include('laporan_arus_kas.pdf')
-<hr>
-@include('laporan_perubahan_modal.pdf')
-<hr>
 <table>
     <tr>
         <td class="text-end">
@@ -59,33 +91,33 @@
 </table>
 <table id="tandatangan">
     <tr>
-        <td>Ditelaah</td>
-        <td>Tanda Tangan</td>
-        <td>Dibuat</td>
-        <td>Tanda Tangan</td>
+        <td class="fw">Ditelaah</td>
+        <td class="text-center">Tanda Tangan</td>
+        <td class="fw">Dibuat</td>
+        <td class="text-center">Tanda Tangan</td>
     </tr>
     <tr>
         <td>
             <p>Pengawas BUMDesa</p>
             <p>{{ unitUsaha()['nm_pengawas'] }}</p>
         </td>
-        <td>(......................)</td>
+        <td class="text-center">(..............................)</td>
         <td>
             <p>Bendahara BUMDesa</p>
             <p>{{ unitUsaha()['nm_bendahara'] }}</p>
         </td>
-        <td>(......................)</td>
+        <td class="text-center">(..............................)</td>
     </tr>
     <tr>
         <td>
             <p>Penasehat BUMDesa</p>
             <p>{{ unitUsaha()['nm_penasehat'] }}</p>
         </td>
-        <td>(......................)</td>
+        <td class="text-center">(..............................)</td>
         <td>
             <p>Direktur BUMDesa</p>
             <p>{{ unitUsaha()['nm_direktur'] }}</p>
         </td>
-        <td>(......................)</td>
+        <td class="text-center">(..............................)</td>
     </tr>
 </table>

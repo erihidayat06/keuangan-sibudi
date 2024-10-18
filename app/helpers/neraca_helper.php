@@ -76,7 +76,7 @@ if (!function_exists('neraca')) {
         }
 
         // Kas
-        $transaksis = Buk::user()->whereYear('created_at', '<=', session('selected_year', date('Y')))->get();
+        $transaksis = Buk::user()->whereYear('tanggal', '<=', session('selected_year', date('Y')))->get();
         $debit = $transaksis->where('jenis', 'debit')->sum('nilai');
         $kredit = $transaksis->where('jenis', 'kredit')->sum('nilai');
         $saldo = $debit - $kredit;
@@ -105,7 +105,7 @@ if (!function_exists('neraca')) {
 
         $ditahan = 0;
         foreach ($dithns as $dithn) {
-            $ditahan = $ditahan + ($dithn->nilai * ($dithn->akumulasi / 100));
+            $ditahan = $ditahan + $dithn->akumulasi;
         }
         // Total Passiva
         $passiva =   $totalHutang + $modal_desa + $modal_masyarakat + $ditahan + labaRugi(session('selected_year', date('Y')))['totalLabaRugi'];

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>SIBUDI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -45,51 +45,39 @@
                             <h3>Langganan</h3>
                         </div>
                         <div class="col-lg-8">
-                            <label class="card p-2 mb-3">
-                                <div class="form-check" for="1bulan">
-                                    <input class="form-check-input" type="radio" name="langganan" id="1bulan"
-                                        value="1" checked>
-                                    <span>
-                                        Rp. 24.900/1 bulan
-                                    </span>
-                                </div>
-                            </label>
-                            <label class="card p-2 mb-3" for="6bulan">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="langganan" id="6bulan"
-                                        value="6">
-                                    <span>
-                                        Rp. 149.400/6 bulan
-                                    </span>
-                                </div>
-                            </label>
-                            <label class="card p-2 mb-3" for="1tahun">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="langganan" id="1tahun"
-                                        value="12">
-                                    <span>
-                                        Rp. 298.800/1 tahun
-                                    </span>
-                                </div>
-                            </label>
-                            <label class="card p-2 mb-3" for="2tahun">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="langganan" id="2tahun"
-                                        value="24">
-                                    <span>
-                                        Rp. 597.600/2 tahun
-                                    </span>
-                                </div>
-                            </label>
-                            <label class="card p-2 mb-3" for="3tahun">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="langganan" id="3tahun"
-                                        value="48">
-                                    <span>
-                                        Rp. 1.195.200/3 tahun
-                                    </span>
-                                </div>
-                            </label>
+                            @if (count($langganans) > 0)
+                                <label class="card p-2 mb-3" style="cursor: pointer">
+                                    <div class="form-check" for="1bulan">
+                                        <input class="form-check-input" type="radio" name="langganan" id="1bulan"
+                                            value=" {{ $langganans->first()->jumlah_bulan }}" checked>
+                                        <span>
+                                            {{ formatRupiah($langganans->first()->harga) }}/{{ $langganans->first()->waktu }}
+                                        </span>
+                                    </div>
+                                </label>
+                            @else
+                                <label class="card p-2 mb-3" style="cursor: pointer">
+                                    <div class="form-check" for="1bulan">
+                                        <input class="form-check-input" type="radio" name="langganan" id="1bulan"
+                                            value="1" checked>
+                                        <span>
+                                            Rp12.900/1 bulan
+                                        </span>
+                                    </div>
+                                </label>
+                            @endif
+                            @foreach ($langganans->skip(1) as $langganan)
+                                <label class="card p-2 mb-3" style="cursor: pointer">
+                                    <div class="form-check" for="{{ $langganan->id }}bulan">
+                                        <input class="form-check-input" type="radio" name="langganan"
+                                            id="{{ $langganan->id }}bulan" value=" {{ $langganan->jumlah_bulan }}">
+                                        <span>
+                                            {{ formatRupiah($langganan->harga) }}/{{ $langganan->waktu }}
+                                        </span>
+                                    </div>
+                                </label>
+                            @endforeach
+
                             <form id="payment-form" action="/langganan" method="POST">
                                 @csrf
                                 <input type="hidden" name="subscription_duration" id="subscription_duration">
@@ -112,7 +100,7 @@
             // Update langganan harga saat radio button diubah
             function updateLangganan() {
                 var harga = $('input[name="langganan"]:checked').closest('label').find('span').text();
-                $('#langganan').text(harga);
+                $('#langganan').text(harga + ' + Rp2.500');
 
                 // Set value untuk dikirim melalui form
                 var duration = $('input[name="langganan"]:checked').val();

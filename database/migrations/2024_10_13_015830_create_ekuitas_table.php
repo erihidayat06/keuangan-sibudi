@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('ekuits', function (Blueprint $table) {
             $table->id();
-            $table->year('tahun');
-            $table->integer('pades');
-            $table->integer('lainya');
-            $table->integer('akumulasi');
-            $table->foreignId('user_id');
+            $table->year('tahun')->nullable();
+            $table->integer('pades')->nullable();
+            $table->integer('lainya')->nullable();
+            $table->integer('akumulasi')->nullable();
+            $table->foreignId('user_id')->nullable();
             $table->timestamps();
         });
     }

@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ekuit;
+use Carbon\Carbon;
 use Midtrans\Snap;
 use App\Models\User;
 use Midtrans\Config;
+use App\Models\Ekuit;
+use App\Models\Langganan;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 
 class LanggananController extends Controller
 {
     public function index()
     {
-        return view('langganan.index');
+        $langganans = Langganan::orderBy('jumlah_bulan', 'asc')->get();
+        return view('langganan.index', ['langganans' => $langganans]);
     }
 
     public function createTransaction(Request $request)
@@ -27,38 +29,23 @@ class LanggananController extends Controller
         // Ambil durasi langganan dari request
         $duration = $request->input('subscription_duration');
 
-        // Set harga berdasarkan durasi langganan
-        switch ($duration) {
-            case '1':
-                $grossAmount = 24900;
-                break;
-            case '6':
-                $grossAmount = 149400;
-                break;
-            case '12':
-                $grossAmount = 298800;
-                break;
-            case '24':
-                $grossAmount = 597600;
-                break;
-            case '48':
-                $grossAmount = 1195200;
-                break;
-            default:
-                $grossAmount = 24900;
+        $langganan = Langganan::where('jumlah_bulan', $duration)->get()->first();
+        if (!isset($langganan->harga)) {
+            $langganan_harga = 12900;
+        } else {
+            $langganan_harga = $langganan->harga;
         }
-
         // Set data transaksi
         $params = [
             'transaction_details' => [
                 'order_id' => uniqid(),
-                'gross_amount' => $grossAmount,
+                'gross_amount' => $langganan_harga + 2500,
             ],
             'customer_details' => [
-                'first_name' => 'John',
-                'last_name' => 'Doe',
-                'email' => 'john.doe@example.com',
-                'phone' => '081234567890',
+                'first_name' => auth()->user()->name,
+                'last_name' => '',
+                'email' => auth()->user()->email,
+                'phone' => '',
             ],
         ];
 

@@ -1,48 +1,45 @@
 @extends('layouts.main')
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-    }
 
-    .report-section {
-        margin-top: 20px;
-    }
-
-    .table-report {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .table-report th,
-    .table-report td {
-        padding: 5px 10px;
-    }
-
-    .table-report th {
-        text-align: left;
-    }
-
-    .red-text {
-        color: red;
-    }
-
-    .border-bottom {
-        border-bottom: 1px solid black;
-    }
-
-    .text-end {
-        text-align: end;
-    }
-
-    .text-start {
-        text-align: start;
-    }
-
-    .fw-bold {
-        font-weight: bold;
-    }
-</style>
 @section('container')
+    <style>
+        .report-section {
+            margin-top: 20px;
+        }
+
+        .table-report {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-report th,
+        .table-report td {
+            padding: 5px 10px;
+        }
+
+        .table-report th {
+            text-align: left;
+        }
+
+        .red-text {
+            color: red;
+        }
+
+        .border-bottom {
+            border-bottom: 1px solid black;
+        }
+
+        .text-end {
+            text-align: end;
+        }
+
+        .text-start {
+            text-align: start;
+        }
+
+        .fw-bold {
+            font-weight: bold;
+        }
+    </style>
     <div class="card overflow-auto">
         <div class="card-body">
             <a href="/export-pdf/laporan-arus-kas" class="btn btn-danger mt-3"><i class="bi bi-filetype-pdf"></i>
@@ -60,7 +57,7 @@
                         <td colspan="2">Kas Awal (1 Januari)</td>
                         <td class="text-end">2024</td>
                         <td class="text-end red-text">
-                            {{ isset($buku_umum->where('transaksi', 'Kas Awal')->first()->nilai) ? formatRupiah($buku_umum->where('transaksi', 'Kas Awal')->first()->nilai) : 'Rp0' }}
+                            {{ formatRupiah($saldo) }}
                         </td>
                     </tr>
 
@@ -75,7 +72,7 @@
                     <tr>
                         <td>Kas masuk investasi</td>
                         <td class="text-end"></td>
-                        <td class="text-end">{{ formatRupiah($masuk->where('jenis_dana', 'investasi')->sum('nilai')) }}
+                        <td class="text-end">{{ formatRupiah($masuk->where('jenis_dana', 'iventasi')->sum('nilai')) }}
                         </td>
 
                     </tr>
@@ -102,7 +99,7 @@
                     <tr>
                         <td>Kas keluar investasi</td>
                         <td class="text-end"></td>
-                        <td class="text-end">{{ formatRupiah($keluar->where('jenis_dana', 'investasi')->sum('nilai')) }}
+                        <td class="text-end">{{ formatRupiah($keluar->where('jenis_dana', 'iventasi')->sum('nilai')) }}
                         </td>
 
                     </tr>

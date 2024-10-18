@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('jenis', 100);
             $table->integer('nilai');
             $table->integer('wkt_ekonomis');
-            $table->integer('masa_pakai')->default(null);
+            $table->integer('masa_pakai')->nullable();
             $table->foreignId('user_id');
             $table->timestamps();
         });

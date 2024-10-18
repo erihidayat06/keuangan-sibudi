@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Unit;
+
 if (!function_exists('unitUsaha')) {
     function unitUsaha()
     {
@@ -10,20 +12,25 @@ if (!function_exists('unitUsaha')) {
 if (!function_exists('namaUnitUsaha')) {
     function namaUnitUsaha()
     {
-        return [
-            'pu1' => 'PU ' . unitUsaha()['unt_usaha1'],
-            'pu2' => 'PU ' .  unitUsaha()['unt_usaha2'],
-            'pu3' => 'PU ' .  unitUsaha()['unt_usaha3'],
-            'pu4' => 'PU ' .  unitUsaha()['unt_usaha4'],
-            'bo1' => 'BO ' . unitUsaha()['unt_usaha1'],
-            'bo2' => 'BO ' . unitUsaha()['unt_usaha2'],
-            'bo3' => 'BO ' . unitUsaha()['unt_usaha3'],
-            'bo4' => 'BO ' . unitUsaha()['unt_usaha4'],
+        $array_pendapatan = [
             'bno1' => 'BNO ' . 'Gaji Perusahaan',
             'bno2' => 'BNO ' . 'Atk',
             'bno3' => 'BNO ' . 'Rapat-rapat',
             'bno4' => 'BNO ' . 'Lain-lain',
             'kas' => 'kas',
         ];
+        $units = Unit::user()->get();
+        // Loop untuk setiap unit usaha
+        foreach ($units as $unit) {
+            $array_pendapatan['pu' . $unit->kode] = $unit->nm_unit;
+        }
+        // Loop untuk setiap unit usaha
+        foreach ($units as $unit) {
+            $array_pendapatan['bo' . $unit->kode] = $unit->nm_unit;
+        }
+
+
+
+        return $array_pendapatan;
     }
 }

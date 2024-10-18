@@ -10,8 +10,8 @@
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="/assets/img/favicon.png" rel="icon">
-    <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="/assets/img/" rel="icon">
+    <link href="/assets/img/" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -120,7 +120,7 @@
                                             @enderror
                                             <div class="invalid-feedback">Please enter your password!</div>
                                         </div>
-                                        <a href="/password/reset">Lupa password</a>
+                                        <a href="/ganti-password">Lupa password</a>
 
                                         <div class="col-12 mt-3">
                                             <button class="btn btn-primary w-100" type="submit">Login</button>

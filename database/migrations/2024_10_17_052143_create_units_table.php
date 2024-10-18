@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bukbesars', function (Blueprint $table) {
+        Schema::create('units', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_akun');
-            $table->integer('debit');
-            $table->integer('kredit');
-            $table->string('keterangan');
+            $table->string('nm_unit');
+            $table->string('kepala_unit');
+            $table->foreignId('user_id');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bukbesars');
+        Schema::dropIfExists('units');
     }
 };

@@ -1,56 +1,53 @@
 @extends('layouts.main')
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-    }
 
-    .report-section {
-        margin-top: 20px;
-    }
-
-    .table-report {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .table-report th,
-    .table-report td {
-        padding: 5px 10px;
-    }
-
-    .table-report th {
-        text-align: left;
-    }
-
-    .red-text {
-        color: red;
-    }
-
-    .green-text {
-        color: rgb(5, 192, 67);
-    }
-
-    .yellow-text {
-        color: rgb(175, 173, 19);
-    }
-
-    .border-bottom {
-        border-bottom: 1px solid black;
-    }
-
-    .text-end {
-        text-align: end;
-    }
-
-    .text-start {
-        text-align: start;
-    }
-
-    .fw-bold {
-        font-weight: bold;
-    }
-</style>
 @section('container')
+    <style>
+        .report-section {
+            margin-top: 20px;
+        }
+
+        .table-report {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-report th,
+        .table-report td {
+            padding: 5px 10px;
+        }
+
+        .table-report th {
+            text-align: left;
+        }
+
+        .red-text {
+            color: red;
+        }
+
+        .green-text {
+            color: rgb(5, 192, 67);
+        }
+
+        .yellow-text {
+            color: rgb(175, 173, 19);
+        }
+
+        .border-bottom {
+            border-bottom: 1px solid black;
+        }
+
+        .text-end {
+            text-align: end;
+        }
+
+        .text-start {
+            text-align: start;
+        }
+
+        .fw-bold {
+            font-weight: bold;
+        }
+    </style>
     <div class="card">
         <div class="card-body overflow-auto">
             <a href="/export-pdf/laporan-laba-rugi" class="btn btn-danger mt-3"><i class="bi bi-filetype-pdf"></i>
@@ -64,30 +61,16 @@
                     <tr>
                         <th colspan="4">1 PENDAPATAN UNIT USAHA</th>
                     </tr>
-                    <tr>
-                        <td>{{ isset(unitUsaha()->unt_usaha1) ? unitUsaha()->unt_usaha1 : 'Unit 1' }}</td>
-                        <td class="text-end"></td>
-                        <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['pu1'])) }}</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>{{ isset(unitUsaha()->unt_usaha2) ? unitUsaha()->unt_usaha2 : 'Unit 2' }}</td>
-                        <td class="text-end"></td>
-                        <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['pu2'])) }}</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>{{ isset(unitUsaha()->unt_usaha3) ? unitUsaha()->unt_usaha3 : 'Unit 3' }}</td>
-                        <td class="text-end"></td>
-                        <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['pu3'])) }}</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>{{ isset(unitUsaha()->unt_usaha4) ? unitUsaha()->unt_usaha4 : 'Unit 4' }}</td>
-                        <td class="text-end"></td>
-                        <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['pu4'])) }}</td>
-                        <td></td>
-                    </tr>
+                    @foreach ($units as $unit)
+                        <tr>
+                            <td>{{ $unit->nm_unit }}</td>
+                            <td class="text-end"></td>
+                            <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['pu' . $unit->kode])) }}
+                            </td>
+                            <td></td>
+                        </tr>
+                    @endforeach
+
                     <tr class="fw-bold border-bottom">
                         <td colspan="2">Total Seluruh Pendapatan</td>
                         <td class="text-end"></td>
@@ -97,30 +80,16 @@
                     <tr>
                         <th colspan="4">2 BIAYA</th>
                     </tr>
-                    <tr>
-                        <td>Biaya Ops {{ isset(unitUsaha()->unt_usaha1) ? unitUsaha()->unt_usaha1 : 'Unit 1' }}</td>
-                        <td class="text-end"></td>
-                        <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['bo1'])) }}</td>
+                    @foreach ($units as $unit)
+                        <tr>
+                            <td>Biaya Ops {{ $unit->nm_unit }}</td>
+                            <td class="text-end"></td>
+                            <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['bo' . $unit->kode])) }}
+                            </td>
 
-                    </tr>
-                    <tr>
-                        <td>Biaya Ops {{ isset(unitUsaha()->unt_usaha2) ? unitUsaha()->unt_usaha2 : 'Unit 2' }}</td>
-                        <td class="text-end"></td>
-                        <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['bo2'])) }}</td>
+                        </tr>
+                    @endforeach
 
-                    </tr>
-                    <tr>
-                        <td>Biaya Ops {{ isset(unitUsaha()->unt_usaha3) ? unitUsaha()->unt_usaha3 : 'Unit 3' }}</td>
-                        <td class="text-end"></td>
-                        <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['bo3'])) }}</td>
-
-                    </tr>
-                    <tr>
-                        <td>Biaya Ops {{ isset(unitUsaha()->unt_usaha4) ? unitUsaha()->unt_usaha4 : 'Unit 4' }}</td>
-                        <td class="text-end"></td>
-                        <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['bo4'])) }}</td>
-
-                    </tr>
                     <tr class="fw-bold border-bottom">
                         <td>Total Biaya Operasional</td>
                         <td class="text-end"></td>
@@ -144,7 +113,7 @@
                     <tr>
                         <td>Akumulasi Penyusutan</td>
                         <td class="text-end"></td>
-                        <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['bno4'])) }}</td>
+                        <td class="text-end red-text">{{ formatRupiah($akumulasi_penyusutan) }}</td>
                     </tr>
                     <tr>
                         <td>Lain-lain</td>

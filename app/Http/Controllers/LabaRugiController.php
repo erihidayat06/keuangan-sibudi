@@ -7,6 +7,7 @@ use App\Models\Persediaan;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Investasi;
+use App\Models\Unit;
 
 class LabaRugiController extends Controller
 {
@@ -15,6 +16,7 @@ class LabaRugiController extends Controller
 
         $labaRugi =
             labaRugi(session('selected_year', date('Y')));
+        $units = Unit::user()->get();
         return view('laba_rugi.index', [
             'pendapatan' => $labaRugi['pendapatan'],
             'pendapatanBulan' => $labaRugi['pendapatanBulan'],
@@ -24,13 +26,14 @@ class LabaRugiController extends Controller
             'akumulasiBiaya' => $labaRugi['akumulasiBiaya'],
             'labaRugi' => $labaRugi['labaRugi'],
             'totalLabaRugi' => $labaRugi['totalLabaRugi'],
-            'akumulasi_penyusutan' => $labaRugi['akumulasi_penyusutan']
+            'akumulasi_penyusutan' => $labaRugi['akumulasi_penyusutan'],
+            'units' => $units
         ]);
     }
 
     public function exportPdf()
     {
-
+        $units = Unit::user()->get();
         $labaRugi =
             labaRugi(session('selected_year', date('Y')));
         $data = [
@@ -42,7 +45,8 @@ class LabaRugiController extends Controller
             'akumulasiBiaya' => $labaRugi['akumulasiBiaya'],
             'labaRugi' => $labaRugi['labaRugi'],
             'totalLabaRugi' => $labaRugi['totalLabaRugi'],
-            'akumulasi_penyusutan' => $labaRugi['akumulasi_penyusutan']
+            'akumulasi_penyusutan' => $labaRugi['akumulasi_penyusutan'],
+            'units' => $units
         ];
 
         // Gunakan facade PDF

@@ -1,30 +1,24 @@
 <style>
-    .row {
-        font-family: Arial, Helvetica, sans-serif
-    }
-
-    /* Gaya untuk card title */
-    .card-title {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 1rem;
+    body {
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     }
 
     /* Gaya umum untuk tabel */
     .table {
         width: 100%;
-        margin-bottom: 1rem;
         background-color: #fff;
         border-collapse: collapse;
+    }
+
+    h5 {
+        padding: 0px;
     }
 
     /* Gaya untuk border tabel */
     .table th,
     .table td {
-        padding: 12px;
-        vertical-align: middle;
-
+        padding: 5px;
+        font-size: 12px
     }
 
 
@@ -36,6 +30,10 @@
     /* Gaya untuk baris total */
     .table .fw-bold {
         font-weight: 700;
+
+    }
+
+    .bg-yellow {
         background-color: #ffd900;
     }
 
@@ -46,18 +44,12 @@
         /* Warna merah jika rugi */
     }
 
-    /* Responsivitas untuk perangkat mobile */
-    @media (max-width: 767.98px) {
+    .ms {
+        margin-left: 20px
+    }
 
-        .table th,
-        .table td {
-            padding: 8px;
-            font-size: 12px;
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-        }
+    .text-red {
+        color: #dc3545;
     }
 </style>
 
@@ -66,10 +58,12 @@
     <div class="col-lg-10">
         <div class="card">
             <div class="card-body">
-                <h2 class="card-title">1. Laporan Neracha</h2>
 
                 <table class="table">
                     <thead>
+                        <tr>
+                            <td class="fw-bold">1. LAPORAN NERACHA</td>
+                        </tr>
                         <tr class="text-center">
                             <th colspan="2">
                                 Aktiva
@@ -81,58 +75,59 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Kas atau setara Kas</td>
-                            <td>{{ formatRupiah($kas) }}</td>
-                            <td>Hutang</td>
-                            <td>{{ formatRupiah($hutang) }}</td>
+                            <td><span class="ms"> Kas atau setara Kas</span></td>
+                            <td class="text-red">{{ formatRupiah($kas) }}</td>
+                            <td><span class="ms">Hutang</span></td>
+                            <td class="text-red">{{ formatRupiah($hutang) }}</td>
                         </tr>
                         <tr>
-                            <td>Piutang</td>
-                            <td>{{ formatRupiah($piutang) }}</td>
+                            <td><span class="ms">Piutang</span></span></td>
+                            <td class="text-red">{{ formatRupiah($piutang) }}</td>
                             <td></td>
                             <td></td>
                         </tr>
                         <tr>
-                            <td>Saldo Pinjam</td>
-                            <td>{{ formatRupiah($saldo_pinjam) }}</td>
-                            <td>Pernyertaan Modal Desa</td>
-                            <td>{{ formatRupiah($modal_desa) }}</td>
+                            <td><span class="ms">Saldo Pinjam</span></td>
+                            <td class="text-red">{{ formatRupiah($saldo_pinjam) }}</td>
+                            <td><span class="ms">Pernyertaan Modal Desa</span></td>
+                            <td class="text-red">{{ formatRupiah($modal_desa) }}</td>
                         </tr>
                         <tr>
-                            <td>Persediaan dagang</td>
-                            <td>{{ formatRupiah($persediaan_dagang) }}</td>
-                            <td>Pernyertaan Modal Masyarakat</td>
-                            <td>{{ formatRupiah($modal_masyarakat) }}</td>
+                            <td><span class="ms">Persediaan dagang</span></td>
+                            <td class="text-red">{{ formatRupiah($persediaan_dagang) }}</td>
+                            <td><span class="ms">Pernyertaan Modal Masyarakat</span></td>
+                            <td class="text-red">{{ formatRupiah($modal_masyarakat) }}</td>
                         </tr>
                         <tr>
-                            <td>Biaya Dibayar di muka</td>
-                            <td>{{ formatRupiah($bayar_dimuka) }}</td>
-                            <td>{{ $ditahan < 0 ? 'Rugi' : 'Laba' }} ditahan </td>
-                            <td>{{ formatRupiah($ditahan) }}</td>
+                            <td><span class="ms">Biaya Dibayar di muka</span></td>
+                            <td class="text-red">{{ formatRupiah($bayar_dimuka) }}</td>
+                            <td><span class="ms">{{ $ditahan < 0 ? 'Rugi' : 'Laba' }} ditahan</span> </td>
+                            <td class="text-red">{{ formatRupiah($ditahan) }}</td>
                         </tr>
                         <tr>
-                            <td>Investasi</td>
-                            <td>{{ formatRupiah($investasi) }}</td>
-                            <td>{{ $laba_rugi_berjalan < 0 ? 'Rugi' : 'Laba' }} Berjalan</td>
-                            <td>{{ formatRupiah($laba_rugi_berjalan) }}</td>
+                            <td><span class="ms">Investasi</td>
+                            <td class="text-red">{{ formatRupiah($investasi) }}</td>
+                            <td><span class="ms">{{ $laba_rugi_berjalan < 0 ? 'Rugi' : 'Laba' }} Berjalan</span>
+                            </td>
+                            <td class="text-red">{{ formatRupiah($laba_rugi_berjalan) }}</td>
                         </tr>
                         <tr>
-                            <td>Bangunan</td>
-                            <td>{{ formatRupiah($bangunan) }}</td>
+                            <td><span class="ms">Bangunan</span></td>
+                            <td class="text-red">{{ formatRupiah($bangunan) }}</td>
                             <td></td>
                             <td></td>
                         </tr>
                         <tr>
-                            <td>Aktiva Lain</td>
-                            <td>{{ formatRupiah($aktiva_lain) }}</td>
+                            <td><span class="ms">Aktiva Lain</span></td>
+                            <td class="text-red">{{ formatRupiah($aktiva_lain) }}</td>
                             <td></td>
                             <td></td>
                         </tr>
                         <tr class="fw-bold">
                             <td>Total Aktiva</td>
-                            <td>{{ formatRupiah($total_aktiva) }}</td>
+                            <td class="text-red">{{ formatRupiah($total_aktiva) }}</td>
                             <td>Total Pasiva</td>
-                            <td>{{ formatRupiah($passiva) }}</td>
+                            <td class="text-red">{{ formatRupiah($passiva) }}</td>
                         </tr>
                     </tbody>
                 </table>
