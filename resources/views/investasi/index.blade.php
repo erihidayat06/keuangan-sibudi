@@ -80,12 +80,14 @@
                         <tbody>
                             @php
                                 $i = 1;
+                                $tahun_ini = session('selected_year', date('Y'));
                             @endphp
                             @foreach ($asets as $aset)
                                 @php
+                                    $masa_pakai = masaPakai($aset->tgl_beli, $aset->wkt_ekonomis);
                                     $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
                                     $saat_ini =
-                                        $aset->nilai * $aset->jumlah - $aset->masa_pakai * $penyusutan * $aset->jumlah;
+                                        $aset->nilai * $aset->jumlah - $masa_pakai * $penyusutan * $aset->jumlah;
                                 @endphp
                                 <tr>
                                     <th scope="row">{{ $i++ }}</th>
@@ -95,24 +97,7 @@
                                     <td>{{ formatRupiah($aset->nilai) }}</td> <!-- Format nilai dengan formatRupiah -->
                                     <td>{{ $aset->wkt_ekonomis }}</td>
                                     <td>
-                                        <div class="d-flex justify-content-between">
-
-                                            <form action="/aset/investasi/pakai/{{ $aset->id }}" method="POST">
-                                                @csrf
-                                                @method('PUT')
-                                                <input type="hidden" name="pakai" value="kurang">
-                                                <button type="submit" class="btn btn-sm btn-danger"><i
-                                                        class="bi bi-arrow-down-circle"></i></button>
-                                            </form>
-                                            {{ $aset->masa_pakai == null ? 0 : $aset->masa_pakai }}
-                                            <form action="/aset/investasi/pakai/{{ $aset->id }}" method="POST">
-                                                @csrf
-                                                @method('PUT')
-                                                <input type="hidden" name="pakai" value="tambah">
-                                                <button type="submit" class="btn btn-sm btn-success"><i
-                                                        class="bi bi-arrow-up-circle"></i></button>
-                                            </form>
-                                        </div>
+                                        {{ $masa_pakai }}
                                     </td>
                                     <td>{{ formatRupiah($penyusutan) }}</td>
                                     <td>{{ formatRupiah($saat_ini) }}</td>

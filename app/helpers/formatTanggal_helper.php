@@ -7,6 +7,29 @@ if (!function_exists('formatTanggal')) {
     }
 }
 
+if (!function_exists('tanggal')) {
+    function tanggal($tanggal)
+    {
+        return date('Y-m-d', strtotime($tanggal));
+    }
+}
+
+if (!function_exists('masaPakai')) {
+    function masaPakai($tahun_beli, $masa_ekomomis)
+    {
+
+        $selisih = session('selected_year', date('Y')) - date('Y', strtotime($tahun_beli)) + 1;
+        $masa_pakai = 0;
+        if ($selisih > $masa_ekomomis) {
+            $masa_pakai = $masa_pakai + $masa_ekomomis;
+        } elseif ($selisih >= 0) {
+            $masa_pakai = $selisih;
+        }
+
+        return $masa_pakai;
+    }
+}
+
 if (!function_exists('created_at')) {
     function created_at()
     {

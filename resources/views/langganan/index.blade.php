@@ -46,21 +46,24 @@
                         </div>
                         <div class="col-lg-8">
                             @if (count($langganans) > 0)
-                                <label class="card p-2 mb-3" style="cursor: pointer">
+                                <label class="card p-2 mb-3" style="cursor: pointer"
+                                    onclick="return alert('Pilihan tidak tersedia !!!')">
                                     <div class="form-check" for="1bulan">
                                         <input class="form-check-input" type="radio" name="langganan" id="1bulan"
-                                            value=" {{ $langganans->first()->jumlah_bulan }}" checked>
-                                        <span>
+                                            value=" {{ $langganans->first()->jumlah_bulan }}"
+                                            @disabled(true)>
+                                        <span class=" text-decoration-line-through">
                                             {{ formatRupiah($langganans->first()->harga) }}/{{ $langganans->first()->waktu }}
                                         </span>
                                     </div>
                                 </label>
                             @else
-                                <label class="card p-2 mb-3" style="cursor: pointer">
+                                <label class="card p-2 mb-3" style="cursor: pointer"
+                                    onclick="return alert('Pilihan tidak tersedia !!!')">
                                     <div class="form-check" for="1bulan">
                                         <input class="form-check-input" type="radio" name="langganan" id="1bulan"
-                                            value="1" checked>
-                                        <span>
+                                            value="1" @disabled(true)>
+                                        <span class="text-decoration-line-through">
                                             Rp12.900/1 bulan
                                         </span>
                                     </div>
@@ -70,13 +73,16 @@
                                 <label class="card p-2 mb-3" style="cursor: pointer">
                                     <div class="form-check" for="{{ $langganan->id }}bulan">
                                         <input class="form-check-input" type="radio" name="langganan"
-                                            id="{{ $langganan->id }}bulan" value=" {{ $langganan->jumlah_bulan }}">
+                                            id="{{ $langganan->id }}bulan" value=" {{ $langganan->jumlah_bulan }}"
+                                            {{ $langganan->jumlah_bulan == 6 ? 'checked' : '' }}>
                                         <span>
                                             {{ formatRupiah($langganan->harga) }}/{{ $langganan->waktu }}
                                         </span>
                                     </div>
                                 </label>
                             @endforeach
+
+                            <p>Biaya langganan Sever +Rp 6.500</p>
 
                             <form id="payment-form" action="/langganan" method="POST">
                                 @csrf
@@ -92,7 +98,7 @@
     </div>
 
     <!-- Midtrans Snap.js -->
-    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+    <script type="text/javascript" src="{{ config('midtrans.url_midtrans') }}"
         data-client-key="{{ config('midtrans.client_key') }}"></script>
 
     <script>
@@ -100,7 +106,7 @@
             // Update langganan harga saat radio button diubah
             function updateLangganan() {
                 var harga = $('input[name="langganan"]:checked').closest('label').find('span').text();
-                $('#langganan').text(harga + ' + Rp2.500');
+                $('#langganan').text(harga + ' + Rp 6.500');
 
                 // Set value untuk dikirim melalui form
                 var duration = $('input[name="langganan"]:checked').val();

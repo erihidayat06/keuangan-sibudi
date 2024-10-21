@@ -18,14 +18,19 @@ class InvestasiController extends Controller
 
         $akumulasi = 0;
         $investasi = 0;
+
         foreach ($asets as $aset) {
             $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini =
-                $aset->jumlah * $aset->nilai - $aset->masa_pakai * $penyusutan * $aset->jumlah;
-
-            $akumulasi = $akumulasi + $penyusutan;
+            $saat_ini = ($aset->nilai * $aset->jumlah) - (masaPakai($aset->tgl_beli, $aset->wkt_ekonomis) * $penyusutan * $aset->jumlah);
+            if ((masaPakai($aset->tgl_beli, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
+                $akumulasi = 0;
+            } else {
+                $akumulasi = $akumulasi + $penyusutan;
+            }
             $investasi = $investasi + $saat_ini;
         }
+
+        // dd($investasi);
 
         return view('investasi.index', [
             "asets" => $asets,
@@ -90,7 +95,7 @@ class InvestasiController extends Controller
         $validated['created_at'] = created_at();
 
         if (Investasi::create($validated)) {
-            bukuUmum('Investasi ' . $request->item, 'kredit', 'kas', 'iventasi', $request->nilai * $request->jumlah, 'investasi', Investasi::latest()->first()->id);
+            bukuUmum('Investasi ' . $request->item, 'kredit', 'kas', 'iventasi', $request->nilai * $request->jumlah, 'investasi', Investasi::latest()->first()->id, $request->tgl_beli);
         };
 
 
@@ -146,7 +151,6 @@ class InvestasiController extends Controller
             'jumlah' => 'required|integer|min:1',
             'nilai' => 'required|numeric',
             'wkt_ekonomis' => 'required|integer|min:1',
-            'masa_pakai' => '',
         ]);
 
         $validated['user_id'] = auth()->user()->id;

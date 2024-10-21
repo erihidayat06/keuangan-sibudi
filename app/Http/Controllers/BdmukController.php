@@ -19,9 +19,13 @@ class BdmukController extends Controller
         $investasi = 0;
         foreach ($asets as $aset) {
             $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = $aset->nilai - $aset->masa_pakai * $penyusutan;
+            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan;
 
-            $akumulasi = $akumulasi + $penyusutan;
+            if ((masaPakai($aset->created_at, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
+                $akumulasi = 0;
+            } else {
+                $akumulasi = $akumulasi + $penyusutan;
+            }
             $investasi = $investasi + $saat_ini;
         }
 
@@ -81,11 +85,11 @@ class BdmukController extends Controller
             'wkt_ekonomis' => 'required|min:1',
         ]);
         $validated['user_id'] = auth()->user()->id;
-        $validated['created_at'] = created_at();
+        $validated['created_at'] = $request->created_at;
 
         // Simpan data ke database
-        if (Bdmuk::create($validated)) {
-            bukuUmum('Dibayar di Muka ' . $request->keterangan, 'kredit', 'kas', 'operasional', $request->nilai, 'bdmuk', Bdmuk::latest()->first()->id);
+        if (Bdmuk::create($validated) && $request->has('no_kas')) {
+            bukuUmum('Dibayar di Muka ' . $request->keterangan, 'kredit', 'kas', 'operasional', $request->nilai, 'bdmuk', Bdmuk::latest()->first()->id, $request->created_at);
         };
 
         // Redirect ke halaman daftar aset dengan pesan sukses

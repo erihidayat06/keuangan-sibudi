@@ -41,17 +41,19 @@ if (!function_exists('neraca')) {
         $bayar_dimuka = 0;
         foreach ($asets as $aset) {
             $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = $aset->nilai - $aset->masa_pakai * $penyusutan;
+            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan;
             $bayar_dimuka = $bayar_dimuka + $saat_ini;
         }
 
         // Investasi
-        $asets = Investasi::user()->whereYear('created_at', '<=', session('selected_year', date('Y')))->get();
+        $asets = Investasi::user()->whereYear('tgl_beli', '<=', session('selected_year', date('Y')))->get();
         $investasi = 0;
         foreach ($asets as $aset) {
+
+
             $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
             $saat_ini =
-                $aset->jumlah * $aset->nilai - $aset->masa_pakai * $penyusutan * $aset->jumlah;
+                $aset->jumlah * $aset->nilai - masaPakai($aset->tgl_beli, $aset->wkt_ekonomis) * $penyusutan * $aset->jumlah;
             $investasi = $investasi + $saat_ini;
         }
 
@@ -61,7 +63,7 @@ if (!function_exists('neraca')) {
         $bangunan = 0;
         foreach ($asets as $aset) {
             $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = $aset->nilai - $aset->masa_pakai * $penyusutan;
+            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan;
             $bangunan = $bangunan + $saat_ini;
         }
 
@@ -71,7 +73,7 @@ if (!function_exists('neraca')) {
         $aktiva_lain = 0;
         foreach ($asets as $aset) {
             $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = $aset->nilai - $aset->masa_pakai * $penyusutan;
+            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan;
             $aktiva_lain = $aktiva_lain + $saat_ini;
         }
 

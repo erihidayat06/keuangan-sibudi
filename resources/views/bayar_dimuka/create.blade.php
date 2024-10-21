@@ -11,6 +11,15 @@
 
                     <form action="/aset/bdmuk" method="POST">
                         @csrf
+                        <!-- Tangal Field -->
+                        <div class="mb-3">
+                            <label for="created_at" class="form-label">Tanggal</label>
+                            <input type="date" class="form-control @error('created_at') is-invalid @enderror"
+                                id="created_at" name="created_at" value="{{ old('created_at') }}">
+                            @error('created_at')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                         <div class="mb-3">
                             <label for="keterangan" class="form-label">Keterangan</label>
                             <input type="text" class="form-control" id="keterangan" name="keterangan" required
@@ -37,7 +46,13 @@
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" value="ture" name="no_kas"
+                                id="flexCheckChecked" checked>
+                            <label class="form-check-label" for="flexCheckChecked">
+                                Masuk ke kas
+                            </label>
+                        </div>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                         <a href="/aset/bdmuk" class="btn btn-secondary">Kembali</a>
                     </form>

@@ -125,12 +125,12 @@ class PersediaanController extends Controller
         ]);
 
         $validated['user_id'] = auth()->user()->id;
-        $validated['created_at'] = created_at();
+        $validated['created_at'] = $request->created_at;
 
         $total_harga = $validated['hpp'] * $validated['jml_awl'];
 
         if (Persediaan::create($validated)) {
-            bukuUmum('Persediaan ' . $request->item, 'kredit', 'kas', 'operasional', $total_harga, 'persediaan', Persediaan::latest()->first()->id);
+            bukuUmum('Persediaan ' . $request->item, 'kredit', 'kas', 'operasional', $total_harga, 'persediaan', Persediaan::latest()->first()->id, $request->created_at);
         };
         return redirect('/aset/persediaan')->with('success', 'Barang berhasil ditambahkan!');
     }
@@ -157,16 +157,16 @@ class PersediaanController extends Controller
 
             $masuk = $request->masuk - $persediaan->masuk;
 
-            bukuUmum($transasksi, 'debit', 'pupd9876', 'operasional', $laba, null, null);
-            bukuUmum($transasksi, 'debit', 'kas', 'operasional', $persediaan->hpp * $masuk, null, null);
+            bukuUmum($transasksi, 'debit', 'pupd9876', 'operasional', $laba, null, null, $persediaan->created_at);
+            bukuUmum($transasksi, 'debit', 'kas', 'operasional', $persediaan->hpp * $masuk, null, null, $persediaan->created_at);
             Persediaan::where('id', $persediaan->id)->update(['masuk' => $request->masuk]);
         }
         if (isset($request->keluar) && $request->keluar != $persediaan->keluar) {
             $transasksi = 'Kembalikan ' . $request->keluar - $persediaan->keluar . ' ' . $persediaan->item;
             $laba = ($request->keluar - $persediaan->keluar) * ($persediaan->nilai_jual - $persediaan->hpp);
             $keluar = $request->keluar - $persediaan->keluar;
-            bukuUmum('Kas ' .  $transasksi, 'kredit', 'pupd9876', 'operasional', $laba, null, null);
-            bukuUmum($transasksi, 'kredit', 'kas', 'operasional', $persediaan->hpp * $keluar, null, null);
+            bukuUmum('Kas ' .  $transasksi, 'kredit', 'pupd9876', 'operasional', $laba, null, null, $persediaan->created_at);
+            bukuUmum($transasksi, 'kredit', 'kas', 'operasional', $persediaan->hpp * $keluar, null, null, $persediaan->created_at);
             Persediaan::where('id', $persediaan->id)->update(['keluar' => $request->keluar]);
         }
         return redirect()->back()->with('success', 'Data Berhasil dirubah!');

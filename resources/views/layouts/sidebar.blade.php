@@ -32,7 +32,7 @@
             </li><!-- End Dashboard Nav -->
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('unit*') ? '' : 'collapsed' }}" href="/unit">
-                    <i class="bi bi-archive"></i>
+                    <i class="bi bi-diagram-3"></i>
                     <span>Unit Usaha</span>
                 </a>
             </li><!-- End Dashboard Nav -->
@@ -129,9 +129,9 @@
             </li><!-- End Dashboard Nav -->
 
             <li class="nav-item">
-                <a class="nav-link {{ Request::is('bagi-hasil*') ? '' : 'collapsed' }}" href="/bagi-hasil">
-                    <i class="bi bi-copy"></i>
-                    <span>Bagi Hasil</span>
+                <a class="nav-link {{ Request::is('rekonsiliasi*') ? '' : 'collapsed' }}" href="/rekonsiliasi">
+                    <i class="bi bi-percent"></i>
+                    <span>Rekonsiliasi Kas</span>
                 </a>
             </li><!-- End Dashboard Nav -->
 

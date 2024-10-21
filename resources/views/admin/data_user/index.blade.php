@@ -11,7 +11,7 @@
             <div class="card overflow-auto">
                 <div class="card-body mt-5">
 
-
+                    <a href="/admin/data-user/create" class="btn btn-sm btn-success">Tambah User</a>
                     <!-- Table with stripped rows -->
                     <table class="table datatable">
 
@@ -20,7 +20,7 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Email</th>
-                                <th scope="col">Sisa Langganan</th>
+                                <th scope="col">Sisa Langganan (Hari)</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">password</th>
                             </tr>
@@ -45,7 +45,9 @@
                                         <th scope="row">{{ $i++ }}</th>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
-                                        <td>{{ $interval->days }}</td>
+                                        <td>{{ $interval->days }}
+
+                                        </td>
                                         <td>
                                             @if ($user->status == 0)
                                                 <p class="text-danger">Tidak Aktif</p>

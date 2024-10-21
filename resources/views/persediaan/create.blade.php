@@ -12,7 +12,15 @@
 
                     <form action="/aset/persediaan" method="POST" id="myForm">
                         @csrf
-
+                        <!-- Tangal Field -->
+                        <div class="mb-3">
+                            <label for="created_at" class="form-label">Tanggal</label>
+                            <input type="date" class="form-control @error('created_at') is-invalid @enderror"
+                                id="created_at" name="created_at" value="{{ old('created_at') }}">
+                            @error('created_at')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                         <div class="mb-3">
                             <label for="item" class="form-label">Item</label>
                             <input type="text" name="item" id="item"

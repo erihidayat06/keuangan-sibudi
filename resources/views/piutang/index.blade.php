@@ -50,6 +50,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
+                                <th scope="col">Tanggal</th>
                                 <th scope="col">Kreditur</th>
                                 <th scope="col">Keterangan</th>
                                 <th scope="col">Nilai</th>
@@ -68,6 +69,7 @@
                                 @endphp
                                 <tr>
                                     <th scope="row">{{ $i++ }}</th>
+                                    <td>{{ formatTanggal($piutang->created_at) }}</td>
                                     <td>{{ $piutang->kreditur }}</td>
                                     <td>{{ $piutang->keterangan }}</td>
                                     <td>{{ formatRupiah($piutang->nilai) }}</td>

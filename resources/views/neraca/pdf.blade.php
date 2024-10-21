@@ -62,7 +62,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <td class="fw-bold">1. LAPORAN NERACHA</td>
+                            <td class="fw-bold">1. LAPORAN NERACA</td>
                         </tr>
                         <tr class="text-center">
                             <th colspan="2">

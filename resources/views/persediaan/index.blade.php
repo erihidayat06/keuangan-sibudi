@@ -86,6 +86,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
+                                <th scope="col">Tanggal</th>
                                 <th scope="col">Item</th>
                                 <th scope="col">Satuan</th>
                                 <th scope="col">HPP</th>
@@ -113,6 +114,7 @@
                                 @endphp
                                 <tr>
                                     <th scope="row">{{ $i++ }}</th>
+                                    <td>{{ formatTanggal($barang->created_at) }}</td>
                                     <td>{{ $barang->item }}</td>
                                     <td>{{ $barang->satuan }}</td>
                                     <td>{{ formatRupiah($barang->hpp) }}</td>

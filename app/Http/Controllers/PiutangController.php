@@ -60,9 +60,9 @@ class PiutangController extends Controller
             'nilai' => 'required|numeric',
         ]);
         $validated['user_id'] = auth()->user()->id;
-        $validated['created_at'] = created_at();
-        if (Piutang::create($validated)) {
-            bukuUmum('Piutang', 'kredit', 'kas', 'operasional', $request->nilai, 'piutang', Piutang::latest()->first()->id);
+        $validated['created_at'] = $request->created_at;
+        if (Piutang::create($validated) && $request->has('no_kas')) {
+            bukuUmum('Piutang', 'kredit', 'kas', 'operasional', $request->nilai, 'piutang', Piutang::latest()->first()->id, $request->created_at);
         };
 
         // Redirect with success message
@@ -95,7 +95,7 @@ class PiutangController extends Controller
 
 
         if (Piutang::where('id', $piutang->id)->update(['pembayaran' => $pembayaran])) {
-            bukuUmum('Setor ' . $piutang->kreditur, $jenis, 'kas', 'pendanaan', $input_realisasi, null, null);
+            bukuUmum('Setor ' . $piutang->kreditur, $jenis, 'kas', 'pendanaan', $input_realisasi, null, null, $piutang->created_at);
         };
         // Redirect with success message
         return redirect()->route('piutang.index')->with('success', 'piutang berhasil ditambahkan.');

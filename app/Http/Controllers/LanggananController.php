@@ -7,7 +7,9 @@ use Midtrans\Snap;
 use App\Models\User;
 use Midtrans\Config;
 use App\Models\Ekuit;
+use App\Models\Profil;
 use App\Models\Langganan;
+use App\Models\Rekonsiliasi;
 use Illuminate\Http\Request;
 
 class LanggananController extends Controller
@@ -39,7 +41,7 @@ class LanggananController extends Controller
         $params = [
             'transaction_details' => [
                 'order_id' => uniqid(),
-                'gross_amount' => $langganan_harga + 2500,
+                'gross_amount' => $langganan_harga + 6500,
             ],
             'customer_details' => [
                 'first_name' => auth()->user()->name,
@@ -96,6 +98,19 @@ class LanggananController extends Controller
         if (!$existingEkuit) {
             Ekuit::create(['user_id' => $userId]);
         }
+
+        $rekonsiliasi = Rekonsiliasi::where('user_id', $userId)->first();
+
+        if (!$rekonsiliasi) {
+            Rekonsiliasi::insert([
+                ['posisi' => 'Kas di tangan', 'user_id' => $userId],
+                ['posisi' => 'Bank Jateng', 'user_id' => $userId]
+            ]);
+        }
+
+
+
+
 
         // Tampilkan respons
         return response()->json([

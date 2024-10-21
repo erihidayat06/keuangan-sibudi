@@ -90,6 +90,7 @@
                                 @endphp
                                 <tr>
                                     <th scope="row">{{ $i++ }}</th>
+
                                     <td>{{ $pinjaman->nasabah }}</td>
                                     <td>{{ date('Y-m-d', strtotime($pinjaman->tgl_pinjam)) }}</td>
                                     <td>{{ formatRupiah($pinjaman->alokasi) }}</td>

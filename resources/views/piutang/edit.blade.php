@@ -14,7 +14,16 @@
                     <form action="{{ route('piutang.update', $piutang->id) }}" method="POST">
                         @csrf
                         @method('PUT') <!-- For updating -->
-
+                        <!-- Tangal Field -->
+                        <div class="mb-3">
+                            <label for="created_at" class="form-label">Tanggal</label>
+                            <input type="date" class="form-control @error('created_at') is-invalid @enderror"
+                                id="created_at" name="created_at"
+                                value="{{ old('created_at', tanggal($piutang->created_at)) }}">
+                            @error('created_at')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                         <!-- Kreditur Field -->
                         <div class="mb-3">
                             <label for="kreditur" class="form-label">Kreditur</label>

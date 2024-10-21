@@ -51,6 +51,16 @@
                             @enderror
                         </div>
 
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="ture" name="no_kas"
+                                id="flexCheckChecked" checked>
+                            <label class="form-check-label" for="flexCheckChecked">
+                                Masuk ke kas
+                            </label>
+                        </div>
+
+
+
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
 

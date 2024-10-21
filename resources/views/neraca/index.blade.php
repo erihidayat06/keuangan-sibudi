@@ -7,7 +7,7 @@
                 <div class="card-body">
                     <a href="/export-pdf/neraca" class="btn btn-danger mt-3"><i class="bi bi-filetype-pdf"></i>
                         PDF</a>
-                    <div class="card-title">1. Laporan Neracha</div>
+                    <div class="card-title">1. Laporan Neraca</div>
 
                     <table class="table">
                         <thead>

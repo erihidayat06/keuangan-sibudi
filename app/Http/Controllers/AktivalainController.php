@@ -19,9 +19,13 @@ class AktivalainController extends Controller
         $investasi = 0;
         foreach ($asets as $aset) {
             $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = $aset->nilai - $aset->masa_pakai * $penyusutan;
+            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan;
 
-            $akumulasi = $akumulasi + $penyusutan;
+            if ((masaPakai($aset->created_at, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
+                $akumulasi = 0;
+            } else {
+                $akumulasi = $akumulasi + $penyusutan;
+            }
             $investasi = $investasi + $saat_ini;
         }
 
@@ -83,10 +87,10 @@ class AktivalainController extends Controller
         ]);
         $validated['user_id'] = auth()->user()->id;
         $validated['masa_pakai'] = 1;
-        $validated['created_at'] = created_at();
+        $validated['created_at'] = $request->created_at;
         // Simpan data ke database
-        if (Aktivalain::create($validated)) {
-            bukuUmum('Aktiva Lain ' . $request->jenis, 'kredit', 'kas', 'operasional', $request->nilai, 'aktiva_lain', Aktivalain::latest()->first()->id);
+        if (Aktivalain::create($validated) && $request->has('no_kas')) {
+            bukuUmum('Aktiva Lain ' . $request->jenis, 'kredit', 'kas', 'operasional', $request->nilai, 'aktiva_lain', Aktivalain::latest()->first()->id, $request->created_at);
         };
 
         // Redirect ke halaman daftar aset dengan pesan sukses

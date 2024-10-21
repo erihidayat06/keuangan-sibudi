@@ -10,7 +10,7 @@
                     <div class="card-title">
                         Tambah Unit Untuk Persedian
                     </div>
-                    <form action="/aset/persediaan/unit/" method="POST">
+                    <form action="/aset/persediaan/unit/tambah" method="POST">
                         @csrf <!-- Token CSRF untuk keamanan -->
 
                         <!-- Input for Nama Unit -->

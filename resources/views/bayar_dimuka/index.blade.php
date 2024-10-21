@@ -65,6 +65,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
+                                <th scope="col">Tanggal</th>
                                 <th scope="col">Keterangan</th>
                                 <th scope="col">Nilai</th>
                                 <th scope="col">Waktu Ekonomis</th>
@@ -85,28 +86,12 @@
                                 @endphp
                                 <tr>
                                     <th scope="row">{{ $i++ }}</th>
+                                    <td>{{ formatTanggal($aset->created_at) }}</td>
                                     <td>{{ $aset->keterangan }}</td>
                                     <td>{{ formatRupiah($aset->nilai) }}</td> <!-- Format nilai dengan formatRupiah -->
                                     <td>{{ $aset->wkt_ekonomis }}</td>
                                     <td>
-                                        <div class="d-flex justify-content-between">
-
-                                            <form action="/aset/bdmuk/pakai/{{ $aset->id }}" method="POST">
-                                                @csrf
-                                                @method('PUT')
-                                                <input type="hidden" name="pakai" value="kurang">
-                                                <button type="submit" class="btn btn-sm btn-danger"><i
-                                                        class="bi bi-arrow-down-circle"></i></button>
-                                            </form>
-                                            {{ $aset->masa_pakai == null ? 0 : $aset->masa_pakai }}
-                                            <form action="/aset/bdmuk/pakai/{{ $aset->id }}" method="POST">
-                                                @csrf
-                                                @method('PUT')
-                                                <input type="hidden" name="pakai" value="tambah">
-                                                <button type="submit" class="btn btn-sm btn-success"><i
-                                                        class="bi bi-arrow-up-circle"></i></button>
-                                            </form>
-                                        </div>
+                                        {{ masaPakai($aset->created_at, $aset->wkt_ekonomis) }}
                                     </td>
                                     <td>{{ formatRupiah($penyusutan) }}</td>
                                     <td>{{ formatRupiah($saat_ini) }}</td>

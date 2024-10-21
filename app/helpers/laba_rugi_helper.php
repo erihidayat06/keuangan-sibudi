@@ -129,49 +129,66 @@ if (!function_exists('labaRugi')) {
         $akumulasi = 0;
         $investasi = 0;
 
-        $asets = Investasi::user()->whereYear('created_at', $tahun_sekarang)->get();
+        $asets = Investasi::user()->get();
         foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis * $aset->masa_pakai * $aset->jumlah;
+            $penyusutan = $aset->nilai / $aset->wkt_ekonomis  * $aset->jumlah;
             $saat_ini =
-                ($aset->jumlah * $aset->nilai) - ($aset->masa_pakai * $penyusutan * $aset->jumlah);
+                ($aset->jumlah * $aset->nilai) - (masaPakai($aset->tgl_beli, $aset->wkt_ekonomis) * $penyusutan * $aset->jumlah);
 
-            $akumulasi = $akumulasi + $penyusutan;
+            if ((masaPakai($aset->tgl_beli, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
+                $akumulasi = 0;
+            } else {
+                $akumulasi = $akumulasi + $penyusutan;
+            }
             $investasi = $investasi + $saat_ini;
         }
+
+        // dd($akumulasi);
 
 
         $asets = Bangunan::user()->whereYear('created_at', $tahun_sekarang)->get();
         foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis * $aset->masa_pakai;
+            $penyusutan = $aset->nilai / $aset->wkt_ekonomis * masaPakai($aset->created_at, $aset->wkt_ekonomis);
             $saat_ini =
-                $aset->jumlah * $aset->nilai - $aset->masa_pakai * $penyusutan * $aset->jumlah;
+                $aset->jumlah * $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan * $aset->jumlah;
 
-            $akumulasi = $akumulasi + $penyusutan;
+            if ((masaPakai($aset->created_at, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
+                $akumulasi = 0;
+            } else {
+                $akumulasi = $akumulasi + $penyusutan;
+            }
             $investasi = $investasi + $saat_ini;
         }
         $asets = Bdmuk::user()->whereYear('created_at', $tahun_sekarang)->get();
 
 
         foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis * $aset->masa_pakai;
+            $penyusutan = $aset->nilai / $aset->wkt_ekonomis * masaPakai($aset->created_at, $aset->wkt_ekonomis);
             $saat_ini =
-                $aset->jumlah * $aset->nilai - $aset->masa_pakai * $penyusutan * $aset->jumlah;
+                $aset->jumlah * $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan * $aset->jumlah;
 
-            $akumulasi = $akumulasi + $penyusutan;
+            if ((masaPakai($aset->created_at, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
+                $akumulasi = 0;
+            } else {
+                $akumulasi = $akumulasi + $penyusutan;
+            }
             $investasi = $investasi + $saat_ini;
         }
         $asets = Aktivalain::user()->whereYear('created_at', $tahun_sekarang)->get();
 
 
         foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis * $aset->masa_pakai;
+            $penyusutan = $aset->nilai / $aset->wkt_ekonomis * masaPakai($aset->created_at, $aset->wkt_ekonomis);
             $saat_ini =
-                $aset->jumlah * $aset->nilai - $aset->masa_pakai * $penyusutan * $aset->jumlah;
+                $aset->jumlah * $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan * $aset->jumlah;
 
-            $akumulasi = $akumulasi + $penyusutan;
+            if ((masaPakai($aset->created_at, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
+                $akumulasi = 0;
+            } else {
+                $akumulasi = $akumulasi + $penyusutan;
+            }
             $investasi = $investasi + $saat_ini;
         }
-
 
 
 

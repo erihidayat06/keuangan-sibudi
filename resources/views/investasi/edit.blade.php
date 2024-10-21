@@ -59,15 +59,6 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label for="masa_pakai" class="form-label">Masa Pakai (Tahun)</label>
-                            <input type="number" class="form-control" id="masa_pakai" name="masa_pakai" required
-                                value="{{ old('masa_pakai', $aset->masa_pakai) }}">
-                            @error('masa_pakai')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-
                         <button type="submit" class="btn btn-primary">Simpan</button>
                         <a href="/aset" class="btn btn-secondary">Kembali</a>
                     </form>

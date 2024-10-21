@@ -48,6 +48,8 @@ class ModalController extends Controller
     public function store(Request $request)
     {
 
+
+
         $validated  = $request->validate([
             'tahun' => 'required',
             'sumber' => 'required|string|max:100',
@@ -58,12 +60,12 @@ class ModalController extends Controller
         $validated['created_at'] = created_at();
 
         $validated['user_id'] = auth()->user()->id;
-        if (Modal::create($validated)) {
+        if (Modal::create($validated) && $request->has('no_kas')) {
 
             if (isset($validated['mdl_desa'])) {
-                bukuUmum('Modal Tambah dari desa', 'debit', 'kas', 'pendanaan', $request->mdl_desa,  'modal', Modal::latest()->first()->id);
+                bukuUmum('Modal Tambah dari desa', 'debit', 'kas', 'pendanaan', $request->mdl_desa,  'modal', Modal::latest()->first()->id, created_at());
             } elseif (isset($validated['mdl_masyarakat'])) {
-                bukuUmum('Modal Tambah dari masyarakat', 'debit', 'kas', 'pendanaan',  $request->mdl_masyarakat, 'modal', Modal::latest()->first()->id);
+                bukuUmum('Modal Tambah dari masyarakat', 'debit', 'kas', 'pendanaan',  $request->mdl_masyarakat, 'modal', Modal::latest()->first()->id, created_at());
             }
         };
 

@@ -19,9 +19,12 @@ class BangunanController extends Controller
         $investasi = 0;
         foreach ($asets as $aset) {
             $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = $aset->nilai - $aset->masa_pakai * $penyusutan;
-
-            $akumulasi = $akumulasi + $penyusutan;
+            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan;
+            if ((masaPakai($aset->created_at, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
+                $akumulasi = 0;
+            } else {
+                $akumulasi = $akumulasi + $penyusutan;
+            }
             $investasi = $investasi + $saat_ini;
         }
 
@@ -80,11 +83,11 @@ class BangunanController extends Controller
         ]);
         $validated['user_id'] = auth()->user()->id;
         $validated['masa_pakai'] = 1;
-        $validated['created_at'] = created_at();
+        $validated['created_at'] = $request->created_at;
 
         // Simpan data ke database
         if (Bangunan::create($validated)) {
-            bukuUmum('Bangunan ' . $request->jenis, 'kredit', 'kas', 'operasional', $request->nilai, 'bangunan', Bangunan::latest()->first()->id);
+            bukuUmum('Bangunan ' . $request->jenis, 'kredit', 'kas', 'operasional', $request->nilai, 'bangunan', Bangunan::latest()->first()->id, $request->created_at);
         };
 
         // Redirect ke halaman daftar aset dengan pesan sukses
@@ -140,6 +143,7 @@ class BangunanController extends Controller
             'masa_pakai' => '',
         ]);
         $validated['user_id'] = auth()->user()->id;
+        $validated['created_at'] = $request->created_at;
         // Simpan data ke database
         if (Bangunan::where('id', $bangunan->id)->update($validated)) {
             updateBukuUmum('bangunan', $bangunan->id, $request->nilai);

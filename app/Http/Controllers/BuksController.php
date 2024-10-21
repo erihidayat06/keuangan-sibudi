@@ -16,7 +16,7 @@ class BuksController extends Controller
     {
 
 
-        $transaksis_lalu = Buk::user()->whereYear('tanggal', session('selected_year', date('Y')) - 1)->get();
+        $transaksis_lalu = Buk::user()->whereYear('tanggal', '<', session('selected_year', date('Y')))->get();
         $debit_lalu = $transaksis_lalu->where('jenis', 'debit')->sum('nilai');
         $kredit_lalu = $transaksis_lalu->where('jenis', 'kredit')->sum('nilai');
         $saldo_lalu = $debit_lalu - $kredit_lalu;

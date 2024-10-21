@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pinjamans', function (Blueprint $table) {
+        Schema::create('rekonsiliasis', function (Blueprint $table) {
             $table->id();
-            $table->string('nasabah');
-            $table->date('tgl_pinjam');
-            $table->integer('alokasi');
-            $table->integer('realisasi')->nullable();
-            $table->float('bunga');
-            $table->integer('angsuran')->nullable();
+            $table->string('posisi');
+            $table->integer('jumlah')->nullable();
             $table->foreignId('user_id');
             $table->timestamps();
         });
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pinjamans');
+        Schema::dropIfExists('rekonsiliasis');
     }
 };

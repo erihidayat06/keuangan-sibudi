@@ -97,14 +97,17 @@ class PinjamanController extends Controller
             'nasabah' => 'required|string|max:255',
             'tgl_pinjam' => 'required|date',
             'alokasi' => 'required|string|max:255',
-            'bunga' => 'required|numeric|min:0|max:100',
+            'bunga' => 'required|min:0|max:100',
         ]);
 
         $validated['user_id'] = auth()->user()->id;
-        $validated['created_at'] = created_at();
+        $validated['created_at'] = $request->tgl_pinjam;
+        $validated['bunga'] = str_replace(',', '.', $request->bunga);
 
-        if (Pinjaman::create($validated)) {
-            bukuUmum('Pinjaman ' . $request->nasabah, 'kredit', 'kas', 'operasional', $request->alokasi, 'pinjaman', Pinjaman::latest()->first()->id);
+
+
+        if (Pinjaman::create($validated) && $request->has('no_kas')) {
+            bukuUmum('Pinjaman ' . $request->nasabah, 'kredit', 'kas', 'operasional', $request->alokasi, 'pinjaman', Pinjaman::latest()->first()->id, $request->tgl_pinjam);
         };
 
         return redirect('/aset/pinjaman')->with('success', 'Pinjaman berhasil ditambahkan');
@@ -144,8 +147,8 @@ class PinjamanController extends Controller
 
         $bunga = $pinjaman->alokasi * ($pinjaman->bunga / 100);
 
-        bukuUmum('Bunga Storan ' . $pinjaman->nasabah, 'debit', 'pupj2345', 'operasional', $bunga, null, null);
-        bukuUmum('Storan ' . $pinjaman->nasabah, 'debit', 'kas', 'operasional', $input_realisasi, null, null);
+        bukuUmum('Bunga Storan ' . $pinjaman->nasabah, 'debit', 'pupj2345', 'operasional', $bunga, null, null, $pinjaman->tgl_pinjam);
+        bukuUmum('Storan ' . $pinjaman->nasabah, 'debit', 'kas', 'operasional', $input_realisasi, null, null, $pinjaman->tgl_pinjam);
 
 
         Pinjaman::where('id', $pinjaman->id)->update(['realisasi' => $realisasi, 'angsuran' => $angsuran]);
@@ -162,11 +165,13 @@ class PinjamanController extends Controller
             'nasabah' => 'required|string|max:255',
             'tgl_pinjam' => 'required|date',
             'alokasi' => 'required|string|max:255',
-            'bunga' => 'required|numeric|min:0|max:100',
+            'bunga' => 'required|min:0|max:100',
         ]);
 
+        $validated['bunga'] = str_replace(',', '.', $request->bunga);
+
         if (Pinjaman::where('id', $pinjaman->id)->update($validated)) {
-            updateBukuUmum('pinjaman', $pinjaman, $request->alokasi);
+            updateBukuUmum('pinjaman', $pinjaman->alokasi, $request->alokasi);
         };
 
         return redirect('/aset/pinjaman')->with('success', 'Pinjaman berhasil diupdate');
