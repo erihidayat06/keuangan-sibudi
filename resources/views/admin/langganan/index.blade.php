@@ -10,7 +10,9 @@
 
             <div class="card overflow-auto">
                 <div class="card-body ">
-                    <a href="/admin/langganan/create" class="btn btn-primary mt-3">Tambah Langganan</a>
+
+                    <a href="/admin/langganan/{{ Request::is('admin/langganan/bumdesa') ? 'bumdesa' : 'bumdes-bersama' }}/create"
+                        class="btn btn-primary mt-3">Tambah Langganan</a>
 
                     <!-- Table with stripped rows -->
                     <table class="table datatable">
@@ -37,11 +39,12 @@
                                     <td>{{ $langganan->waktu }}</td>
                                     <td>
                                         <div class="d-flex justify-content-start">
-                                            <a href="/admin/langganan/{{ $langganan->id }}/edit"
+                                            <a href="/admin/langganan/{{ Request::is('admin/langganan/bumdesa') ? 'bumdesa' : 'bumdes-bersama' }}/{{ $langganan->id }}/edit"
                                                 class="btn btn-sm btn-success">
                                                 <i class="bi bi-pencil-square"></i></a>
-                                            <form action="/admin/langganan/{{ $langganan->id }}" class="ms-2"
-                                                method="POST">
+                                            <form
+                                                action="/admin/langganan/{{ Request::is('admin/langganan/bumdesa') ? 'bumdesa' : 'bumdes-bersama' }}/{{ $langganan->id }}"
+                                                class="ms-2" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button class="btn btn-sm btn-danger"

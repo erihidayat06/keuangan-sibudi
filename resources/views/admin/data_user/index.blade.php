@@ -23,6 +23,7 @@
                                 <th scope="col">Sisa Langganan (Hari)</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">password</th>
+                                <th scope="col">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -63,6 +64,17 @@
                                             </a>
 
 
+                                        </td>
+                                        <td>
+                                            <form action="/admin/data-user/{{ $user->id }}" class="ms-2"
+                                                method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Yakin di Hapus?')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
                                         </td>
 
                                     </tr>

@@ -17,18 +17,34 @@ if (!function_exists('tanggal')) {
 if (!function_exists('masaPakai')) {
     function masaPakai($tahun_beli, $masa_ekomomis)
     {
+        $currentYear = session('selected_year', date('Y'));
+        $tahunBeli = date('Y', strtotime($tahun_beli));
 
-        $selisih = session('selected_year', date('Y')) - date('Y', strtotime($tahun_beli)) + 1;
+        // Mendapatkan bulan sekarang
+        $currentMonth = date('m');
+
+        // Menghitung selisih tahun
+        $selisih = $currentYear - $tahunBeli;
+        $tahun = $currentYear - $tahunBeli;
+
+        // Jika bulan berada di luar Januari sampai April, tambahkan 1
+        if ($currentMonth > 4) {
+            $selisih += 1;
+        }
+
         $masa_pakai = 0;
+
         if ($selisih > $masa_ekomomis) {
-            $masa_pakai = $masa_pakai + $masa_ekomomis;
+            $masa_pakai = $masa_ekomomis;
         } elseif ($selisih >= 0) {
             $masa_pakai = $selisih;
         }
 
-        return $masa_pakai;
+        return ['masa_pakai' => $masa_pakai, 'tahun' => $tahun];
     }
 }
+
+
 
 if (!function_exists('created_at')) {
     function created_at()

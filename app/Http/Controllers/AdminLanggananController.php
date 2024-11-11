@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Langganan;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Request as Request_url;
 use Illuminate\Http\Request;
 
 class AdminLanggananController extends Controller
@@ -12,7 +14,9 @@ class AdminLanggananController extends Controller
      */
     public function index()
     {
-        $langganans = Langganan::orderBy('jumlah_bulan', 'asc')->get();
+        $langganan = Langganan::where('jenis', $this->segmen(3));
+
+        $langganans = $langganan->orderBy('jumlah_bulan', 'asc')->get();
         return view('admin.langganan.index', ['langganans' => $langganans]);
     }
 
@@ -33,11 +37,13 @@ class AdminLanggananController extends Controller
             'jumlah_bulan' => 'required|integer|min:1',
             'harga' => 'required|numeric|min:1',
             'waktu' => 'required',
+
         ]);
 
+        $validated['jenis'] = $this->segmen(3);
         Langganan::create($validated);
 
-        return redirect('/admin/langganan')->with('success', 'Langganan Berhasil di tambah');
+        return redirect('/admin/langganan/' . $this->segmen(3))->with('success', 'Langganan Berhasil di tambah');
     }
 
     /**
@@ -72,7 +78,7 @@ class AdminLanggananController extends Controller
 
         Langganan::where('id', $langganan->id)->update($validated);
 
-        return redirect('/admin/langganan')->with('success', 'Data berhasil diupdate');
+        return redirect('/admin/langganan/' . $this->segmen(3))->with('success', 'Data berhasil diupdate');
     }
 
     /**
@@ -82,6 +88,11 @@ class AdminLanggananController extends Controller
     {
         $langganan->delete();
 
-        return redirect('/admin/langganan')->with('error', 'Data berhasil dihapus');
+        return redirect('/admin/langganan/' . $this->segmen(3))->with('error', 'Data berhasil dihapus');
+    }
+
+    public function segmen($segmen)
+    {
+        return Request_url::segment($segmen);
     }
 }

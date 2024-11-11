@@ -17,11 +17,29 @@
             </li><!-- End Dashboard Nav -->
 
             <li class="nav-item">
-                <a class="nav-link {{ Request::is('admin/langganan') ? '' : 'collapsed' }}" href="/admin/langganan">
-                    <i class="bi bi-bell"></i>
-                    <span>Atur Langganan</span>
+                <a class="nav-link {{ Request::is('admin/langganan*') ? '' : 'collapsed' }}"
+                    data-bs-target="#laporanKeuangan" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-clipboard-pulse"></i><span>Atur Langganan</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End Dashboard Nav -->
+                <ul id="laporanKeuangan" class="nav-content  {{ Request::is('admin/langganan*') ? '' : 'collapse' }}"
+                    data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="/admin/langganan/bumdesa"
+                            class="{{ Request::is('admin/langganan/bumdesa*') ? 'active' : '' }}">
+                            <i class="bi bi-circle "></i><span>Bumdes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/langganan/bumdes-bersama"
+                            class="{{ Request::is('admin/langganan/bumdes-bersama*') ? 'active' : '' }}">
+                            <i class="bi bi-circle"></i><span>Bumdes Bersama</span>
+                        </a>
+                    </li>
+
+
+                </ul>
+            </li><!-- End Charts Nav -->
         @endcan
         @can('bumdes')
             <li class="nav-item">
@@ -197,6 +215,13 @@
                     <i class="bi bi-bell"></i>
                     <span>Langganan</span>
                     <span class="badge text-bg-primary rounded-pill ms-3">{{ $interval->days }} Hari</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-item list-group-item justify-content-between align-items-center">
+                <a class="nav-link {{ Request::is('kontak/admin*') ? '' : 'collapsed' }}" href="/kontak/admin">
+                    <i class="bi bi-envelope"></i>
+                    <span>Contact</span>
+
                 </a>
             </li><!-- End Dashboard Nav -->
         @endcan

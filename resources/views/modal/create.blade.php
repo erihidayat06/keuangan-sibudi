@@ -50,6 +50,18 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+                        @can('referral')
+                            <!-- MDL bersama Field -->
+                            <div class="mb-3">
+                                <label for="mdl_bersama" class="form-label">Modal BUMDesa Bersama</label>
+                                <input type="text" onkeyup="onlyNumberAmount(this)"
+                                    class="form-control @error('mdl_bersama') is-invalid @enderror" id="mdl_bersama"
+                                    name="mdl_bersama" value="{{ old('mdl_bersama') }}">
+                                @error('mdl_bersama')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endcan
 
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="ture" name="no_kas"

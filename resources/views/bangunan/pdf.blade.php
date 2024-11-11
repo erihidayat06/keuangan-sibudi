@@ -39,6 +39,7 @@
         border: 1px solid #ddd;
         text-align: left;
         padding: 5px;
+        font-size: 12px;
     }
 </style>
 
@@ -47,8 +48,8 @@
         <div class="col-lg-12">
 
             <div class="pagetitle">
-                <h2>Rincian Aset Bangunan</h2>
-                <h2>{{ unitUsaha()->nm_bumdes }}</h2>
+                <h3>Rincian Aset Bangunan</h3>
+                <h3>{{ unitUsaha()->nm_bumdes }}</h3>
             </div>
 
             <div class="card overflow-auto">
@@ -57,6 +58,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
+                                <th scope="col">Tanggal</th>
                                 <th scope="col">Jenis Bangunan</th>
                                 <th scope="col">Nilai</th>
                                 <th scope="col">Waktu Ekonomis</th>
@@ -72,16 +74,23 @@
                             @endphp
                             @foreach ($asets as $aset)
                                 @php
-                                    $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-                                    $saat_ini = $aset->nilai - $aset->masa_pakai * $penyusutan;
+                                    if (masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai']) {
+                                        $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
+                                    } else {
+                                        $penyusutan = 0;
+                                    }
+                                    $saat_ini =
+                                        $aset->nilai -
+                                        masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'] * $penyusutan;
                                 @endphp
                                 <tr>
                                     <th scope="row">{{ $i++ }}</th>
+                                    <td>{{ formatTanggal($aset->created_at) }}</td>
                                     <td>{{ $aset->jenis }}</td>
                                     <td>{{ formatRupiah($aset->nilai) }}</td> <!-- Format nilai dengan formatRupiah -->
                                     <td>{{ $aset->wkt_ekonomis }}</td>
                                     <td>
-                                        {{ $aset->masa_pakai == null ? 0 : $aset->masa_pakai }}
+                                        {{ masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'] }}
                                     </td>
                                     <td>{{ formatRupiah($penyusutan) }}</td>
                                     <td>{{ formatRupiah($saat_ini) }}</td>
@@ -90,13 +99,13 @@
                             @endforeach
 
                             <tr>
-                                <td colspan="5">Akumulasi Penyusutan</td>
+                                <td colspan="6">Akumulasi Penyusutan</td>
                                 <td style="font-weight: bold; background-color:yellow">{{ formatRupiah($akumulasi) }}
                                 </td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td colspan="6">Total Inventaris</td>
+                                <td colspan="7">Total Inventaris</td>
                                 <td style="font-weight: bold; background-color:yellow">{{ formatRupiah($investasi) }}
                                 </td>
 

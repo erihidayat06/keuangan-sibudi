@@ -39,6 +39,7 @@
         border: 1px solid #ddd;
         text-align: left;
         padding: 5px;
+        font-size: 12px;
     }
 </style>
 
@@ -47,8 +48,8 @@
         <div class="col-lg-12">
 
             <div class="pagetitle">
-                <h2>Rincian Laba Rugi Ditahan</h2>
-                <h2>{{ unitUsaha()->nm_bumdes }}</h2>
+                <h5>Rincian Laba Rugi Ditahan</h5>
+                <h5>{{ unitUsaha()->nm_bumdes }}</h5>
             </div>
 
             <div class="card overflow-auto">
@@ -69,20 +70,14 @@
                         </thead>
                         <tbody>
                             @foreach ($dithns as $dithn)
-                                @php
-                                    $pades = $dithn->nilai * ($dithn->pades / 100);
-                                    $lainya = $dithn->nilai * ($dithn->lainya / 100);
-                                    $akumulasi = $dithn->nilai * ($dithn->akumulasi / 100);
-                                @endphp
                                 <tr>
                                     <th scope="row">{{ $loop->iteration }}</th>
                                     <td>{{ $dithn->tahun }}</td>
                                     <td>{{ $dithn->hasil }}</td>
                                     <td>{{ formatRupiah($dithn->nilai) }}</td>
-                                    <td>{{ formatRupiah($pades) }}</td>
-                                    <td>{{ formatRupiah($lainya) }}</td>
-                                    <td>{{ formatRupiah($akumulasi) }}</td>
-
+                                    <td>{{ formatRupiah($dithn->pades) }}</td>
+                                    <td>{{ formatRupiah($dithn->lainya) }}</td>
+                                    <td>{{ formatRupiah($dithn->akumulasi) }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="6">Akumulasi</td>

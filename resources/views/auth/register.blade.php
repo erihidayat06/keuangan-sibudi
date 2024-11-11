@@ -10,8 +10,8 @@
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="/assets/img/" rel="icon">
-    <link href="/assets/img/" rel="apple-touch-icon">
+    <link href="/assets/img/logo.png" rel="icon">
+    <link href="/assets/img/logo.png" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -40,9 +40,64 @@
   ======================================================== -->
 </head>
 
+<style>
+    @media only screen and (max-width: 768px) {
+
+        .margin-top {
+            margin-top: 10px !important;
+        }
+
+        .kontak {
+            position: block;
+        }
+    }
+
+    .kontak {
+        height: 60px;
+        max-width: 300px;
+        background-color: white;
+        padding: 5px 10px;
+        border-radius: 0px 20px 20px 0px;
+        position: fixed;
+    }
+
+    .email-kontak {
+        font-size: 12px
+    }
+
+    .tooltip-text {
+        visibility: hidden;
+        width: 150px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        padding: 5px;
+        border-radius: 5px;
+        position: absolute;
+        margin-left: 10px;
+        margin-top: -5px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        display: inline-block;
+    }
+
+    .tooltip-icon.active+.tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
+</style>
+
 <body>
 
     <main>
+        <div class="kontak shadow-sm mt-3 fixed-top">
+            <div class="d-flex justify-content-start">
+                <img src="/assets/img/logo.png" alt="" width="40px" height="40px">
+
+                <span class="email-kontak ms-3">Kontak Kami <br> dany.dwin@gmail.com</span>
+
+            </div>
+        </div>
         <div class="container">
 
             <section
@@ -50,11 +105,17 @@
                 <div class="container">
                     <div class="row cols-1 cols-lg-2">
                         <div class="col d-flex align-items-center justify-content-center d-none d-lg-block"
-                            style=" margin:auto; margin-top: 85px;">
+                            style=" margin:auto; margin-top: 10px;">
                             <div class="text-center">
                                 <h2 class="fw-bold">Selamat Datang</h2>
                                 <h2 class="fw-bold"> di Aplikasi SIBUDI</h2>
                                 <img src="/assets/img/akuntansi.png" alt="">
+                                <p>Aplikasi Keuangan SIBUDI merupakan website yang digunakan untuk mencatat, mengolah
+                                    dan meyajikan laporan keuangan secara akurat,
+                                    Memudahkan bagi pengelola keuangan BUMDesa untuk mengelola keuangan secara mudah,
+                                    dengan fitur yang lebih modern serta menyimpan data dan dokumen keuangan BUMDesa
+                                    secara aman dan terjamin.
+                                    Nikamti semua kemudahan dalam satu aplikasi</p>
                             </div>
                         </div>
                         <div class="text-center d-block d-lg-none mt-3">
@@ -119,7 +180,20 @@
                                             <input id="password-confirm" type="password" class="form-control"
                                                 name="password_confirmation" required autocomplete="new-password">
                                         </div>
+                                        <div class="col-12 mt-3">
+                                            <label for="referral" class="form-label">Pilih BUMDesa</label>
+                                            <select class="form-select @error('referral') is-invalid @enderror"
+                                                id="referral" name="referral">
+                                                <option value="1" {{ old('referral') == '1' ? 'selected' : '' }}>
+                                                    BUMDesa
+                                                </option>
+                                                <option value="0" {{ old('referral') == '0' ? 'selected' : '' }}>
+                                                    BUMDesa
+                                                    Bersama
+                                                </option>
 
+                                            </select>
+                                        </div>
 
                                         <div class="col-12 mt-3">
                                             <button class="btn btn-primary w-100" type="submit">Buat Akun</button>
@@ -159,6 +233,13 @@
 
     <!-- Template Main JS File -->
     <script src="/assets/js/main.js"></script>
+
+
+    <script>
+        function toggleTooltip(element) {
+            element.classList.toggle('active');
+        }
+    </script>
 
 </body>
 

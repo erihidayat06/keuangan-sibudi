@@ -17,16 +17,8 @@ class BangunanController extends Controller
 
         $akumulasi = 0;
         $investasi = 0;
-        foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan;
-            if ((masaPakai($aset->created_at, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
-                $akumulasi = 0;
-            } else {
-                $akumulasi = $akumulasi + $penyusutan;
-            }
-            $investasi = $investasi + $saat_ini;
-        }
+        $akumulasi = $akumulasi + akumulasiPenyusutan($asets)['akumu'];
+        $investasi = $investasi + akumulasiPenyusutan($asets)['inven'];
 
         return view('bangunan.index', [
             "asets" => $asets,
@@ -42,13 +34,9 @@ class BangunanController extends Controller
 
         $akumulasi = 0;
         $investasi = 0;
-        foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = $aset->nilai - $aset->masa_pakai * $penyusutan;
+        $akumulasi = $akumulasi + akumulasiPenyusutan($asets)['akumu'];
+        $investasi = $investasi + akumulasiPenyusutan($asets)['inven'];
 
-            $akumulasi = $akumulasi + $penyusutan;
-            $investasi = $investasi + $saat_ini;
-        }
         $data = [
             "asets" => $asets,
             'akumulasi' => $akumulasi,
@@ -56,7 +44,7 @@ class BangunanController extends Controller
         ];
 
         // Gunakan facade PDF
-        $pdf = PDF::loadView('bangunan.pdf', $data)->setPaper('a4', 'portrait');
+        $pdf = PDF::loadView('bangunan.pdf', $data)->setPaper('f4', 'portrait');
 
         // Mengunduh PDF dengan nama "laporan.pdf"
         return $pdf->stream('laporan.pdf');

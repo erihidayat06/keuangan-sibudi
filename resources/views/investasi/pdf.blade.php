@@ -39,6 +39,7 @@
         border: 1px solid #ddd;
         text-align: left;
         padding: 5px;
+        font-size: 12px
     }
 </style>
 
@@ -47,8 +48,8 @@
         <div class="col-lg-12">
 
             <div class="pagetitle">
-                <h2>Rincian Aset Iventari</h2>
-                <h2>{{ unitUsaha()->nm_bumdes }}</h2>
+                <h3>Rincian Aset Iventari</h3>
+                <h3>{{ unitUsaha()->nm_bumdes }}</h3>
             </div>
 
             <div class="card overflow-auto">
@@ -74,9 +75,9 @@
                             @endphp
                             @foreach ($asets as $aset)
                                 @php
-                                    $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-                                    $saat_ini =
-                                        $aset->nilai * $aset->jumlah - $aset->masa_pakai * $penyusutan * $aset->jumlah;
+                                    $masa_pakai = masaPakai($aset->tgl_beli, $aset->wkt_ekonomis)['masa_pakai'];
+                                    $penyusutan = ($aset->nilai / $aset->wkt_ekonomis) * $aset->jumlah;
+                                    $saat_ini = $aset->nilai * $aset->jumlah - $masa_pakai * $penyusutan;
                                 @endphp
                                 <tr>
                                     <th scope="row">{{ $i++ }}</th>
@@ -86,13 +87,10 @@
                                     <td>{{ formatRupiah($aset->nilai) }}</td> <!-- Format nilai dengan formatRupiah -->
                                     <td>{{ $aset->wkt_ekonomis }}</td>
                                     <td>
-
-                                        {{ $aset->masa_pakai == null ? 0 : $aset->masa_pakai }}
-
+                                        {{ $masa_pakai }}
                                     </td>
                                     <td>{{ formatRupiah($penyusutan) }}</td>
                                     <td>{{ formatRupiah($saat_ini) }}</td>
-
                                 </tr>
                             @endforeach
                             <tr>

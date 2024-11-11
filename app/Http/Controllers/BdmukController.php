@@ -17,17 +17,8 @@ class BdmukController extends Controller
 
         $akumulasi = 0;
         $investasi = 0;
-        foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan;
-
-            if ((masaPakai($aset->created_at, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
-                $akumulasi = 0;
-            } else {
-                $akumulasi = $akumulasi + $penyusutan;
-            }
-            $investasi = $investasi + $saat_ini;
-        }
+        $akumulasi = $akumulasi + akumulasiPenyusutan($asets)['akumu'];
+        $investasi = $investasi + akumulasiPenyusutan($asets)['inven'];
 
         return view('bayar_dimuka.index', [
             "asets" => $asets,
@@ -43,13 +34,9 @@ class BdmukController extends Controller
 
         $akumulasi = 0;
         $investasi = 0;
-        foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = $aset->nilai - $aset->masa_pakai * $penyusutan;
+        $akumulasi = $akumulasi + akumulasiPenyusutan($asets)['akumu'];
+        $investasi = $investasi + akumulasiPenyusutan($asets)['inven'];
 
-            $akumulasi = $akumulasi + $penyusutan;
-            $investasi = $investasi + $saat_ini;
-        }
         $data = [
             "asets" => $asets,
             'akumulasi' => $akumulasi,
@@ -143,6 +130,7 @@ class BdmukController extends Controller
             'wkt_ekonomis' => 'required|min:1',
             'masa_pakai' => '',
         ]);
+        $validated['created_at'] = $request->created_at;
         $validated['user_id'] = auth()->user()->id;
         // Simpan data ke database
         if (Bdmuk::where('id', $bdmuk->id)->update($validated)) {

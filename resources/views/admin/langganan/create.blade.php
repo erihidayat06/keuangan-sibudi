@@ -6,7 +6,8 @@
             Form Input
         </div>
         <div class="card-body">
-            <form action="/admin/langganan" method="POST">
+            <form action="/admin/langganan/{{ Request::is('admin/langganan/bumdesa*') ? 'bumdesa' : 'bumdes-bersama' }}"
+                method="POST">
                 @csrf <!-- Tambahkan token CSRF untuk keamanan -->
 
                 <!-- Input for Jumlah Bulan -->

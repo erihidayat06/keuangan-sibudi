@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('jumlah_bulan');
             $table->integer('harga');
+            $table->enum('jenis', ['bumdes', 'bumdes_bersama']);
             $table->string('waktu');
             $table->timestamps();
         });

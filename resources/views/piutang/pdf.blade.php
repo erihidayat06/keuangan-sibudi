@@ -61,7 +61,7 @@
                             @endphp
                             @foreach ($piutangs as $piutang)
                                 @php
-                                    $sisa = $piutang->nilai - $piutang->pembayaran;
+                                    $sisa_total = $piutang->nilai - $piutang->pembayaran;
                                 @endphp
                                 <tr>
                                     <th scope="row">{{ $i++ }}</th>
@@ -69,7 +69,7 @@
                                     <td>{{ $piutang->keterangan }}</td>
                                     <td>{{ formatRupiah($piutang->nilai) }}</td>
                                     <td>{{ formatRupiah($piutang->pembayaran) }}</td>
-                                    <td>{{ formatRupiah($sisa) }}</td>
+                                    <td>{{ formatRupiah($sisa_total) }}</td>
 
                                 </tr>
                             @endforeach

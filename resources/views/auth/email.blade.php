@@ -105,6 +105,7 @@
                                             <label for="pesan">Pesan</label>
                                             <textarea name="pesan" class="form-control" required></textarea>
                                         </div>
+                                        <input type="hidden" name="detail" value="Telah meminta merubah kata sandi">
                                         <div class="col-12 mt-1 mb-2">
                                             <p class="small mb-0">Sudah punya akun? <a href="/login">Log in</a>
                                             </p>

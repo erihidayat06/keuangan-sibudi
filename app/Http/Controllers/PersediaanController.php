@@ -95,7 +95,7 @@ class PersediaanController extends Controller
             ];
 
         // Gunakan facade PDF
-        $pdf = PDF::loadView('persediaan.pdf', $data)->setPaper('a3', 'portrait');
+        $pdf = PDF::loadView('persediaan.pdf', $data)->setPaper('f4', 'portrait');
 
         // Mengunduh PDF dengan nama "laporan.pdf"
         return $pdf->stream('laporan.pdf');
@@ -157,16 +157,18 @@ class PersediaanController extends Controller
 
             $masuk = $request->masuk - $persediaan->masuk;
 
-            bukuUmum($transasksi, 'debit', 'pupd9876', 'operasional', $laba, null, null, $persediaan->created_at);
-            bukuUmum($transasksi, 'debit', 'kas', 'operasional', $persediaan->hpp * $masuk, null, null, $persediaan->created_at);
+            $year = session('selected_year', date('Y'));
+            $tanggal = date('Y-m-d', strtotime($year . date('-m-d')));
+
+            bukuUmum($transasksi, 'debit', 'pupd9876', 'operasional', $laba, null, null, $tanggal);
+            bukuUmum($transasksi, 'debit', 'kas', 'operasional', $persediaan->hpp * $masuk, null, null, $tanggal);
             Persediaan::where('id', $persediaan->id)->update(['masuk' => $request->masuk]);
         }
         if (isset($request->keluar) && $request->keluar != $persediaan->keluar) {
             $transasksi = 'Kembalikan ' . $request->keluar - $persediaan->keluar . ' ' . $persediaan->item;
             $laba = ($request->keluar - $persediaan->keluar) * ($persediaan->nilai_jual - $persediaan->hpp);
             $keluar = $request->keluar - $persediaan->keluar;
-            bukuUmum('Kas ' .  $transasksi, 'kredit', 'pupd9876', 'operasional', $laba, null, null, $persediaan->created_at);
-            bukuUmum($transasksi, 'kredit', 'kas', 'operasional', $persediaan->hpp * $keluar, null, null, $persediaan->created_at);
+            bukuUmum($transasksi, 'kredit', 'kas', 'operasional', $persediaan->hpp * $keluar, null, null, $tanggal);
             Persediaan::where('id', $persediaan->id)->update(['keluar' => $request->keluar]);
         }
         return redirect()->back()->with('success', 'Data Berhasil dirubah!');

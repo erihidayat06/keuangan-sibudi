@@ -16,8 +16,16 @@ class LanggananController extends Controller
 {
     public function index()
     {
-        $langganans = Langganan::orderBy('jumlah_bulan', 'asc')->get();
-        return view('langganan.index', ['langganans' => $langganans]);
+
+        if (auth()->user()->referral) {
+            $jenis = 'bumdesa';
+        } else {
+            $jenis = 'bumdes-bersama';
+        }
+        $langganans = Langganan::where('jenis', $jenis)->orderBy('jumlah_bulan', 'asc')->get();
+        $langganan_pertama = Langganan::where('jenis', $jenis)->orderBy('jumlah_bulan', 'asc')->first();
+
+        return view('langganan.index', ['langganans' => $langganans, 'mulai' => $langganan_pertama->harga]);
     }
 
     public function createTransaction(Request $request)
@@ -30,24 +38,48 @@ class LanggananController extends Controller
 
         // Ambil durasi langganan dari request
         $duration = $request->input('subscription_duration');
+        if (auth()->user()->referral) {
+            $jenis = 'bumdesa';
+        } else {
+            $jenis = 'bumdes-bersama';
+        }
 
-        $langganan = Langganan::where('jumlah_bulan', $duration)->get()->first();
+        // Cari data langganan sesuai dengan durasi yang dipilih
+        $langganan = Langganan::where('jenis', $jenis)->where('jumlah_bulan', $duration)->first();
         if (!isset($langganan->harga)) {
-            $langganan_harga = 12900;
+            $langganan_harga = 12900; // Harga default jika tidak ditemukan
+            $nama_produk = "Langganan Default";
         } else {
             $langganan_harga = $langganan->harga;
+            $nama_produk = "Langganan " . $langganan->jumlah_bulan . " Bulan";
         }
+
+
         // Set data transaksi
         $params = [
             'transaction_details' => [
                 'order_id' => uniqid(),
-                'gross_amount' => $langganan_harga + 6500,
+                'gross_amount' => $langganan_harga + 6500, // Total transaksi
+            ],
+            'item_details' => [
+                [
+                    'id' => $langganan->id,
+                    'price' => $langganan_harga,
+                    'quantity' => 1,
+                    'name' => $nama_produk,
+                ],
+                [
+                    'id' => $langganan->id,
+                    'price' => 6500,
+                    'quantity' => 1,
+                    'name' => 'Biaya Admin',
+                ],
             ],
             'customer_details' => [
                 'first_name' => auth()->user()->name,
                 'last_name' => '',
                 'email' => auth()->user()->email,
-                'phone' => '',
+                'phone' => '', // Tambahkan nomor telepon jika tersedia
             ],
         ];
 
@@ -57,6 +89,7 @@ class LanggananController extends Controller
         // Kembalikan view dengan Snap Token
         return response()->json(['snapToken' => $snapToken]);
     }
+
 
     public function langgananSuccess(Request $request)
     {

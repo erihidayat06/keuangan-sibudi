@@ -16,6 +16,7 @@
     .table-report th,
     .table-report td {
         padding: 5px 10px;
+        font-size: 12px
     }
 
     .table-report th {

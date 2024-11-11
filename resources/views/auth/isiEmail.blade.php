@@ -8,7 +8,7 @@
 
 <body>
     <h2>Halo, </h2>
-    <p>{{ $details['nama'] }} telah meminta untuk mengganti kata sandi.</p>
+    <p>{{ $details['nama'] . ' ' . $details['detail'] }} .</p>
 
     <p><strong>Detail User:</strong></p>
     <ul>

@@ -31,6 +31,7 @@
         border: 1px solid #ddd;
         text-align: left;
         padding: 3px;
+        font-size: 12px;
     }
 </style>
 
@@ -76,7 +77,7 @@
                                     <td></td>
                                     <td>{{ formatRupiah($saldo) }}</td>
                                     <td></td>
-                                    <td></td>
+
                                 </tr>
                             @endif
                             @foreach ($transaksis as $transaksi)
@@ -118,9 +119,9 @@
                                 </tr>
                             @endforeach
                             <tr class="bg-warning fw-bold">
-                                <td colspan="5">Total Saldo</td>
+                                <td colspan="6">Total Saldo</td>
                                 <td>{{ formatRupiah($saldo) }}</td>
-                                <td colspan="2"></td>
+                                <td></td>
 
                             </tr>
                         </tbody>

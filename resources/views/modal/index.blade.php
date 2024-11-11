@@ -76,6 +76,9 @@
                                 <th scope="col">Sumber</th>
                                 <th scope="col">Modal Desa</th>
                                 <th scope="col">Modal Masyarakat</th>
+                                @can('referral')
+                                    <th scope="col">Modal BUMDesa Bersama</th>
+                                @endcan
                                 <th scope="col">Aksi</th>
                             </tr>
                         </thead>
@@ -90,6 +93,9 @@
                                     <td>{{ $modal->sumber }}</td>
                                     <td>{{ formatRupiah($modal->mdl_desa) }}</td>
                                     <td>{{ formatRupiah($modal->mdl_masyarakat) }}</td>
+                                    @can('referral')
+                                        <td>{{ formatRupiah($modal->mdl_bersama) }}</td>
+                                    @endcan
                                     <td>
                                         <div class="d-flex justify-content-start">
                                             <a href="/modal/{{ $modal->id }}/edit" class="btn btn-sm btn-success"> <i

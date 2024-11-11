@@ -27,6 +27,7 @@
     .table td {
         padding: 12px;
         vertical-align: middle;
+        font-size: 12px;
 
     }
 

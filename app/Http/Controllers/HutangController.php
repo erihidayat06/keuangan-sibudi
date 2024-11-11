@@ -60,6 +60,7 @@ class HutangController extends Controller
             'nilai' => 'required|numeric',
         ]);
         $validated['user_id'] = auth()->user()->id;
+        $validated['created_at'] = created_at();
         Hutang::create($validated);
 
         // Redirect with success message
@@ -89,11 +90,11 @@ class HutangController extends Controller
     public function bayar(Request $request, Hutang $hutang)
     {
 
-
+        $input_pembayaran = str_replace('.', '', $request->pembayaran);
         if ($request->aksi == '+') {
-            $pembayaran = $hutang->pembayaran +  $request->pembayaran;
+            $pembayaran = $hutang->pembayaran +  $input_pembayaran;
         } elseif ($request->aksi == '-') {
-            $pembayaran = $hutang->pembayaran -  $request->pembayaran;
+            $pembayaran = $hutang->pembayaran -  $input_pembayaran;
         }
 
         Hutang::where('id', $hutang->id)->update(['pembayaran' => $pembayaran]);

@@ -31,6 +31,7 @@
         border: 1px solid #ddd;
         text-align: left;
         padding: 3px;
+        font-size: 12px
     }
 </style>
 

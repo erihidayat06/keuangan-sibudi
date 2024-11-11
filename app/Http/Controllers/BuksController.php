@@ -59,7 +59,7 @@ class BuksController extends Controller
         ];
 
         // Gunakan facade PDF
-        $pdf = PDF::loadView('buku_kas.pdf', $data)->setPaper('a2', 'portrait');
+        $pdf = PDF::loadView('buku_kas.pdf', $data)->setPaper('f4', 'portrait');
 
         // Mengunduh PDF dengan nama "laporan.pdf"
         return $pdf->stream('laporan.pdf');

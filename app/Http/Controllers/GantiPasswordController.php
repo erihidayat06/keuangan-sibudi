@@ -28,12 +28,18 @@ class GantiPasswordController extends Controller
             'email' => $request->email,
             'no_telepon' => $request->no_telepon,
             'pesan' => $request->pesan,
+            'detail' => $request->detail,
             'url' => '/ganti-password' // Ganti dengan URL halaman ganti password
         ];
 
         // Kirim email
-        Mail::to('erihidayat549@gmail.com')->send(new GantiPasswordEmail($details));
+        Mail::to('dany.dwin@gmail.com')->send(new GantiPasswordEmail($details));
 
         return back()->with('success', 'Email telah dikirim! Mohon tunggu pesan selanjutnya 1-2 hari');
+    }
+
+    public function kontak()
+    {
+        return view('bantuan.index');
     }
 }

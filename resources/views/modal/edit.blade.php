@@ -52,6 +52,19 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+                        @can('referral')
+                            <!-- MDL bersama Field -->
+
+                            <div class="mb-3">
+                                <label for="mdl_bersama" class="form-label">Modal BUMDesa bersama</label>
+                                <input type="text" class="form-control @error('mdl_bersama') is-invalid @enderror"
+                                    id="mdl_bersama" name="mdl_bersama" onkeyup="onlyNumberAmount(this)"
+                                    value="{{ old('mdl_bersama', formatNomor($modal->mdl_bersama)) }}">
+                                @error('mdl_bersama')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endcan
 
                         <button type="submit" class="btn btn-primary">Update</button>
                     </form>

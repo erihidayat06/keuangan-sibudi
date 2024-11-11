@@ -147,8 +147,11 @@ class PinjamanController extends Controller
 
         $bunga = $pinjaman->alokasi * ($pinjaman->bunga / 100);
 
-        bukuUmum('Bunga Storan ' . $pinjaman->nasabah, 'debit', 'pupj2345', 'operasional', $bunga, null, null, $pinjaman->tgl_pinjam);
-        bukuUmum('Storan ' . $pinjaman->nasabah, 'debit', 'kas', 'operasional', $input_realisasi, null, null, $pinjaman->tgl_pinjam);
+        $year = session('selected_year', date('Y'));
+        $tanggal = date('Y-m-d', strtotime($year . date('-m-d')));
+
+        bukuUmum('Bunga Storan ' . $pinjaman->nasabah, 'debit', 'pupj2345', 'operasional', $bunga, null, null, $tanggal);
+        bukuUmum('Storan ' . $pinjaman->nasabah, 'debit', 'kas', 'operasional', $input_realisasi, null, null, $tanggal);
 
 
         Pinjaman::where('id', $pinjaman->id)->update(['realisasi' => $realisasi, 'angsuran' => $angsuran]);

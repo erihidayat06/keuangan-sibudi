@@ -44,7 +44,7 @@ use App\Models\Rekonsiliasi;
 |
 */
 
-Route::get('/', [ProfileController::class, 'index'])->middleware('auth', 'langganan', 'bumdes');
+Route::get('/', [ProfileController::class, 'index'])->middleware('auth', 'langganan', 'bumdes', 'create.user');
 Route::put('/{profil:id}', [ProfileController::class, 'update'])->middleware('auth', 'langganan', 'bumdes');
 
 // Modal
@@ -66,7 +66,7 @@ Route::get('/export-pdf/buk', [BuksController::class, 'exportPdf'])->middleware(
 Route::resource('/aset/pinjaman', PinjamanController::class)->middleware('auth', 'langganan', 'bumdes');
 Route::put('/aset/pinjaman/bayar/{pinjaman:id}', [PinjamanController::class, 'bayar'])->middleware('auth', 'langganan', 'bumdes');
 Route::get('/export-pdf/pinjaman', [PinjamanController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
-Route::post('/aset/pinjaman/unit/', [PinjamanController::class, 'storeUnit'])->middleware('auth', 'langganan', 'bumdes');
+Route::post('/aset/pinjaman/unit/tambah', [PinjamanController::class, 'storeUnit'])->middleware('auth', 'langganan', 'bumdes');
 
 
 // Piutang
@@ -152,16 +152,36 @@ Route::post('/langganan/berhasil', [LanggananController::class, 'langgananSucces
 
 
 // Admin
-Route::get('/admin', [AdminController::class, 'index'])->middleware('admin');
-Route::get('/admin/data-user', [AdminDataUserController::class, 'index'])->middleware('admin');
-Route::get('/admin/data-user/create', [AdminDataUserController::class, 'create'])->middleware('admin');
-Route::post('/admin/data-user/', [AdminDataUserController::class, 'store'])->middleware('admin');
-Route::put('/admin/data-user/{user:id}', [AdminDataUserController::class, 'ubahPassword'])->middleware('admin');
-Route::resource('/admin/langganan', AdminLanggananController::class)->middleware('admin');
+Route::get('/admin', [AdminController::class, 'index'])->middleware('auth', 'admin');
+Route::get('/admin/data-user', [AdminDataUserController::class, 'index'])->middleware('auth', 'admin');
+Route::get('/admin/data-user/create', [AdminDataUserController::class, 'create'])->middleware('auth', 'admin');
+Route::post('/admin/data-user/', [AdminDataUserController::class, 'store'])->middleware('auth', 'admin');
+Route::put('/admin/data-user/{user:id}', [AdminDataUserController::class, 'ubahPassword'])->middleware('auth', 'admin');
+Route::delete('/admin/data-user/{user:id}', [AdminDataUserController::class, 'destroy'])->middleware('auth', 'admin');
+// Route::resource('/admin/langganan', AdminLanggananController::class)->middleware('auth', 'admin');
+
+
+// Langganan Bumdes
+Route::get('/admin/langganan/bumdesa', [AdminLanggananController::class, 'index']);
+Route::get('/admin/langganan/bumdesa/create', [AdminLanggananController::class, 'create']);
+Route::post('/admin/langganan/bumdesa/', [AdminLanggananController::class, 'store']);
+Route::get('/admin/langganan/bumdesa/{langganan:id}/edit', [AdminLanggananController::class, 'edit']);
+Route::put('/admin/langganan/bumdesa/{langganan:id}', [AdminLanggananController::class, 'update']);
+Route::delete('/admin/langganan/bumdesa/{langganan:id}', [AdminLanggananController::class, 'destroy']);
+
+// Langganan Bumdes Bersama
+Route::get('/admin/langganan/bumdes-bersama', [AdminLanggananController::class, 'index']);
+Route::get('/admin/langganan/bumdes-bersama/create', [AdminLanggananController::class, 'create']);
+Route::post('/admin/langganan/bumdes-bersama/', [AdminLanggananController::class, 'store']);
+Route::get('/admin/langganan/bumdes-bersama/{langganan:id}/edit', [AdminLanggananController::class, 'edit']);
+Route::put('/admin/langganan/bumdes-bersama/{langganan:id}', [AdminLanggananController::class, 'update']);
+Route::delete('/admin/langganan/bumdes-bersama/{langganan:id}', [AdminLanggananController::class, 'destroy']);
 
 // Email
-Route::post('/kirim-email', [GantiPasswordController::class, 'kirimEmail'])->name('kirim-email')->middleware('guest');
+Route::post('/kirim-email', [GantiPasswordController::class, 'kirimEmail'])->name('kirim-email');
 Route::get('/ganti-password', [GantiPasswordController::class, 'index'])->name('kirim-email')->middleware('guest');
+Route::get('/kontak/admin', [GantiPasswordController::class, 'kontak'])->name('kontak')->middleware('auth', 'bumdes');
+
 
 // Auth
 Auth::routes();

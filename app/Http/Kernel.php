@@ -70,5 +70,6 @@ class Kernel extends HttpKernel
         'sudah.langganan' => \App\Http\Middleware\sudahLangganan::class,
         'admin' => \App\Http\Middleware\IsAdmin::class,
         'bumdes' => \App\Http\Middleware\Bumdes::class,
+        'create.user' => \App\Http\Middleware\CreateUser::class
     ];
 }

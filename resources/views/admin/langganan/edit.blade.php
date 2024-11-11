@@ -6,7 +6,9 @@
             Edit Langganan
         </div>
         <div class="card-body">
-            <form action="/admin/langganan/{{ $data->id }}" method="POST">
+            <form
+                action="/admin/langganan/{{ Request::is('admin/langganan/bumdesa*') ? 'bumdesa' : 'bumdes-bersama' }}/{{ $data->id }}"
+                method="POST">
                 @csrf
                 @method('PUT') <!-- Metode PUT untuk update data -->
 

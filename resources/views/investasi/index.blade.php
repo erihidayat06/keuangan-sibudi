@@ -84,10 +84,9 @@
                             @endphp
                             @foreach ($asets as $aset)
                                 @php
-                                    $masa_pakai = masaPakai($aset->tgl_beli, $aset->wkt_ekonomis);
-                                    $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-                                    $saat_ini =
-                                        $aset->nilai * $aset->jumlah - $masa_pakai * $penyusutan * $aset->jumlah;
+                                    $masa_pakai = masaPakai($aset->tgl_beli, $aset->wkt_ekonomis)['masa_pakai'];
+                                    $penyusutan = ($aset->nilai / $aset->wkt_ekonomis) * $aset->jumlah;
+                                    $saat_ini = $aset->nilai * $aset->jumlah - $masa_pakai * $penyusutan;
                                 @endphp
                                 <tr>
                                     <th scope="row">{{ $i++ }}</th>

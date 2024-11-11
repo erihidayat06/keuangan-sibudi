@@ -50,6 +50,7 @@ class CetakLaporanController extends Controller
             'hutang' => $neraca['hutang'],
             'modal_desa' => $neraca['modal_desa'],
             'modal_masyarakat' => $neraca['modal_masyarakat'],
+            'modal_bersama' => $neraca['modal_bersama'],
             'ditahan' => $neraca['ditahan'],
             'laba_rugi_berjalan' => labaRugi(session('selected_year', date('Y')))['totalLabaRugi'],
             'passiva' => $neraca['passiva'],

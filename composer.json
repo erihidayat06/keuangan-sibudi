@@ -37,7 +37,8 @@
         "app/helpers/laba_rugi_helper.php",
         "app/helpers/unit_usaha_helper.php",
         "app/helpers/formatTanggal_helper.php",
-        "app/helpers/update_buku_umum_helper.php"
+        "app/helpers/update_buku_umum_helper.php",
+        "app/helpers/akumulasi_penyusutan_helper.php"
     ]
     },
     "autoload-dev": {

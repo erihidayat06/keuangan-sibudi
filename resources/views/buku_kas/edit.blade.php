@@ -74,55 +74,48 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-
                         <!-- Jenis Laba Rugi Field -->
                         <div class="mb-3">
                             <label for="jenis_lr" class="form-label">Jenis Laba/rugi</label>
                             <select class="form-select @error('jenis_lr') is-invalid @enderror" id="jenis_lr"
                                 name="jenis_lr">
-                                <option value="kas" {{ old('jenis_lr') == 'kas' ? 'selected' : '' }}>Kas
+
+                                <option value="kas" {{ old('jenis_lr', $transaksi) == 'kas' ? 'selected' : '' }}>Kas
                                 </option>
+
                                 <hr>
                                 @foreach ($units as $unit)
                                     <option value="pu{{ $unit->kode }}"
-                                        {{ old('jenis_lr') == 'pu' . $unit->kode ? 'selected' : '' }}>
-                                        Pendapatan
-                                        {{ $unit->nm_unit }}
+                                        {{ old('jenis_lr', $transaksi) == 'pu' . $unit->kode ? 'selected' : '' }}>
+                                        Pendapatan {{ $unit->nm_unit }}
                                     </option>
                                 @endforeach
+
                                 <hr>
                                 @foreach ($units as $unit)
                                     <option value="bo{{ $unit->kode }}"
-                                        {{ old('jenis_lr') == 'bo' . $unit->kode ? 'selected' : '' }}>
-                                        Biaya
-                                        Operasional
-                                        {{ $unit->nm_unit }}
+                                        {{ old('jenis_lr', $transaksi) == 'bo' . $unit->kode ? 'selected' : '' }}>
+                                        Biaya Operasional {{ $unit->nm_unit }}
                                     </option>
                                 @endforeach
 
                                 <hr>
-                                <option value="bno1" {{ old('jenis_lr') == 'bno1' ? 'selected' : '' }}>Gaji Pengurus
-
+                                <option value="bno1" {{ old('jenis_lr', $transaksi) == 'bno1' ? 'selected' : '' }}>
+                                    Gaji Pengurus</option>
+                                <option value="bno2" {{ old('jenis_lr', $transaksi) == 'bno2' ? 'selected' : '' }}>
+                                    Atk
                                 </option>
-                                <option value="bno2" {{ old('jenis_lr') == 'bno2' ? 'selected' : '' }}>Atk
-
-                                </option>
-                                <option value="bno3" {{ old('jenis_lr') == 'bno3' ? 'selected' : '' }}>Rapat-Rapat
-
-                                </option>
-                                <option value="bno4" {{ old('jenis_lr') == 'bno4' ? 'selected' : '' }}>Lain-lain
-
-                                </option>
-                                <option value="bno4" {{ old('jenis_lr') == 'bno4' ? 'selected' : '' }}>Akumulasi
-                                    PEnyusutan
-
-                                </option>
-
+                                <option value="bno3" {{ old('jenis_lr', $transaksi) == 'bno3' ? 'selected' : '' }}>
+                                    Rapat-Rapat</option>
+                                <option value="bno4" {{ old('jenis_lr', $transaksi) == 'bno4' ? 'selected' : '' }}>
+                                    Lain-lain</option>
                             </select>
+
                             @error('jenis_lr')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
 
                         <button type="submit" class="btn btn-primary">Update</button>
                     </form>

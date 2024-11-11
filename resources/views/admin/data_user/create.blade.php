@@ -53,6 +53,19 @@
                     <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required
                         autocomplete="new-password">
                 </div>
+                <div class="col-12 mt-3">
+                    <label for="referral" class="form-label">Pilih BUMDesa</label>
+                    <select class="form-select @error('referral') is-invalid @enderror" id="referral" name="referral">
+                        <option value="1" {{ old('referral') == '1' ? 'selected' : '' }}>
+                            BUMDesa
+                        </option>
+                        <option value="0" {{ old('referral') == '0' ? 'selected' : '' }}>
+                            BUMDesa
+                            Bersama
+                        </option>
+
+                    </select>
+                </div>
 
 
                 <div class="col-12 mt-3">

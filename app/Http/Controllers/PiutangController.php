@@ -93,9 +93,12 @@ class PiutangController extends Controller
             $jenis = 'kredit';
         }
 
+        $year = session('selected_year', date('Y'));
+        $tanggal = date('Y-m-d', strtotime($year . date('-m-d')));
+
 
         if (Piutang::where('id', $piutang->id)->update(['pembayaran' => $pembayaran])) {
-            bukuUmum('Setor ' . $piutang->kreditur, $jenis, 'kas', 'pendanaan', $input_realisasi, null, null, $piutang->created_at);
+            bukuUmum('Setor ' . $piutang->kreditur, $jenis, 'kas', 'pendanaan', $input_realisasi, null, null, $tanggal);
         };
         // Redirect with success message
         return redirect()->route('piutang.index')->with('success', 'piutang berhasil ditambahkan.');

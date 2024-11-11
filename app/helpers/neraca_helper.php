@@ -40,8 +40,12 @@ if (!function_exists('neraca')) {
 
         $bayar_dimuka = 0;
         foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan;
+            if ($aset->wkt_ekonomis != 0) {
+                $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
+            } else {
+                $penyusutan = 0;
+            }
+            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'] * $penyusutan;
             $bayar_dimuka = $bayar_dimuka + $saat_ini;
         }
 
@@ -51,19 +55,24 @@ if (!function_exists('neraca')) {
         foreach ($asets as $aset) {
 
 
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
+            $penyusutan = $aset->nilai / $aset->wkt_ekonomis  * $aset->jumlah;
             $saat_ini =
-                $aset->jumlah * $aset->nilai - masaPakai($aset->tgl_beli, $aset->wkt_ekonomis) * $penyusutan * $aset->jumlah;
+                $aset->jumlah * $aset->nilai - masaPakai($aset->tgl_beli, $aset->wkt_ekonomis)['masa_pakai'] * $penyusutan;
             $investasi = $investasi + $saat_ini;
         }
+
 
         // bangunan
         $asets = Bangunan::user()->whereYear('created_at', '<=', session('selected_year', date('Y')))->get();
 
         $bangunan = 0;
         foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan;
+            if ($aset->wkt_ekonomis != 0) {
+                $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
+            } else {
+                $penyusutan = 0;
+            }
+            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'] * $penyusutan;
             $bangunan = $bangunan + $saat_ini;
         }
 
@@ -72,8 +81,12 @@ if (!function_exists('neraca')) {
         $asets = Aktivalain::user()->whereYear('created_at', '<=', session('selected_year', date('Y')))->get();
         $aktiva_lain = 0;
         foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan;
+            if ($aset->wkt_ekonomis != 0) {
+                $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
+            } else {
+                $penyusutan = 0;
+            }
+            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'] * $penyusutan;
             $aktiva_lain = $aktiva_lain + $saat_ini;
         }
 
@@ -101,6 +114,7 @@ if (!function_exists('neraca')) {
         $modals = Modal::user()->whereYear('created_at', '<=', session('selected_year', date('Y')))->get();
         $modal_desa = $modals->sum('mdl_desa');
         $modal_masyarakat = $modals->sum('mdl_masyarakat');
+        $modal_bersama = $modals->sum('mdl_bersama');
 
         // Ditahan
         $dithns = Dithn::user()->whereYear('created_at', '<=', session('selected_year', date('Y')))->get();
@@ -110,7 +124,7 @@ if (!function_exists('neraca')) {
             $ditahan = $ditahan + $dithn->akumulasi;
         }
         // Total Passiva
-        $passiva =   $totalHutang + $modal_desa + $modal_masyarakat + $ditahan + labaRugi(session('selected_year', date('Y')))['totalLabaRugi'];
+        $passiva =   $totalHutang + $modal_desa + $modal_masyarakat + $modal_bersama + $ditahan + labaRugi(session('selected_year', date('Y')))['totalLabaRugi'];
 
 
         return [
@@ -128,6 +142,7 @@ if (!function_exists('neraca')) {
             'hutang' => $totalHutang,
             'modal_desa' => $modal_desa,
             'modal_masyarakat' => $modal_masyarakat,
+            'modal_bersama' => $modal_bersama,
             'ditahan' => $ditahan,
             'laba_rugi_berjalan' => labaRugi(session('selected_year', date('Y')))['totalLabaRugi'],
             'passiva' => $passiva,

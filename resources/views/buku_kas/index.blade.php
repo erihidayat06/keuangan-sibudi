@@ -130,7 +130,7 @@
                                 </tr>
                             @endforeach
                             <tr class="bg-warning fw-bold">
-                                <td colspan="5">Total Saldo</td>
+                                <td colspan="6">Total Saldo</td>
                                 <td>{{ formatRupiah($saldo) }}</td>
                                 <td colspan="3"></td>
 

@@ -10,8 +10,8 @@
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="/assets/img/" rel="icon">
-    <link href="/assets/img/" rel="apple-touch-icon">
+    <link href="/assets/img/logo.png" rel="icon">
+    <link href="/assets/img/logo.png" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -40,18 +40,32 @@
   ======================================================== -->
 
     <style>
-        @media (max-width: 768px) {
-            .custom-margin {
-                margin-top: 50px;
-                /* Set margin-top khusus untuk layar kecil */
+        .margin-top {
+            margin-top: 150px !important;
+        }
+
+        @media only screen and (max-width: 768px) {
+
+            .margin-top {
+                margin-top: 10px !important;
+            }
+
+            .kontak {
+                position: block;
             }
         }
 
-        @media (min-width: 769px) {
-            .custom-margin {
-                margin-top: 150px;
-                /* Set margin-top khusus untuk layar besar */
-            }
+        .kontak {
+            height: 60px;
+            max-width: 300px;
+            background-color: white;
+            padding: 5px 10px;
+            border-radius: 0px 20px 20px 0px;
+            position: fixed;
+        }
+
+        .email-kontak {
+            font-size: 12px
         }
     </style>
 </head>
@@ -59,26 +73,41 @@
 <body>
 
     <main>
+        <div class="kontak shadow-sm mt-3 fixed-top">
+            <div class="d-flex justify-content-start">
+                <img src="/assets/img/logo.png" alt="" width="40px" height="40px">
+
+                <span class="email-kontak ms-3">Kontak Kami <br> dany.dwin@gmail.com</span>
+
+            </div>
+        </div>
+
         <div class="container">
 
             <section class="">
                 <div class="container">
                     <div class="row cols-1 cols-lg-2">
                         <div class="col d-flex align-items-center justify-content-center d-none d-lg-block"
-                            style=" margin:auto; margin-top: 150px;">
+                            style=" margin:auto; margin-top: 50px;">
                             <div class="text-center">
                                 <h2 class="fw-bold">Selamat Datang</h2>
                                 <h2 class="fw-bold"> di Aplikasi SIBUDI</h2>
                                 <img src="/assets/img/akuntansi.png" alt="">
+                                <p>Aplikasi Keuangan SIBUDI merupakan website yang digunakan untuk mencatat, mengolah
+                                    dan meyajikan laporan keuangan secara akurat,
+                                    Memudahkan bagi pengelola keuangan BUMDesa untuk mengelola keuangan secara mudah,
+                                    dengan fitur yang lebih modern serta menyimpan data dan dokumen keuangan BUMDesa
+                                    secara aman dan terjamin.
+                                    Nikamti semua kemudahan dalam satu aplikasi</p>
                             </div>
                         </div>
-                        <div class="text-center d-block d-lg-none mt-3">
+                        <div class="text-center d-block d-lg-none" style=" margin:auto; margin-top: 100px;">
                             <h2 class="fw-bold">Selamat Datang</h2>
                             <h2 class="fw-bold"> di Aplikasi SIBUDI</h2>
                         </div>
-                        <div class="col-lg-4 mt-3 ">
+                        <div class="col-lg-4 mt-3 margin-top">
 
-                            <div class="card mb-3" style=" margin:auto; margin-top: 150px;">
+                            <div class="card mb-3">
 
                                 <div class="card-body">
 

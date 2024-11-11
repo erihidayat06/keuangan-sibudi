@@ -19,7 +19,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->date('tgl_langganan')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->boolean('status')->default(0);
+            $table->boolean('status')->nullable();
+            $table->boolean('referral')->nullable();
             $table->enum('role', ['bumdes', 'admin'])->default('bumdes');
             $table->rememberToken();
             $table->timestamps();

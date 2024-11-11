@@ -45,25 +45,46 @@
                                 <td>Pernyertaan Modal Masyarakat</td>
                                 <td>{{ formatRupiah($modal_masyarakat) }}</td>
                             </tr>
-                            <tr>
-                                <td>Biaya Dibayar di muka</td>
-                                <td>{{ formatRupiah($bayar_dimuka) }}</td>
-                                <td>{{ $ditahan < 0 ? 'Rugi' : 'Laba' }} ditahan </td>
-                                <td>{{ formatRupiah($ditahan) }}</td>
-                            </tr>
-                            <tr>
-                                <td>Investasi</td>
-                                <td>{{ formatRupiah($investasi) }}</td>
-                                <td>{{ $laba_rugi_berjalan < 0 ? 'Rugi' : 'Laba' }} Berjalan <strong>
-                                    </strong></td>
-                                <td>{{ formatRupiah($laba_rugi_berjalan) }}</td>
-                            </tr>
-                            <tr>
-                                <td>Bangunan</td>
-                                <td>{{ formatRupiah($bangunan) }}</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                            @can('referral')
+                                <tr>
+                                    <td>Biaya Dibayar di muka</td>
+                                    <td>{{ formatRupiah($bayar_dimuka) }}</td>
+                                    <td>Pernyertaan Modal BUMDesa bersama</td>
+                                    <td>{{ formatRupiah($modal_bersama) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Iventaris</td>
+                                    <td>{{ formatRupiah($investasi) }}</td>
+                                    <td>{{ $ditahan < 0 ? 'Rugi' : 'Laba' }} ditahan </td>
+                                    <td>{{ formatRupiah($ditahan) }}</td>
+                                <tr>
+                                    <td>Bangunan</td>
+                                    <td>{{ formatRupiah($bangunan) }}</td>
+                                    <td>{{ $laba_rugi_berjalan < 0 ? 'Rugi' : 'Laba' }} Berjalan <strong>
+                                        </strong></td>
+                                    <td>{{ formatRupiah($laba_rugi_berjalan) }}</td>
+                                </tr>
+                            @else
+                                <tr>
+                                    <td>Biaya Dibayar di muka</td>
+                                    <td>{{ formatRupiah($bayar_dimuka) }}</td>
+                                    <td>{{ $ditahan < 0 ? 'Rugi' : 'Laba' }} ditahan </td>
+                                    <td>{{ formatRupiah($ditahan) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Iventaris</td>
+                                    <td>{{ formatRupiah($investasi) }}</td>
+                                    <td>{{ $laba_rugi_berjalan < 0 ? 'Rugi' : 'Laba' }} Berjalan <strong>
+                                        </strong></td>
+                                    <td>{{ formatRupiah($laba_rugi_berjalan) }}</td>
+
+                                <tr>
+                                    <td>Bangunan</td>
+                                    <td>{{ formatRupiah($bangunan) }}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            @endcan
                             <tr>
                                 <td>Aktiva Lain</td>
                                 <td>{{ formatRupiah($aktiva_lain) }}</td>

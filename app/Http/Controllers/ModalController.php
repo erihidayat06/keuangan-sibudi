@@ -55,6 +55,7 @@ class ModalController extends Controller
             'sumber' => 'required|string|max:100',
             'mdl_desa' => 'max:11',
             'mdl_masyarakat' => 'max:11',
+            'mdl_bersama' => 'max:11',
         ]);
 
         $validated['created_at'] = created_at();
@@ -66,6 +67,8 @@ class ModalController extends Controller
                 bukuUmum('Modal Tambah dari desa', 'debit', 'kas', 'pendanaan', $request->mdl_desa,  'modal', Modal::latest()->first()->id, created_at());
             } elseif (isset($validated['mdl_masyarakat'])) {
                 bukuUmum('Modal Tambah dari masyarakat', 'debit', 'kas', 'pendanaan',  $request->mdl_masyarakat, 'modal', Modal::latest()->first()->id, created_at());
+            } elseif (isset($validated['mdl_bersama'])) {
+                bukuUmum('Modal Tambah dari BUMDesa bersama', 'debit', 'kas', 'pendanaan',  $request->mdl_bersama, 'modal', Modal::latest()->first()->id, created_at());
             }
         };
 
@@ -101,6 +104,7 @@ class ModalController extends Controller
             'sumber' => 'required|string|max:100',
             'mdl_desa' => 'max:11',
             'mdl_masyarakat' => 'max:11',
+            'mdl_bersama' => 'max:11',
         ]);
 
 
@@ -111,6 +115,8 @@ class ModalController extends Controller
                 updateBukuUmum('modal', $modal->id, $request->mdl_desa);
             } elseif ($modal->mdl_masyarakat != null) {
                 updateBukuUmum('modal', $modal->id, $request->mdl_masyarakat);
+            } elseif ($modal->mdl_bersama != null) {
+                updateBukuUmum('modal', $modal->id, $request->mdl_bersama);
             };
         };
         return redirect('/modal');

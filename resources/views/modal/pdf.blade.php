@@ -80,7 +80,9 @@
                                 <th scope="col">Sumber</th>
                                 <th scope="col">Modal Desa</th>
                                 <th scope="col">Modal Masyarakat</th>
-
+                                @can('referral')
+                                    <th scope="col">Modal BUMDesa Bersama</th>
+                                @endcan
                             </tr>
                         </thead>
                         <tbody>
@@ -94,13 +96,15 @@
                                     <td>{{ $modal->sumber }}</td>
                                     <td>{{ formatRupiah($modal->mdl_desa) }}</td>
                                     <td>{{ formatRupiah($modal->mdl_masyarakat) }}</td>
-
+                                    @can('referral')
+                                        <td>{{ formatRupiah($modal->mdl_bersama) }}</td>
+                                    @endcan
                                 </tr>
                             @endforeach
                             <tr style="font-weight: bold; background-color:rgb(125, 224, 125)">
                                 <td colspan="3">Akumulasi</td>
                                 <td>{{ formatRupiah($modals->sum('mdl_desa')) }}</td>
-                                <td>{{ formatRupiah($modals->sum('mdl_desa')) }}</td>
+                                <td>{{ formatRupiah($modals->sum('mdl_masyarakat')) }}</td>
                             </tr>
                         </tbody>
                     </table>

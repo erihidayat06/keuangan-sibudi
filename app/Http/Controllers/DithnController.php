@@ -31,14 +31,15 @@ class DithnController extends Controller
         $dithns = Dithn::user()->get();
 
 
+
         $total = 0;
         foreach ($dithns as $dithn) {
-            $total = $total + ($dithn->nilai * ($dithn->akumulasi / 100));
+            $total = $total + $dithn->akumulasi;
         }
         $data = ['dithns' => $dithns, 'total' => $total];
 
         // Gunakan facade PDF
-        $pdf = PDF::loadView('ditahan.pdf', $data);
+        $pdf = PDF::loadView('ditahan.pdf', $data)->setPaper('f4', 'portrait');
 
         // Mengunduh PDF dengan nama "laporan.pdf"
         return $pdf->stream('laporan.pdf');

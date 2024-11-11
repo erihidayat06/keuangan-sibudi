@@ -19,16 +19,8 @@ class InvestasiController extends Controller
         $akumulasi = 0;
         $investasi = 0;
 
-        foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = ($aset->nilai * $aset->jumlah) - (masaPakai($aset->tgl_beli, $aset->wkt_ekonomis) * $penyusutan * $aset->jumlah);
-            if ((masaPakai($aset->tgl_beli, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
-                $akumulasi = 0;
-            } else {
-                $akumulasi = $akumulasi + $penyusutan;
-            }
-            $investasi = $investasi + $saat_ini;
-        }
+        $investasi += akumulasiPenyusutanIventasi($asets)['inven'];
+        $akumulasi +=  akumulasiPenyusutanIventasi($asets)['akumu'];
 
         // dd($investasi);
 
@@ -46,14 +38,9 @@ class InvestasiController extends Controller
 
         $akumulasi = 0;
         $investasi = 0;
-        foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini =
-                $aset->jumlah * $aset->nilai - $aset->masa_pakai * $penyusutan * $aset->jumlah;
 
-            $akumulasi = $akumulasi + $penyusutan;
-            $investasi = $investasi + $saat_ini;
-        }
+        $investasi += akumulasiPenyusutanIventasi($asets)['inven'];
+        $akumulasi +=  akumulasiPenyusutanIventasi($asets)['akumu'];
 
         $data = [
             "asets" => $asets,

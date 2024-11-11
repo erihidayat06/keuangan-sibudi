@@ -98,25 +98,48 @@
                             <td><span class="ms">Pernyertaan Modal Masyarakat</span></td>
                             <td class="text-red">{{ formatRupiah($modal_masyarakat) }}</td>
                         </tr>
-                        <tr>
-                            <td><span class="ms">Biaya Dibayar di muka</span></td>
-                            <td class="text-red">{{ formatRupiah($bayar_dimuka) }}</td>
-                            <td><span class="ms">{{ $ditahan < 0 ? 'Rugi' : 'Laba' }} ditahan</span> </td>
-                            <td class="text-red">{{ formatRupiah($ditahan) }}</td>
-                        </tr>
-                        <tr>
-                            <td><span class="ms">Investasi</td>
-                            <td class="text-red">{{ formatRupiah($investasi) }}</td>
-                            <td><span class="ms">{{ $laba_rugi_berjalan < 0 ? 'Rugi' : 'Laba' }} Berjalan</span>
-                            </td>
-                            <td class="text-red">{{ formatRupiah($laba_rugi_berjalan) }}</td>
-                        </tr>
-                        <tr>
-                            <td><span class="ms">Bangunan</span></td>
-                            <td class="text-red">{{ formatRupiah($bangunan) }}</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
+                        @can('referral')
+                            <tr>
+                                <td> <span class="ms">Biaya Dibayar di muka</span></td>
+                                <td class="text-red">{{ formatRupiah($bayar_dimuka) }}</td>
+                                <td><span class="ms">Pernyertaan Modal BUMDesa bersama</span></td>
+                                <td class="text-red">{{ formatRupiah($modal_bersama) }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="ms">Iventaris</span></td>
+                                <td class="text-red">{{ formatRupiah($investasi) }}</td>
+                                <td><span class="ms">{{ $ditahan < 0 ? 'Rugi' : 'Laba' }} ditahan </span></td>
+                                <td class="text-red">{{ formatRupiah($ditahan) }}</td>
+                            <tr>
+                                <td><span class="ms">Bangunan</span></td>
+                                <td class="text-red">{{ formatRupiah($bangunan) }}</td>
+                                <td><span class="ms">{{ $laba_rugi_berjalan < 0 ? 'Rugi' : 'Laba' }} Berjalan
+                                    </span><strong>
+                                    </strong></td>
+                                <td class="text-red">{{ formatRupiah($laba_rugi_berjalan) }}</td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td><span class="ms">Biaya Dibayar di muka</span></td>
+                                <td class="text-red">{{ formatRupiah($bayar_dimuka) }}</td>
+                                <td><span class="ms">{{ $ditahan < 0 ? 'Rugi' : 'Laba' }} ditahan </span></td>
+                                <td class="text-red">{{ formatRupiah($ditahan) }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="ms">Iventaris</td>
+                                <td class="text-red"> {{ formatRupiah($investasi) }}</td>
+                                <td><span class="ms">{{ $laba_rugi_berjalan < 0 ? 'Rugi' : 'Laba' }} Berjalan
+                                    </span><strong>
+                                    </strong></td>
+                                <td class="text-red">{{ formatRupiah($laba_rugi_berjalan) }}</td>
+
+                            <tr>
+                                <td><span class="ms">Bangunan</span></td>
+                                <td class="text-red">{{ formatRupiah($bangunan) }}</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        @endcan
                         <tr>
                             <td><span class="ms">Aktiva Lain</span></td>
                             <td class="text-red">{{ formatRupiah($aktiva_lain) }}</td>

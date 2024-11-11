@@ -103,14 +103,17 @@ if (!function_exists('labaRugi')) {
 
 
         foreach ($transaksis as $transaksi) {
-            $month = $transaksi->created_at->month;
+            // Mengonversi 'tanggal' menjadi objek Carbon jika diperlukan
+            $tanggal = \Carbon\Carbon::parse($transaksi->tanggal); // Konversi ke Carbon jika belum berbentuk tanggal
+            $month = $tanggal->month; // Mendapatkan bulan dari kolom tanggal
             $jenis_lr = strtolower($transaksi->jenis_lr); // Mengkonversi ke lowercase untuk kemudahan
             $nilai = $transaksi->nilai;
+
             // Jika jenis_lr adalah kredit, nilai akan negatif
             if ($transaksi->jenis == 'kredit' && in_array($jenis_lr, $jenis_lr_pu)) {
                 $nilai = -$nilai;
             }
-            // dd($nilai);
+
             // Menambah nilai transaksi ke bulan dan jenis_lr yang sesuai
             if (in_array($jenis_lr, $jenis_lr_pu)) {
                 $pendapatanBulan['pu'][$month] += $nilai;
@@ -126,70 +129,23 @@ if (!function_exists('labaRugi')) {
 
 
 
+
         $akumulasi = 0;
-        $investasi = 0;
 
-        $asets = Investasi::user()->get();
-        foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis  * $aset->jumlah;
-            $saat_ini =
-                ($aset->jumlah * $aset->nilai) - (masaPakai($aset->tgl_beli, $aset->wkt_ekonomis) * $penyusutan * $aset->jumlah);
-
-            if ((masaPakai($aset->tgl_beli, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
-                $akumulasi = 0;
-            } else {
-                $akumulasi = $akumulasi + $penyusutan;
-            }
-            $investasi = $investasi + $saat_ini;
-        }
-
-        // dd($akumulasi);
+        $iventaris = Investasi::user()->get();
+        $iventari = akumulasiPenyusutanIventasi($iventaris)['akumu'];
 
 
-        $asets = Bangunan::user()->whereYear('created_at', $tahun_sekarang)->get();
-        foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis * masaPakai($aset->created_at, $aset->wkt_ekonomis);
-            $saat_ini =
-                $aset->jumlah * $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan * $aset->jumlah;
+        $bangunans = Bangunan::user()->get();
+        $bangunan = akumulasiPenyusutan($bangunans)['akumu'];
 
-            if ((masaPakai($aset->created_at, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
-                $akumulasi = 0;
-            } else {
-                $akumulasi = $akumulasi + $penyusutan;
-            }
-            $investasi = $investasi + $saat_ini;
-        }
-        $asets = Bdmuk::user()->whereYear('created_at', $tahun_sekarang)->get();
+        $bdmuks = Bdmuk::user()->get();
+        $bdmuk = akumulasiPenyusutan($bdmuks)['akumu'];
 
+        $aktiva_lain = Aktivalain::user()->get();
+        $aktiva = akumulasiPenyusutan($aktiva_lain)['akumu'];
 
-        foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis * masaPakai($aset->created_at, $aset->wkt_ekonomis);
-            $saat_ini =
-                $aset->jumlah * $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan * $aset->jumlah;
-
-            if ((masaPakai($aset->created_at, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
-                $akumulasi = 0;
-            } else {
-                $akumulasi = $akumulasi + $penyusutan;
-            }
-            $investasi = $investasi + $saat_ini;
-        }
-        $asets = Aktivalain::user()->whereYear('created_at', $tahun_sekarang)->get();
-
-
-        foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis * masaPakai($aset->created_at, $aset->wkt_ekonomis);
-            $saat_ini =
-                $aset->jumlah * $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan * $aset->jumlah;
-
-            if ((masaPakai($aset->created_at, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
-                $akumulasi = 0;
-            } else {
-                $akumulasi = $akumulasi + $penyusutan;
-            }
-            $investasi = $investasi + $saat_ini;
-        }
-
+        $akumulasi = $iventari + $bangunan + $bdmuk + $aktiva;
 
 
 

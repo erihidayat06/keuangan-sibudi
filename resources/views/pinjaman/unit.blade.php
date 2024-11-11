@@ -10,7 +10,7 @@
                     <div class="card-title">
                         Tambah Unit Untuk Pinjaman
                     </div>
-                    <form action="/aset/pinjaman/unit/" method="POST">
+                    <form action="/aset/pinjaman/unit/tambah" method="POST">
                         @csrf <!-- Token CSRF untuk keamanan -->
 
                         <!-- Input for Nama Unit -->

@@ -40,28 +40,15 @@ class AdminDataUserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|min:3|max:100',
             'email' => 'required|email',
+            'referral' => 'required',
         ]);
 
         $validated['password'] = Hash::make($request->password);
         $validated['tgl_langganan'] = date('Y-m-d', strtotime('+3 months'));
         $validated['status'] = true;
 
-        $userId = auth()->user()->id;
 
-        $existingEkuit = Ekuit::where('user_id', $userId)->first();
 
-        if (!$existingEkuit) {
-            Ekuit::create(['user_id' => $userId]);
-        }
-
-        $rekonsiliasi = Rekonsiliasi::where('user_id', $userId)->first();
-
-        if (!$rekonsiliasi) {
-            Rekonsiliasi::insert([
-                ['posisi' => 'Kas di tangan', 'user_id' => $userId],
-                ['posisi' => 'Bank Jateng', 'user_id' => $userId]
-            ]);
-        }
         if (User::create($validated)) {
             $userId = User::latest()->first()->id;
 
@@ -83,5 +70,12 @@ class AdminDataUserController extends Controller
         }
 
         return redirect('/admin/data-user')->with('success', 'User Berhasil di tambah');
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+
+        return redirect()->back()->with('error', 'User Berhasil di hapus');
     }
 }

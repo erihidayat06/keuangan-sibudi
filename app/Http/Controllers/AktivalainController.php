@@ -17,17 +17,9 @@ class AktivalainController extends Controller
 
         $akumulasi = 0;
         $investasi = 0;
-        foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis) * $penyusutan;
+        $akumulasi = $akumulasi + akumulasiPenyusutan($asets)['akumu'];
+        $investasi = $investasi + akumulasiPenyusutan($asets)['inven'];
 
-            if ((masaPakai($aset->created_at, $aset->wkt_ekonomis) == $aset->wkt_ekonomis)) {
-                $akumulasi = 0;
-            } else {
-                $akumulasi = $akumulasi + $penyusutan;
-            }
-            $investasi = $investasi + $saat_ini;
-        }
 
         return view('aktiva.index', [
             "asets" => $asets,
@@ -45,13 +37,9 @@ class AktivalainController extends Controller
 
         $akumulasi = 0;
         $investasi = 0;
-        foreach ($asets as $aset) {
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            $saat_ini = $aset->nilai - $aset->masa_pakai * $penyusutan;
+        $akumulasi = $akumulasi + akumulasiPenyusutan($asets)['akumu'];
+        $investasi = $investasi + akumulasiPenyusutan($asets)['inven'];
 
-            $akumulasi = $akumulasi + $penyusutan;
-            $investasi = $investasi + $saat_ini;
-        }
         $data = [
             "asets" => $asets,
             'akumulasi' => $akumulasi,
@@ -59,7 +47,7 @@ class AktivalainController extends Controller
         ];
 
         // Gunakan facade PDF
-        $pdf = PDF::loadView('aktiva.pdf', $data)->setPaper('a4', 'portrait');
+        $pdf = PDF::loadView('aktiva.pdf', $data)->setPaper('f4', 'portrait');
 
         // Mengunduh PDF dengan nama "laporan.pdf"
         return $pdf->stream('laporan.pdf');
@@ -148,6 +136,7 @@ class AktivalainController extends Controller
             'masa_pakai' => '',
         ]);
         $validated['user_id'] = auth()->user()->id;
+        $validated['created_at'] = $request->created_at;
         // Simpan data ke database
         if (Aktivalain::where('id', $aktivalain->id)->update($validated)) {
             updateBukuUmum('aktiva_lain', $aktivalain->id, $request->nilai);
