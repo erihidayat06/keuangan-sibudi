@@ -15,4 +15,9 @@ class Ekuit extends Model
     {
         return $query->where('user_id', auth()->user()->id);
     }
+
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
 }

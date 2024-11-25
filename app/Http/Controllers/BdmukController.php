@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Buk;
 use App\Models\Bdmuk;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BdmukController extends Controller
 {
@@ -73,10 +74,13 @@ class BdmukController extends Controller
         ]);
         $validated['user_id'] = auth()->user()->id;
         $validated['created_at'] = $request->created_at;
-
+        $id = rendem();
+        $bdmuk = Bdmuk::create($validated);
         // Simpan data ke database
-        if (Bdmuk::create($validated) && $request->has('no_kas')) {
-            bukuUmum('Dibayar di Muka ' . $request->keterangan, 'kredit', 'kas', 'operasional', $request->nilai, 'bdmuk', Bdmuk::latest()->first()->id, $request->created_at);
+        if ($bdmuk && $request->has('no_kas')) {
+            $buk =    bukuUmum('Dibayar di Muka ' . $request->keterangan, 'kredit', 'kas', 'operasional', $request->nilai, 'bdmuk', $bdmuk->id, $request->created_at);
+            histori($id, 'bdmuks', $validated, 'create', $bdmuk->id);
+            histori($id, 'buks', $buk->toArray(), 'create', $buk->id);
         };
 
         // Redirect ke halaman daftar aset dengan pesan sukses
@@ -132,6 +136,13 @@ class BdmukController extends Controller
         ]);
         $validated['created_at'] = $request->created_at;
         $validated['user_id'] = auth()->user()->id;
+        $id = rendem();
+        $buk = Buk::where(
+            'akun',
+            'bdmuk'
+        )->firstWhere('id_akun', $bdmuk->id);
+        histori($id, 'bdmuks', $bdmuk->toArray(), 'update', $bdmuk->id);
+        histori($id, 'buks', $buk->toArray(), 'update', $buk->id);
         // Simpan data ke database
         if (Bdmuk::where('id', $bdmuk->id)->update($validated)) {
             updateBukuUmum('bdmuk', $bdmuk->id, $request->nilai);
@@ -146,6 +157,7 @@ class BdmukController extends Controller
      */
     public function destroy(Bdmuk $bdmuk)
     {
+        histori(rendem(), 'bdmuks', $bdmuk->toArray(), 'delete', $bdmuk->id);
         $bdmuk->delete();
 
         // Redirect ke halaman daftar aset dengan pesan sukses

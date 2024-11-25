@@ -29,6 +29,7 @@ use App\Http\Controllers\LaporanLabaRugiController;
 use App\Http\Controllers\LaporanPerubahanModalController;
 use App\Http\Controllers\RekonsiliasiController;
 use App\Http\Controllers\TahunController;
+use App\Http\Controllers\UndoController;
 use App\Http\Controllers\UnitController;
 use App\Mail\GantiPasswordEmail;
 use App\Models\Rekonsiliasi;
@@ -76,6 +77,7 @@ Route::get('/export-pdf/piutang', [PiutangController::class, 'exportPdf'])->midd
 
 // Persedian
 Route::resource('/aset/persediaan', PersediaanController::class)->middleware('auth', 'langganan', 'bumdes');
+Route::get('/aset/persediaan/reset/set-ulang', [PersediaanController::class, 'reset'])->middleware('auth', 'langganan', 'bumdes');
 Route::put('/aset/persedian/jual/{persediaan:id}', [PersediaanController::class, 'penjualan'])->middleware('auth', 'langganan', 'bumdes');
 Route::get('/export-pdf/persediaan', [PersediaanController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
 Route::post('/aset/persediaan/unit/tambah', [PersediaanController::class, 'storeUnit'])->middleware('auth', 'langganan', 'bumdes');
@@ -157,6 +159,7 @@ Route::get('/admin/data-user', [AdminDataUserController::class, 'index'])->middl
 Route::get('/admin/data-user/create', [AdminDataUserController::class, 'create'])->middleware('auth', 'admin');
 Route::post('/admin/data-user/', [AdminDataUserController::class, 'store'])->middleware('auth', 'admin');
 Route::put('/admin/data-user/{user:id}', [AdminDataUserController::class, 'ubahPassword'])->middleware('auth', 'admin');
+Route::put('/admin/langganan/{user:id}', [AdminDataUserController::class, 'langganan'])->middleware('auth', 'admin');
 Route::delete('/admin/data-user/{user:id}', [AdminDataUserController::class, 'destroy'])->middleware('auth', 'admin');
 // Route::resource('/admin/langganan', AdminLanggananController::class)->middleware('auth', 'admin');
 
@@ -182,6 +185,9 @@ Route::post('/kirim-email', [GantiPasswordController::class, 'kirimEmail'])->nam
 Route::get('/ganti-password', [GantiPasswordController::class, 'index'])->name('kirim-email')->middleware('guest');
 Route::get('/kontak/admin', [GantiPasswordController::class, 'kontak'])->name('kontak')->middleware('auth', 'bumdes');
 
+
+// Undo
+Route::get('/undo', [UndoController::class, 'undoController'])->name('undo');
 
 // Auth
 Auth::routes();

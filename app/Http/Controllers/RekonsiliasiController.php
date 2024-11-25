@@ -52,7 +52,11 @@ class RekonsiliasiController extends Controller
         ]);
         $validated['user_id'] = auth()->user()->id;
 
-        Rekonsiliasi::create($validated);
+        $rekon =   Rekonsiliasi::create($validated);
+
+        if ($rekon) {
+            histori(rendem(), 'rekonsiliasis', $validated, 'create', $rekon->id);
+        }
 
         return redirect()->back()->with('success', 'Berhasil menambahakan posisi');
     }
@@ -85,7 +89,7 @@ class RekonsiliasiController extends Controller
         $validated['jumlah'] = str_replace('.', '', $request->jumlah);
 
         Rekonsiliasi::where('id', $rekonsiliasi->id)->update($validated);
-
+        histori(rendem(), 'rekonsiliasis', $rekonsiliasi->toArray(), 'update', $rekonsiliasi->id);
         return redirect()->back()->with('success', 'Rekonsiliasi berhasil diupdate.');
     }
     /**
@@ -95,8 +99,15 @@ class RekonsiliasiController extends Controller
     {
         $rekonsiliasiData = $request->input('rekonsiliasi');
 
+        $id = rendem();
+
         foreach ($rekonsiliasiData as $data) {
-            Rekonsiliasi::where('id', $data['id'])->update(['jumlah' => $data['jumlah']]);
+            $dataRekon = Rekonsiliasi::find($data['id']);
+            $rekon = Rekonsiliasi::where('id', $data['id'])->update(['jumlah' => $data['jumlah']]);
+
+            if ($rekon) {
+                histori($id, 'rekonsiliasis', ['jumlah' => $dataRekon->jumlah], 'update', $data['id']);
+            }
         }
 
         return redirect()->back()->with('success', 'Rekonsiliasi berhasil diupdate.');
@@ -107,6 +118,7 @@ class RekonsiliasiController extends Controller
      */
     public function destroy(Rekonsiliasi $rekonsiliasi)
     {
+        histori(rendem(), 'rekonsiliasis', $rekonsiliasi->toArray(), 'delete', $rekonsiliasi->id);
         $rekonsiliasi->delete();
 
         return redirect()->back()->with('error', 'Rekonsiliasi berhasil dihapus.');

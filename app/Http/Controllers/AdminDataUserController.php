@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Ekuit;
 use App\Models\Profil;
+use App\Models\Langganan;
 use App\Models\Rekonsiliasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -14,7 +15,8 @@ class AdminDataUserController extends Controller
     public function index()
     {
         $users = User::latest()->latest()->get();
-        return view('admin.data_user.index', ['users' => $users]);
+        $langganans = Langganan::orderBy('jumlah_bulan', 'asc')->get();
+        return view('admin.data_user.index', ['users' => $users, 'langganans' => $langganans]);
     }
 
     public function ubahPassword(Request $request, User $user)
@@ -28,6 +30,30 @@ class AdminDataUserController extends Controller
         User::where('id', $user->id)->update($validated);
 
         return redirect('/admin/data-user')->with('success', $user->name . ' Berhasil dirubah passwordnya');
+    }
+
+    public function langganan(Request $request, User $user)
+    {
+        $validated = $request->validate([]);
+
+        // Get the current date
+        $currentDate = now();
+
+        // Check if the user's subscription date (`tanggal_langganan`) is greater than the current date
+        if ($user->tgl_langganan && $user->tgl_langganan > $currentDate) {
+            // Add the subscription months to the existing `tanggal_langganan`
+            $validated['tgl_langganan'] = date('Y-m-d', strtotime('+' . $request->langganan . ' months', strtotime($user->tgl_langganan)));
+        } else {
+            // Add the subscription months to today's date
+            $validated['tgl_langganan'] = date('Y-m-d', strtotime('+' . $request->langganan . ' months', strtotime($currentDate)));
+        }
+
+        $validated['status'] = true;
+
+
+        User::where('id', $user->id)->update($validated);
+
+        return redirect('/admin/data-user')->with('success', $user->name . ' Berhasil diupdate Langganan');
     }
 
     public function create()

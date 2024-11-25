@@ -12,6 +12,7 @@ class UnitController extends Controller
      */
     public function index()
     {
+        // dd(session('histori'));
         $units = Unit::user()->get();
         return view('unit_usaha.index', ['units' => $units]);
     }
@@ -38,7 +39,10 @@ class UnitController extends Controller
 
         $validated['kode'] =   $this->getInitials($request->nm_unit);
 
-        Unit::create($validated);
+        $unitBaru = Unit::create($validated);
+        if ($unitBaru) {
+            histori(rendem(), 'units', $validated, 'create', $unitBaru->id);
+        };
 
         return redirect('/unit')->with('success', 'Unit berhasil ditambahkan!');
     }
@@ -53,8 +57,14 @@ class UnitController extends Controller
         // Gabungkan hasil menjadi satu string
         $initialsString = implode("", $initials);
 
-        // Tambahkan nomor acak 4 digit di belakangnya
-        $randomNumber = rand(1000, 9999);
+        // Menggunakan waktu saat ini sebagai basis (dalam mikrodetik untuk meningkatkan keunikan)
+        $time = microtime();
+
+        // Hash waktu dengan md5 dan ambil 4 karakter pertama
+        $randomNumber = substr(md5($time), 0, 4);
+
+        // // Tambahkan nomor acak 4 digit di belakangnya
+        // $randomNumber = rand(1000, 9999);
 
         return $initialsString . $randomNumber;
     }
@@ -89,6 +99,7 @@ class UnitController extends Controller
         $validated['user_id'] = auth()->user()->id;
 
         Unit::where('id', $unit->id)->update($validated);
+        histori(rendem(), 'units', $unit->toArray(), 'update', $unit->id);
 
         return redirect('/unit')->with('success', 'Unit berhasil ditambahkan!');
     }
@@ -98,6 +109,7 @@ class UnitController extends Controller
      */
     public function destroy(Unit $unit)
     {
+        histori(rendem(), 'units', $unit->toArray(), 'delete', $unit->id);
         $unit->delete();
         return redirect('/unit')->with('error', 'Unit berhasil dihapus!');
     }

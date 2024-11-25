@@ -85,10 +85,11 @@
 
 
                         <div class="mb-3">
-                            <label for="masuk" class="form-label">Masuk</label>
-                            <input type="text" name="masuk" id="masuk"
-                                class="form-control @error('masuk') is-invalid @enderror" onkeyup="onlyNumberAmount(this)"
-                                value="{{ old('masuk', formatNomor($barang->masuk)) }}">
+                            <label for="masuk" class="form-label">Penjualan</label>
+                            <input type="number" name="masuk" id="masuk"
+                                class="form-control @error('masuk') is-invalid @enderror"
+                                value="{{ old('masuk', formatNomor($barang->masuk)) }}"
+                                min="{{ $barang->masuk == null ? 0 : $barang->masuk }}">
                             @error('masuk')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -97,10 +98,11 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="keluar" class="form-label">Keluar</label>
-                            <input type="text" name="keluar" id="keluar"
-                                class="form-control @error('keluar') is-invalid @enderror" onkeyup="onlyNumberAmount(this)"
-                                value="{{ old('keluar', formatNomor($barang->keluar)) }}">
+                            <label for="keluar" class="form-label">Pembelian</label>
+                            <input type="number" name="keluar" id="keluar"
+                                class="form-control @error('keluar') is-invalid @enderror"
+                                value="{{ old('keluar', formatNomor($barang->keluar)) }}"
+                                min="{{ $barang->masuk == null ? 0 : $barang->keluar }}">
                             @error('keluar')
                                 <div class="invalid-feedback">
                                     {{ $message }}

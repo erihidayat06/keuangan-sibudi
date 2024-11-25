@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Buk;
 use App\Models\Bangunan;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BangunanController extends Controller
 {
@@ -44,7 +45,7 @@ class BangunanController extends Controller
         ];
 
         // Gunakan facade PDF
-        $pdf = PDF::loadView('bangunan.pdf', $data)->setPaper('f4', 'portrait');
+        $pdf = PDF::loadView('bangunan.pdf', $data)->setPaper([0, 0, 595.276, 935.433], 'portrait');
 
         // Mengunduh PDF dengan nama "laporan.pdf"
         return $pdf->stream('laporan.pdf');
@@ -72,10 +73,13 @@ class BangunanController extends Controller
         $validated['user_id'] = auth()->user()->id;
         $validated['masa_pakai'] = 1;
         $validated['created_at'] = $request->created_at;
-
+        $bangunan = Bangunan::create($validated);
+        $id = rendem();
         // Simpan data ke database
-        if (Bangunan::create($validated)) {
-            bukuUmum('Bangunan ' . $request->jenis, 'kredit', 'kas', 'operasional', $request->nilai, 'bangunan', Bangunan::latest()->first()->id, $request->created_at);
+        if ($bangunan) {
+            $buk =    bukuUmum('Bangunan ' . $request->jenis, 'kredit', 'kas', 'operasional', $request->nilai, 'bangunan', $bangunan->id, $request->created_at);
+            histori($id, 'bangunans', $validated, 'create', $bangunan->id);
+            histori($id, 'buks', $buk, 'create', $buk->id);
         };
 
         // Redirect ke halaman daftar aset dengan pesan sukses
@@ -132,9 +136,14 @@ class BangunanController extends Controller
         ]);
         $validated['user_id'] = auth()->user()->id;
         $validated['created_at'] = $request->created_at;
+        $id = rendem();
+        $buk = Buk::where('akun', 'bangunan')->firstWhere('id_akun', $bangunan->id);
+        histori($id, 'bangunans', $bangunan->toArray(), 'update', $bangunan->id);
         // Simpan data ke database
         if (Bangunan::where('id', $bangunan->id)->update($validated)) {
             updateBukuUmum('bangunan', $bangunan->id, $request->nilai);
+
+            histori($id, 'buks', ['nilai' => $buk->nilai], 'update', $buk->id);
         };
 
         // Redirect ke halaman daftar aset dengan pesan sukses
@@ -146,6 +155,7 @@ class BangunanController extends Controller
      */
     public function destroy(Bangunan $bangunan)
     {
+        histori(rendem(), 'bangunans', $bangunan->toArray(), 'delete', $bangunan->id);
         $bangunan->delete();
 
         // Redirect ke halaman daftar aset dengan pesan sukses

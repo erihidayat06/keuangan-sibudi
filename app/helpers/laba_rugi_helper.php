@@ -162,7 +162,6 @@ if (!function_exists('labaRugi')) {
         $akumulasilabaRugi = array_sum($pendapatanBulan['pu']) - (array_sum($pendapatanBulan['bo']) + array_sum($pendapatanBulan['bno']) + $akumulasi);
 
 
-
         $akumulasiBiaya = $akumulasitotalBiaya + $akumulasi;
         $totalLabaRugi = $akumulasilabaRugi;
 

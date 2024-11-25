@@ -80,9 +80,12 @@ class InvestasiController extends Controller
 
         $validated['user_id'] = auth()->user()->id;
         $validated['created_at'] = created_at();
-
-        if (Investasi::create($validated)) {
-            bukuUmum('Investasi ' . $request->item, 'kredit', 'kas', 'iventasi', $request->nilai * $request->jumlah, 'investasi', Investasi::latest()->first()->id, $request->tgl_beli);
+        $investasi = Investasi::create($validated);
+        $id = rendem();
+        if ($investasi) {
+            $buk =  bukuUmum('Investasi ' . $request->item, 'kredit', 'kas', 'iventasi', $request->nilai * $request->jumlah, 'investasi', Investasi::latest()->first()->id, $request->tgl_beli);
+            histori($id, 'investasis', $validated, 'create', $investasi->id);
+            histori($id, 'buks', $validated, 'create', $buk->id);
         };
 
 
@@ -141,9 +144,14 @@ class InvestasiController extends Controller
         ]);
 
         $validated['user_id'] = auth()->user()->id;
+        $buk = Buk::where('akun', 'investasi')->firstWhere('id_akun', $investasi->id);
+        $id = rendem();
 
+        histori($id, 'investasis', $investasi->toArray(), 'update', $investasi->id);
         if (Investasi::where('id', $investasi->id)->update($validated)) {
-            updateBukuUmum('investasi', $investasi->id, $request->nilai);
+            histori($id, 'buks', ['nilai' => $buk->nilai], 'update', $buk->id);
+
+            updateBukuUmum('investasi', $investasi->id, $request->nilai * $request->jumlah);
         };
 
         return redirect('/aset/investasi')->with('success', 'Aset berhasil diubah');
@@ -154,6 +162,7 @@ class InvestasiController extends Controller
      */
     public function destroy(Investasi $investasi)
     {
+        histori(rendem(), 'investasis', $investasi->toArray(), 'delete', $investasi->id);
         $investasi->delete();
 
         return redirect('/aset/investasi')->with('error', 'Aset berhasil dihapus');

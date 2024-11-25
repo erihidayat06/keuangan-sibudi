@@ -13,7 +13,7 @@
     .table-report th,
     .table-report td {
 
-        font-size: 12px
+        font-size: 16px
     }
 
     .table-report th {

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Buk;
 use App\Models\Aktivalain;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AktivalainController extends Controller
 {
@@ -47,7 +48,7 @@ class AktivalainController extends Controller
         ];
 
         // Gunakan facade PDF
-        $pdf = PDF::loadView('aktiva.pdf', $data)->setPaper('f4', 'portrait');
+        $pdf = PDF::loadView('aktiva.pdf', $data)->setPaper([0, 0, 595.276, 935.433], 'portrait');
 
         // Mengunduh PDF dengan nama "laporan.pdf"
         return $pdf->stream('laporan.pdf');
@@ -76,9 +77,14 @@ class AktivalainController extends Controller
         $validated['user_id'] = auth()->user()->id;
         $validated['masa_pakai'] = 1;
         $validated['created_at'] = $request->created_at;
+        $id = rendem();
+        $aktivalain = Aktivalain::create($validated);
         // Simpan data ke database
-        if (Aktivalain::create($validated) && $request->has('no_kas')) {
-            bukuUmum('Aktiva Lain ' . $request->jenis, 'kredit', 'kas', 'operasional', $request->nilai, 'aktiva_lain', Aktivalain::latest()->first()->id, $request->created_at);
+        if ($aktivalain && $request->has('no_kas')) {
+            $buk =  bukuUmum('Aktiva Lain ' . $request->jenis, 'kredit', 'kas', 'operasional', $request->nilai, 'aktiva_lain', $aktivalain->id, $request->created_at);
+
+            histori($id, 'aktivalains', $validated, 'create', $aktivalain->id);
+            histori($id, 'buks', $buk, 'create', $buk->id);
         };
 
         // Redirect ke halaman daftar aset dengan pesan sukses
@@ -137,8 +143,18 @@ class AktivalainController extends Controller
         ]);
         $validated['user_id'] = auth()->user()->id;
         $validated['created_at'] = $request->created_at;
+        $id = rendem();
+        $buk = Buk::where(
+            'akun',
+            'aktiva_lain'
+        )->firstWhere('id_akun', $aktivalain->id);
+
+        histori($id, 'aktivalains', $aktivalain->toArray(), 'update', $aktivalain->id);
         // Simpan data ke database
         if (Aktivalain::where('id', $aktivalain->id)->update($validated)) {
+            histori($id, 'buks', ['nilai' => $buk->nilai], 'update', $buk->id);
+
+
             updateBukuUmum('aktiva_lain', $aktivalain->id, $request->nilai);
         };
 
@@ -151,6 +167,7 @@ class AktivalainController extends Controller
      */
     public function destroy(Aktivalain $aktivalain)
     {
+        histori(rendem(), 'aktivalains', $aktivalain->toArray(), 'delete', $aktivalain->id);
         $aktivalain->delete();
 
         // Redirect ke halaman daftar aset dengan pesan sukses

@@ -16,7 +16,7 @@
     .table-report th,
     .table-report td {
         padding: 5px 10px;
-        font-size: 12px
+        font-size: 16px
     }
 
     .table-report th {
@@ -56,7 +56,7 @@
                 <td colspan="2">Kas Awal (1 Januari)</td>
                 <td class="text-end">2024</td>
                 <td class="text-end red-text red-text">
-                    {{ isset($buku_umum->where('transaksi', 'Kas Awal')->first()->nilai) ? formatRupiah($buku_umum->where('transaksi', 'Kas Awal')->first()->nilai) : 'Rp0' }}
+                    {{ formatRupiah($saldo) }}
                 </td>
             </tr>
 

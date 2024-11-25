@@ -70,8 +70,9 @@
                                 @php
                                     $nilai_awal = $barang->jml_awl * $barang->hpp;
                                     $jumlah_akhir = $barang->jml_awl - ($barang->masuk - $barang->keluar);
+                                    $jumlah = $barang->jml_awl - $barang->masuk;
                                     $nilai_akhir = $jumlah_akhir * $barang->hpp;
-                                    $laba = ($barang->jml_awl - $jumlah_akhir) * ($barang->nilai_jual - $barang->hpp);
+                                    $laba = ($barang->jml_awl - $jumlah) * ($barang->nilai_jual - $barang->hpp);
                                 @endphp
                                 <tr>
                                     <th scope="row">{{ $i++ }}</th>

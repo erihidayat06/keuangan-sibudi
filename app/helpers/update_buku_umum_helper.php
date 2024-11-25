@@ -20,6 +20,7 @@ if (!function_exists('akumulasiPenyusutan')) {
         $currentMonth = date('m'); // Mendapatkan bulan saat ini (format angka 2 digit)
 
         foreach ($asets as $aset) {
+
             if ($aset->wkt_ekonomis != 0) {
                 $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
             } else {
@@ -34,8 +35,11 @@ if (!function_exists('akumulasiPenyusutan')) {
                 // Jika Oktober hingga Desember, set akumulasi penyusutan menjadi 0
                 $akumulasi = 0;
             } else {
+                if ($saat_ini == 0) {
+                    $akumulasi += 0;
+                }
                 // Jika belum mencapai masa ekonomis penuh, tambahkan penyusutan ke akumulasi
-                if (masaPakai($aset->created_at, $aset->wkt_ekonomis)['tahun'] < $aset->wkt_ekonomis) {
+                elseif (masaPakai($aset->created_at, $aset->wkt_ekonomis)['tahun'] < $aset->wkt_ekonomis) {
                     $akumulasi += $penyusutan;
                 }
             }
@@ -64,13 +68,15 @@ if (!function_exists('akumulasiPenyusutanIventasi')) {
             }
 
             $saat_ini = ($aset->jumlah * $aset->nilai) - (masaPakai($aset->tgl_beli, $aset->wkt_ekonomis)['masa_pakai'] * $penyusutan);
-
             // Jika bulan saat ini adalah antara Oktober dan Desember, set akumulasi menjadi 0
             if ($currentMonth >= 1 && $currentMonth <= 4) {
                 $akumulasi = 0;
             } else {
+                if ($saat_ini == 0) {
+                    $akumulasi += 0;
+                }
                 // Jika belum mencapai masa ekonomis penuh, tambahkan penyusutan ke akumulasi
-                if (masaPakai($aset->created_at, $aset->wkt_ekonomis)['tahun'] < $aset->wkt_ekonomis) {
+                elseif (masaPakai($aset->created_at, $aset->wkt_ekonomis)['tahun'] < $aset->wkt_ekonomis) {
                     $akumulasi += $penyusutan;
                 }
             }

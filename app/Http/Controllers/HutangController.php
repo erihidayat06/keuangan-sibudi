@@ -61,7 +61,11 @@ class HutangController extends Controller
         ]);
         $validated['user_id'] = auth()->user()->id;
         $validated['created_at'] = created_at();
-        Hutang::create($validated);
+        $hutang =  Hutang::create($validated);
+
+        if ($hutang) {
+            histori(rendem(), 'hutangs', $validated, 'create', $hutang->id);
+        }
 
         // Redirect with success message
         return redirect()->route('hutang.index')->with('success', 'Hutang berhasil ditambahkan.');
@@ -90,6 +94,8 @@ class HutangController extends Controller
     public function bayar(Request $request, Hutang $hutang)
     {
 
+        $hutang_lama = $hutang->toArray();
+
         $input_pembayaran = str_replace('.', '', $request->pembayaran);
         if ($request->aksi == '+') {
             $pembayaran = $hutang->pembayaran +  $input_pembayaran;
@@ -98,6 +104,7 @@ class HutangController extends Controller
         }
 
         Hutang::where('id', $hutang->id)->update(['pembayaran' => $pembayaran]);
+        histori(rendem(), 'hutangs', $hutang_lama, 'update', $hutang->id);
         // Redirect with success message
         return redirect()->route('hutang.index')->with('success', 'Hutang berhasil ditambahkan.');
     }
@@ -115,6 +122,8 @@ class HutangController extends Controller
         $validated['user_id'] = auth()->user()->id;
         Hutang::where('id', $hutang->id)->update($validated);
 
+        histori(rendem(), 'hutangs', $hutang->toArray(), 'update', $hutang->id);
+
         // Redirect with success message
         return redirect()->route('hutang.index')->with('success', 'Hutang berhasil diubah.');
     }
@@ -125,6 +134,7 @@ class HutangController extends Controller
     public function destroy(Hutang $hutang)
     {
         Hutang::where('id', $hutang->id)->delete();
+        histori(rendem(), 'hutangs', $hutang->toArray(), 'delete', $hutang->id);
 
         return redirect()->route('hutang.index')->with('error', 'Hutang berhasil dihapus.');
     }

@@ -54,7 +54,7 @@
                             <label for="bunga" class="form-label">Bunga (%)</label>
                             <input type="text" name="bunga" id="bunga"
                                 class="form-control @error('bunga') is-invalid @enderror"
-                                value="{{ old('bunga', $pinjaman->bunga) }}">
+                                value="{{ old('bunga', number_format($pinjaman->bunga, 1, ',', '')) }}">
                             @error('bunga')
                                 <div class="invalid-feedback">
                                     {{ $message }}

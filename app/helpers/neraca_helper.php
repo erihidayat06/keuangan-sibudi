@@ -94,6 +94,7 @@ if (!function_exists('neraca')) {
         $transaksis = Buk::user()->whereYear('tanggal', '<=', session('selected_year', date('Y')))->get();
         $debit = $transaksis->where('jenis', 'debit')->sum('nilai');
         $kredit = $transaksis->where('jenis', 'kredit')->sum('nilai');
+
         $saldo = $debit - $kredit;
 
         $total_aktiva = $saldo + $sisa_putang + $saldo_pinjam + $persediaan_dagang + $bayar_dimuka +  $investasi + $bangunan + $aktiva_lain;

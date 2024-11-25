@@ -18,7 +18,7 @@
     .table th,
     .table td {
         padding: 5px;
-        font-size: 12px
+        font-size: 16px
     }
 
 

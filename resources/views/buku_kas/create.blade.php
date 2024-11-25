@@ -35,6 +35,7 @@
                             <select class="form-select @error('jenis') is-invalid @enderror" id="jenis" name="jenis">
                                 <option value="debit" {{ old('jenis') == 'debit' ? 'selected' : '' }}>Masuk</option>
                                 <option value="kredit" {{ old('jenis') == 'kredit' ? 'selected' : '' }}>Keluar</option>
+                                <option value="tetap" {{ old('jenis') == 'tetap' ? 'selected' : '' }}>Tetap</option>
                             </select>
                             @error('jenis')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -49,7 +50,8 @@
                                 <option value="operasional" {{ old('jenis_dana') == 'operasional' ? 'selected' : '' }}>
                                     Operasional
                                 </option>
-                                <option value="investasi" {{ old('jenis_dana') == 'investasi' ? 'selected' : '' }}>Investasi
+                                <option value="investasi" {{ old('jenis_dana') == 'investasi' ? 'selected' : '' }}>
+                                    Investasi
                                 </option>
                                 <option value="pendanaan" {{ old('jenis_dana') == 'pendanaan' ? 'selected' : '' }}>
                                     Pendanaan

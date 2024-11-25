@@ -41,16 +41,33 @@ class BuksController extends Controller
     public function exportPdf()
     {
 
-        $transaksis_lalu = Buk::user()->whereYear('tanggal', session('selected_year', date('Y')) - 1)->get();
+        // Ambil transaksi sebelum tahun yang dipilih
+        $transaksis_lalu = Buk::user()
+            ->whereYear('tanggal', '<', session('selected_year', date('Y')))
+            ->get()
+            ->filter(function ($item) {
+                return $item->jenis !== 'tetap'; // Hapus transaksi dengan jenis 'tetap'
+            });
+
         $debit_lalu = $transaksis_lalu->where('jenis', 'debit')->sum('nilai');
         $kredit_lalu = $transaksis_lalu->where('jenis', 'kredit')->sum('nilai');
         $saldo_lalu = $debit_lalu - $kredit_lalu;
 
-        $transaksis = Buk::user()->whereYear('tanggal', session('selected_year', date('Y')))->get();
+        // Ambil transaksi untuk tahun yang dipilih
+        $transaksis = Buk::user()
+            ->whereYear('tanggal', session('selected_year', date('Y')))
+            ->get()
+            ->filter(function ($item) {
+                return $item->jenis !== 'tetap'; // Hapus transaksi dengan jenis 'tetap'
+            });
+
         $debit = $transaksis->where('jenis', 'debit')->sum('nilai');
         $kredit = $transaksis->where('jenis', 'kredit')->sum('nilai');
         $saldo = $debit - $kredit;
-        $saldo = $saldo + $saldo_lalu;
+
+        // Gabungkan saldo dengan saldo sebelumnya
+        $saldo += $saldo_lalu;
+
         $data = [
             'transaksis' => $transaksis,
             'saldo' => $saldo,
@@ -59,7 +76,7 @@ class BuksController extends Controller
         ];
 
         // Gunakan facade PDF
-        $pdf = PDF::loadView('buku_kas.pdf', $data)->setPaper('f4', 'portrait');
+        $pdf = PDF::loadView('buku_kas.pdf', $data)->setPaper([0, 0, 595.276, 935.433], 'portrait');
 
         // Mengunduh PDF dengan nama "laporan.pdf"
         return $pdf->stream('laporan.pdf');
@@ -82,13 +99,17 @@ class BuksController extends Controller
         $validated  = $request->validate([
             'tanggal' => 'required|date',
             'transaksi' => 'required|string|max:255',
-            'jenis' => 'required|string|in:debit,kredit', // e.g., debit or credit
+            'jenis' => 'required|string|in:debit,kredit,tetap', // e.g., debit or credit
             'jenis_lr' => 'required|string', // e.g., debit or credit
             'jenis_dana' => 'required|string|in:operasional,inventasi,pendanaan', // e.g., debit or credit
             'nilai' => 'required|numeric',
         ]);
         $validated['user_id'] = auth()->user()->id;
-        Buk::create($validated);
+        $buk =  Buk::create($validated);
+
+        if ($buk) {
+            histori(rendem(), 'buks', $validated, 'create', $buk->id);
+        }
 
         return redirect('/aset/buk')->with('success', 'Transaksi berhasil ditambahkan.');
     }
@@ -118,13 +139,15 @@ class BuksController extends Controller
         $validated = $request->validate([
             'tanggal' => 'required|date',
             'transaksi' => 'required|string|max:255',
-            'jenis' => 'required|string|in:debit,kredit', // e.g., debit or credit
+            'jenis' => 'required|string|in:debit,kredit,tetap', // e.g., debit or credit
             'jenis_lr' => 'required|string', // e.g., debit or credit
             'jenis_dana' => 'required|string|in:operasional,inventasi,pendanaan', // e.g., debit or credit
             'nilai' => 'required|numeric',
         ]);
         $validated['user_id'] = auth()->user()->id;
         Buk::where('id', $buk->id)->update($validated);
+
+        histori(rendem(), 'buks', $buk->toArray(), 'update', $buk->id);
 
         return redirect('/aset/buk')->with('success', 'Transaksi berhasil diubah.');
     }
@@ -135,6 +158,8 @@ class BuksController extends Controller
     public function destroy(Buk $buk)
     {
         Buk::where('id', $buk->id)->delete();
+
+        histori(rendem(), 'buks', $buk->toArray(), 'delete', $buk->id);
 
         return redirect('/aset/buk')->with('error', 'Hutang berhasil dihapus.');
     }

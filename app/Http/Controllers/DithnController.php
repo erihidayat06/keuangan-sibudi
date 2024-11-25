@@ -39,7 +39,7 @@ class DithnController extends Controller
         $data = ['dithns' => $dithns, 'total' => $total];
 
         // Gunakan facade PDF
-        $pdf = PDF::loadView('ditahan.pdf', $data)->setPaper('f4', 'portrait');
+        $pdf = PDF::loadView('ditahan.pdf', $data)->setPaper([0, 0, 595.276, 935.433], 'portrait');
 
         // Mengunduh PDF dengan nama "laporan.pdf"
         return $pdf->stream('laporan.pdf');
@@ -69,7 +69,11 @@ class DithnController extends Controller
         ]);
         $validated['user_id'] = auth()->user()->id;
         // Simpan ke database
-        Dithn::create($validated);
+        $dithn =  Dithn::create($validated);
+
+        if ($dithn) {
+            histori(rendem(), 'dithns', $validated, 'create', $dithn->id);
+        }
 
         return redirect('/dithn')->with('success', 'Data berhasil ditambahkan!');
     }
@@ -104,8 +108,12 @@ class DithnController extends Controller
             'tahun' => 'required|numeric|digits:4',
         ]);
         $validated['user_id'] = auth()->user()->id;
+
+        histori(rendem(), 'dithns', $dithn->toArray(), 'update', $dithn->id);
+
         // Simpan ke database
         Dithn::where('id', $dithn->id)->update($validated);
+
 
         return redirect('/dithn')->with('success', 'Data berhasil diubah!');
     }
@@ -115,6 +123,7 @@ class DithnController extends Controller
      */
     public function destroy(Dithn $dithn)
     {
+        histori(rendem(), 'dithns', $dithn->toArray(), 'delete', $dithn->id);
         $dithn->delete();
         return redirect('/dithn')->with('error', 'Data berhasil dihapus!');
     }

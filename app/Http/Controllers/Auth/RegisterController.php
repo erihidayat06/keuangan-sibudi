@@ -73,7 +73,7 @@ class RegisterController extends Controller
                 'referral' => $data['referral']
             ]);
 
-        Profil::create(['user_id' => User::latest()->first()->id]);
+        Profil::create(['user_id' => $register->id]);
 
 
         return $register;

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Buk;
 use App\Models\Piutang;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PiutangController extends Controller
 {
@@ -13,6 +14,7 @@ class PiutangController extends Controller
      */
     public function index()
     {
+
         $piutangs = Piutang::user()->get();
 
         $sisa = 0;
@@ -61,8 +63,12 @@ class PiutangController extends Controller
         ]);
         $validated['user_id'] = auth()->user()->id;
         $validated['created_at'] = $request->created_at;
-        if (Piutang::create($validated) && $request->has('no_kas')) {
-            bukuUmum('Piutang', 'kredit', 'kas', 'operasional', $request->nilai, 'piutang', Piutang::latest()->first()->id, $request->created_at);
+        $piutang = Piutang::create($validated);
+        $id = rendem();
+        if ($piutang && $request->has('no_kas')) {
+            $buk = bukuUmum('Piutang', 'kredit', 'kas', 'operasional', $request->nilai, 'piutang', $piutang->id, $request->created_at);
+            histori($id, 'piutangs', $validated, 'create', $piutang->id);
+            histori($id, 'buks', ['nilai' => $validated['nilai']], 'create', $buk->id);
         };
 
         // Redirect with success message
@@ -96,9 +102,11 @@ class PiutangController extends Controller
         $year = session('selected_year', date('Y'));
         $tanggal = date('Y-m-d', strtotime($year . date('-m-d')));
 
-
+        $id = rendem();
         if (Piutang::where('id', $piutang->id)->update(['pembayaran' => $pembayaran])) {
-            bukuUmum('Setor ' . $piutang->kreditur, $jenis, 'kas', 'pendanaan', $input_realisasi, null, null, $tanggal);
+            $buk =  bukuUmum('Setor ' . $piutang->kreditur, $jenis, 'kas', 'pendanaan', $input_realisasi, null, null, $tanggal);
+            histori($id, 'piutangs', $piutang->toArray(), 'update', $piutang->id);
+            histori($id, 'buks', ['nilai' => $piutang->nilai], 'create', $buk->id);
         };
         // Redirect with success message
         return redirect()->route('piutang.index')->with('success', 'piutang berhasil ditambahkan.');
@@ -123,10 +131,13 @@ class PiutangController extends Controller
             'nilai' => 'required|numeric',
         ]);
         $validated['user_id'] = auth()->user()->id;
-
+        $Buk = Buk::where('akun', 'piutang')->firstWhere('id_akun', $piutang->id);
+        $id = rendem();
 
         if (Piutang::where('id', $piutang->id)->update($validated)) {
             updateBukuUmum('piutang', $piutang->id, $request->nilai);
+            histori($id, 'piutangs', $piutang->toArray(), 'update', $piutang->id);
+            histori($id, 'buks', ['nilai' => $Buk->nilai], 'update', $Buk->id);
         };
 
         // Redirect with success message
@@ -139,7 +150,7 @@ class PiutangController extends Controller
     public function destroy(Piutang $piutang)
     {
         Piutang::where('id', $piutang->id)->delete();
-
+        histori(rendem(), 'piutangs', $piutang->toArray(), 'delete', $piutang->id);
         return redirect()->route('piutang.index')->with('error', 'Piutang berhasil dihapus.');
     }
 }

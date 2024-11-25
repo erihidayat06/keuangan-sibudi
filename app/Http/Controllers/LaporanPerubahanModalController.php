@@ -14,13 +14,21 @@ class LaporanPerubahanModalController extends Controller
     public function index()
     {
         $ekuitas = Ekuit::user()->get()->first();
-
+        $neraca =  neraca();
         $modal_desa = Modal::user()->get()->sum('mdl_desa');
         $modal_masyarakat = Modal::user()->get()->sum('mdl_masyarakat');
+        $modal_bersama = Modal::user()->get()->sum('mdl_bersama');
         $tahun = !isset($ekuitas->tahun) ? session('selected_year', date('Y')) : $ekuitas->tahun;
 
 
-        return view('laporan_perubahan_modal.index', ['modal_desa' => $modal_desa, 'modal_masyarakat' => $modal_masyarakat, 'ekuitas' => $ekuitas,  'laba_berjalan' => labaRugi($tahun)['totalLabaRugi']]);
+        return view('laporan_perubahan_modal.index', [
+            'modal_desa' => $modal_desa,
+            'modal_masyarakat' => $modal_masyarakat,
+            'modal_bersama' => $modal_bersama,
+            'ekuitas' => $ekuitas,
+            'ditahan' => $neraca['ditahan'],
+            'laba_berjalan' => labaRugi($tahun)['totalLabaRugi']
+        ]);
     }
 
     public function exportPdf()
@@ -28,13 +36,15 @@ class LaporanPerubahanModalController extends Controller
 
         $ekuitas = Ekuit::user()->get()->first();
 
-
+        $neraca =  neraca();
         $modal_desa = Modal::user()->get()->sum('mdl_desa');
         $modal_masyarakat = Modal::user()->get()->sum('mdl_masyarakat');
         $data = [
             'modal_desa' => $modal_desa,
             'modal_masyarakat' => $modal_masyarakat,
+            'modal_bersama' => $modal_bersama,
             'ekuitas' => $ekuitas,
+            'ditahan' => $neraca['ditahan'],
             'laba_berjalan' => labaRugi($ekuitas->tahun)['totalLabaRugi']
         ];
 
@@ -74,14 +84,17 @@ class LaporanPerubahanModalController extends Controller
 
         Ekuit::where('id', $ekuit->id)->update($validated);
 
+        histori(rendem(), 'ekuits', $ekuit->toArray(), 'update', $ekuit->id);
+
         return redirect()->back()->with('success', 'Berhasil di rubah');
     }
 
     public function ditahan(Ekuit $ekuit)
     {
+        $id = rendem();
         $hasil = labaRugi($ekuit->tahun)['totalLabaRugi'] > 0 ? 'Untung' : 'Rugi';
         $labaRugi =   labaRugi($ekuit->tahun)['totalLabaRugi'];
-        Dithn::create([
+        $dataDitahan = [
             'tahun' => $ekuit->tahun,
             'hasil' => $hasil,
             'nilai' => $labaRugi,
@@ -90,24 +103,39 @@ class LaporanPerubahanModalController extends Controller
             'akumulasi' => $labaRugi * ($ekuit->akumulasi / 100),
             'user_id' => auth()->user()->id,
             'created_at' => created_at()
-        ]);
+        ];
+        $ditahan = Dithn::create($dataDitahan);
+        if ($ditahan) {
+            histori($id, 'dithns', $dataDitahan, 'create', $ditahan->id);
+        }
 
-        Hutang::insert([
-            [
-                'kreditur' => 'pemdes',
-                'keterangan' => 'PADes',
-                'nilai' => $labaRugi * ($ekuit->pades / 100),
-                'user_id' => auth()->user()->id,
-                'created_at' => created_at()
-            ],
+        $dataHutang = [
+            'kreditur' => 'pemdes',
+            'keterangan' => 'PADes',
+            'nilai' => $labaRugi * ($ekuit->pades / 100),
+            'user_id' => auth()->user()->id,
+            'created_at' => created_at()
+        ];
+
+        $dataBumdes =
             [
                 'kreditur' => 'pengelola BUMDes',
                 'keterangan' => 'SHU',
                 'nilai' => $labaRugi * ($ekuit->lainya / 100),
                 'user_id' => auth()->user()->id,
                 'created_at' => created_at()
-            ]
-        ]);
+            ];
+
+        // Insert data hutang
+        $hutangPemdes = Hutang::create($dataHutang);
+        $hutangBumdes = Hutang::create($dataBumdes);
+
+        // Ambil data terakhir yang berhasil dimasukkan
+        if ($hutangBumdes && $hutangBumdes) {
+            histori($id, 'hutangs', $dataBumdes, 'create', $hutangBumdes->id);
+            histori($id, 'hutangs', $dataHutang, 'create', $hutangPemdes->id);
+        }
+
 
         return redirect()->back()->with('success', 'Berhasil menambahkan laba di tahan');
     }

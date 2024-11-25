@@ -23,8 +23,11 @@
 
                         <div class="mb-3">
                             <label for="hasil" class="form-label">Hasil</label>
-                            <input type="text" class="form-control" id="hasil" name="hasil" required
-                                value="{{ old('hasil') }}">
+                            <select name="hasil" id="hasil" class="form-control">
+                                <option value="untung" {{ old('hasil') == 'untung' ? 'selected' : '' }}>Untung
+                                </option>
+                                <option value="rugi" {{ old('hasil') == 'rugi' ? 'selected' : '' }}>Rugi</option>
+                            </select>
                             @error('hasil')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -41,7 +44,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="pades" class="form-label">PADES (%)</label>
+                            <label for="pades" class="form-label">PADES</label>
                             <input type="text" class="form-control" id="pades" name="pades"
                                 onkeyup="onlyNumberAmount(this)" required value="{{ old('pades') }}">
                             @error('pades')
@@ -50,7 +53,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="lainya" class="form-label">Lainya (%)</label>
+                            <label for="lainya" class="form-label">Lainya</label>
                             <input type="text" class="form-control" id="lainya" name="lainya"
                                 onkeyup="onlyNumberAmount(this)" required value="{{ old('lainya') }}">
                             @error('lainya')
@@ -59,7 +62,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="akumulasi" class="form-label">Akumulasi (%)</label>
+                            <label for="akumulasi" class="form-label">Akumulasi</label>
                             <input type="text" class="form-control" id="akumulasi" name="akumulasi"
                                 onkeyup="onlyNumberAmount(this)" required value="{{ old('akumulasi') }}">
                             @error('akumulasi')

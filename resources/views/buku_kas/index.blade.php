@@ -95,12 +95,13 @@
                                     <td>{{ $transaksi->transaksi }}</td>
                                     <td>
                                         <p
-                                            class="{{ $transaksi->jenis == 'debit' ? 'text-success' : 'text-danger' }} fw-bold">
-                                            {{ $transaksi->jenis == 'debit' ? 'Masuk' : 'Keluar' }}</p>
+                                            class="{{ $transaksi->jenis == 'debit' ? 'text-success' : ($transaksi->jenis == 'kredit' ? 'text-danger' : 'text-warning') }} fw-bold">
+                                            {{ $transaksi->jenis == 'debit' ? 'Masuk' : ($transaksi->jenis == 'kredit' ? 'Keluar' : 'Tetap') }}
+                                        </p>
                                     </td>
                                     <td>
                                         <p
-                                            class="{{ $transaksi->jenis == 'debit' ? 'text-success' : 'text-danger' }} fw-bold">
+                                            class="{{ $transaksi->jenis == 'debit' ? 'text-success' : ($transaksi->jenis == 'kredit' ? 'text-danger' : 'text-warning') }} fw-bold">
                                             {{ $transaksi->jenis_dana }}
                                         </p>
                                     </td>

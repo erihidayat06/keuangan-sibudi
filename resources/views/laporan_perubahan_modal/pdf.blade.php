@@ -16,7 +16,7 @@
     .table-report th,
     .table-report td {
         padding: 5px 10px;
-        font-size: 12px
+        font-size: 16px
     }
 
     .table-report th {
@@ -62,13 +62,18 @@
                 <td class="text-end"></td>
                 <td class="text-end red-text">{{ formatRupiah($modal_masyarakat) }}</td>
             </tr>
-
+            <tr class="">
+                <td colspan="2">Penyertaan modal bersama</td>
+                <td class="text-end"></td>
+                <td class="text-end red-text">{{ formatRupiah($modal_bersama) }}</td>
+            </tr>
 
 
             <tr>
-                <td colspan="2">Laba/Rugi ditahan</td>
+                <td colspan="2">{{ $ditahan < 0 ? 'Rugi' : 'Laba' }} ditahan </td>
                 <td class="text-end"></td>
-                <td class="text-end"></td>
+                <td class="text-end red-text">{{ formatRupiah($ditahan) }}</td>
+
 
             </tr>
 

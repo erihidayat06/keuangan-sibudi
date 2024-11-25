@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pinjaman;
+use App\Models\Buk;
 use App\Models\Unit;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Pinjaman;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PinjamanController extends Controller
 {
@@ -14,7 +15,7 @@ class PinjamanController extends Controller
      */
     public function index()
     {
-
+        // dd(session('histori'));
         $pinjamans = Pinjaman::user()->get();
         $tunggakan = $pinjamans->sum('alokasi') - $pinjamans->sum('realisasi');
         $saldo_bunga = 0;
@@ -49,8 +50,11 @@ class PinjamanController extends Controller
         $validated['user_id'] = auth()->user()->id;
 
 
-        Unit::create($validated);
+        $unit = Unit::create($validated);
 
+        if ($unit) {
+            histori(rendem(), 'units', $validated, 'create', $unit->id);
+        }
         return redirect('/aset/pinjaman')->with('success', 'Unit berhasil ditambahkan!');
     }
 
@@ -105,9 +109,12 @@ class PinjamanController extends Controller
         $validated['bunga'] = str_replace(',', '.', $request->bunga);
 
 
-
-        if (Pinjaman::create($validated) && $request->has('no_kas')) {
-            bukuUmum('Pinjaman ' . $request->nasabah, 'kredit', 'kas', 'operasional', $request->alokasi, 'pinjaman', Pinjaman::latest()->first()->id, $request->tgl_pinjam);
+        $pinjaman = Pinjaman::create($validated);
+        $id = rendem();
+        if ($pinjaman && $request->has('no_kas')) {
+            $buk =  bukuUmum('Pinjaman ' . $request->nasabah, 'kredit', 'kas', 'operasional', $request->alokasi, 'pinjaman', $pinjaman->id, $request->tgl_pinjam);
+            histori($id, 'pinjamans', $validated, 'create', $pinjaman->id);
+            histori($id, 'buks', $validated, 'create', $buk->id);
         };
 
         return redirect('/aset/pinjaman')->with('success', 'Pinjaman berhasil ditambahkan');
@@ -132,9 +139,6 @@ class PinjamanController extends Controller
 
     public function bayar(Request $request, Pinjaman $pinjaman)
     {
-
-
-
         $input_realisasi = str_replace('.', '', $request->realisasi);
 
         if ($request->aksi == '+') {
@@ -150,11 +154,16 @@ class PinjamanController extends Controller
         $year = session('selected_year', date('Y'));
         $tanggal = date('Y-m-d', strtotime($year . date('-m-d')));
 
-        bukuUmum('Bunga Storan ' . $pinjaman->nasabah, 'debit', 'pupj2345', 'operasional', $bunga, null, null, $tanggal);
-        bukuUmum('Storan ' . $pinjaman->nasabah, 'debit', 'kas', 'operasional', $input_realisasi, null, null, $tanggal);
+        $bukBunga =  bukuUmum('Bunga Storan ' . $pinjaman->nasabah, 'debit', 'pupj2345', 'operasional', $bunga, null, null, $tanggal);
+        $bukStoran = bukuUmum('Storan ' . $pinjaman->nasabah, 'debit', 'kas', 'operasional', $input_realisasi, null, null, $tanggal);
+        $pinjamanUpdate = Pinjaman::where('id', $pinjaman->id)->update(['realisasi' => $realisasi, 'angsuran' => $angsuran]);
+        $id = rendem();
+        if ($pinjamanUpdate) {
+            histori($id, 'buks', $bukBunga, 'create', $bukBunga->id);
+            histori($id, 'buks', $bukStoran, 'create', $bukStoran->id);
+            histori($id, 'pinjamans', ['realisasi' => $pinjaman->realisasi, 'angsuran' => $pinjaman->angsuran], 'update', $pinjaman->id);
+        }
 
-
-        Pinjaman::where('id', $pinjaman->id)->update(['realisasi' => $realisasi, 'angsuran' => $angsuran]);
         // Redirect with success message
         return redirect()->route('pinjaman.index')->with('success', 'pinjaman berhasil ditambahkan.');
     }
@@ -172,9 +181,15 @@ class PinjamanController extends Controller
         ]);
 
         $validated['bunga'] = str_replace(',', '.', $request->bunga);
+        $id = rendem();
+        $Buk = Buk::where('akun', 'pinjaman')->firstWhere('id_akun', $pinjaman->id);
 
+        // dd($pinjaman->id);
         if (Pinjaman::where('id', $pinjaman->id)->update($validated)) {
-            updateBukuUmum('pinjaman', $pinjaman->alokasi, $request->alokasi);
+            updateBukuUmum('pinjaman', $pinjaman->id, $request->alokasi);
+
+            histori($id, 'pinjamans', $pinjaman->toArray(), 'update', $pinjaman->id);
+            histori($id, 'buks', ['nilai' => $pinjaman->alokasi], 'update', $Buk->id);
         };
 
         return redirect('/aset/pinjaman')->with('success', 'Pinjaman berhasil diupdate');
@@ -185,8 +200,8 @@ class PinjamanController extends Controller
      */
     public function destroy(Pinjaman $pinjaman)
     {
+        histori(rendem(), 'pinjamans', $pinjaman->toArray(), 'delete', $pinjaman->id);
         $pinjaman->delete();
-
         return redirect('/aset/pinjaman')->with('error', 'Pinjaman berhasil dihapus');
     }
 }

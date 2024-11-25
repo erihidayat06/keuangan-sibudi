@@ -81,11 +81,20 @@
                             @endphp
                             @foreach ($asets as $aset)
                                 @php
-                                    if (masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai']) {
+                                    $masaPakai = masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'];
+                                    $jumlah_penyusutan = 0;
+                                    if ($masaPakai) {
                                         $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
                                     } else {
                                         $penyusutan = 0;
                                     }
+
+                                    if ($masaPakai == $aset->wkt_ekonomis) {
+                                        $jumlah_penyusutan = 0;
+                                    } else {
+                                        $jumlah_penyusutan = $aset->nilai / $aset->wkt_ekonomis;
+                                    }
+
                                     $saat_ini =
                                         $aset->nilai -
                                         masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'] * $penyusutan;
@@ -99,7 +108,7 @@
                                     <td>
                                         {{ masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'] }}
                                     </td>
-                                    <td>{{ formatRupiah($penyusutan) }}</td>
+                                    <td>{{ formatRupiah($jumlah_penyusutan) }}</td>
                                     <td>{{ formatRupiah($saat_ini) }}</td>
                                     <td>
                                         <div class="d-flex justify-content-start">

@@ -13,16 +13,24 @@
 
 
     <nav class="header-nav ms-auto">
+
+
         <ul class="d-flex align-items-center">
             @can('bumdes')
-
-
                 <li class="nav-item">
+                    <button class="btn-sm btn btn-primary" onclick="window.location.href='{{ route('undo') }}'"
+                        {{ empty(session('histori')) ? 'disabled' : '' }}>
+                        <i class="bi bi-arrow-90deg-left"></i> Undo
+                    </button>
+                </li>
+
+
+                <li class="nav-item ms-2">
                     <form action="{{ route('setYear') }}" method="POST">
                         @csrf
                         <select name="tahun" id="tahun" class="form-select" onchange="this.form.submit()">
                             <option value="" disabled selected>Pilih Tahun</option>
-                            @for ($i = date('Y') + 1; $i >= date('Y') - 5; $i--)
+                            @for ($i = date('Y') + 1; $i >= date('Y') - 10; $i--)
                                 <option value="{{ $i }}"
                                     {{ session('selected_year', date('Y')) == $i ? 'selected' : '' }}>
                                     {{ $i }}

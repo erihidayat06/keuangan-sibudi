@@ -9,11 +9,11 @@
 
     .text-end {
         text-align: right;
-        font-size: 12px
+        font-size: 16px
     }
 
     .font-size {
-        font-size: 12px
+        font-size: 16px
     }
 
     #tandatangan tr td {
@@ -26,7 +26,7 @@
 
         border-collapse: collapse;
         margin-top: 50px;
-        font-size: 12px
+        font-size: 16px
     }
 
     .border-laporan {
@@ -82,7 +82,7 @@
 <table>
     <tr>
         <td class="text-end">
-            Pebatan
+            {{ $nm_desa }}
         </td>
         <td class="text-end">
             {{ session('selected_year', date('Y') + 1) }}

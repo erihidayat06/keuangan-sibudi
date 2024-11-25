@@ -42,6 +42,8 @@ class ProfileController extends Controller
         // Find the Bumdes by its ID
         $bumdes = Profil::findOrFail($profil->id);
 
+        histori(rendem(), 'profils', $profil->toArray(), 'update', $profil->id);
+
         // Update the data in the database
         $bumdes->update([
             'nm_bumdes' => $request->nm_bumdes,

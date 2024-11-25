@@ -4,7 +4,6 @@
     <div class="row">
         <div class="pagetitle text-center">
             <h1>APLIKASI PEMBUKUAN DAN KEUANGAN BUMDESA TERINTEGRASI</h1>
-            <h1>KABUPATEN BREBES</h1>
         </div>
         <div class="col-lg-12">
             <div class="card">

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use App\Models\Ekuit;
+use App\Models\Profil;
 use App\Models\Rekonsiliasi;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,9 +22,13 @@ class CreateUser
             $userId = auth()->user()->id;
 
             $existingEkuit = Ekuit::where('user_id', $userId)->first();
+            $profil = Profil::where('user_id', $userId)->first();
 
             if (!$existingEkuit) {
                 Ekuit::create(['user_id' => $userId]);
+            }
+            if (!$profil) {
+                Profil::create(['user_id' => $userId]);
             }
 
             $rekonsiliasi = Rekonsiliasi::where('user_id', $userId)->first();

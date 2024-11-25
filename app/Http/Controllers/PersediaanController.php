@@ -19,18 +19,20 @@ class PersediaanController extends Controller
 
         $total_nilai_awal = 0;
         $total_nilai_akhir = 0;
+        $nilai_akhir = 0;
         $total_laba = 0;
         foreach ($barangs as $barang) {
             $nilai_awal = $barang->jml_awl * $barang->hpp;
-            $total_nilai_awal = $total_nilai_awal + $nilai_awal;
+            $total_nilai_awal += $nilai_awal;
 
             $jumlah_akhir = $barang->jml_awl - ($barang->masuk - $barang->keluar);
 
-            $nilai_akhir = $jumlah_akhir * $barang->hpp;
-            $total_nilai_akhir = $total_nilai_akhir + $nilai_akhir;
 
-            $laba = ($barang->jml_awl - $jumlah_akhir) * ($barang->nilai_jual - $barang->hpp);
-            $total_laba = $laba + $total_laba;
+            $nilai_akhir += $jumlah_akhir * $barang->hpp;
+            $total_nilai_akhir += $nilai_akhir;
+
+            $laba = ($barang->masuk) * ($barang->nilai_jual - $barang->hpp);
+            $total_laba += $laba;
         }
         $unit = Unit::user()->where('kode', 'pd9876')->get()->first();
         if (!isset($unit->kode)) {
@@ -60,7 +62,11 @@ class PersediaanController extends Controller
         $validated['user_id'] = auth()->user()->id;
 
 
-        Unit::create($validated);
+        $unit = Unit::create($validated);
+
+        if ($unit) {
+            histori(rendem(), 'units', $validated, 'create', $unit->id);
+        }
 
         return redirect('/aset/persediaan')->with('success', 'Unit berhasil ditambahkan!');
     }
@@ -73,18 +79,20 @@ class PersediaanController extends Controller
 
         $total_nilai_awal = 0;
         $total_nilai_akhir = 0;
+        $nilai_akhir = 0;
         $total_laba = 0;
         foreach ($barangs as $barang) {
             $nilai_awal = $barang->jml_awl * $barang->hpp;
-            $total_nilai_awal = $total_nilai_awal + $nilai_awal;
+            $total_nilai_awal += $nilai_awal;
 
             $jumlah_akhir = $barang->jml_awl - ($barang->masuk - $barang->keluar);
 
-            $nilai_akhir = $jumlah_akhir * $barang->hpp;
-            $total_nilai_akhir = $total_nilai_akhir + $nilai_akhir;
 
-            $laba = ($barang->jml_awl - $jumlah_akhir) * ($barang->nilai_jual - $barang->hpp);
-            $total_laba = $laba + $total_laba;
+            $nilai_akhir += $jumlah_akhir * $barang->hpp;
+            $total_nilai_akhir += $nilai_akhir;
+
+            $laba = ($barang->masuk) * ($barang->nilai_jual - $barang->hpp);
+            $total_laba += $laba;
         }
         $data =
             [
@@ -95,7 +103,7 @@ class PersediaanController extends Controller
             ];
 
         // Gunakan facade PDF
-        $pdf = PDF::loadView('persediaan.pdf', $data)->setPaper('f4', 'portrait');
+        $pdf = PDF::loadView('persediaan.pdf', $data)->setPaper([0, 0, 595.276, 935.433], 'portrait');
 
         // Mengunduh PDF dengan nama "laporan.pdf"
         return $pdf->stream('laporan.pdf');
@@ -129,8 +137,14 @@ class PersediaanController extends Controller
 
         $total_harga = $validated['hpp'] * $validated['jml_awl'];
 
-        if (Persediaan::create($validated)) {
-            bukuUmum('Persediaan ' . $request->item, 'kredit', 'kas', 'operasional', $total_harga, 'persediaan', Persediaan::latest()->first()->id, $request->created_at);
+        $id = rendem();
+        $persediaan = Persediaan::create($validated);
+
+        if ($persediaan) {
+            $buk =    bukuUmum('Persediaan ' . $request->item, 'kredit', 'kas', 'operasional', $total_harga, 'persediaan', Persediaan::latest()->first()->id, $request->created_at);
+
+            histori($id, 'persediaans', $validated, 'create', $persediaan->id);
+            histori($id, 'buks', $validated, 'create', $buk->id);
         };
         return redirect('/aset/persediaan')->with('success', 'Barang berhasil ditambahkan!');
     }
@@ -150,26 +164,40 @@ class PersediaanController extends Controller
      */
     public function penjualan(Request $request, Persediaan $persediaan)
     {
-        if (isset($request->masuk) && $request->masuk != $persediaan->masuk) {
+        $id = rendem();
+        $tanggal = created_at();
 
+        if (isset($request->masuk) && $request->masuk != $persediaan->masuk) {
             $transasksi = 'Jual ' . $request->masuk - $persediaan->masuk . ' ' . $persediaan->item;
             $laba = ($request->masuk - $persediaan->masuk) * ($persediaan->nilai_jual - $persediaan->hpp);
 
             $masuk = $request->masuk - $persediaan->masuk;
+            $omset = $persediaan->hpp * $masuk + $laba;
 
-            $year = session('selected_year', date('Y'));
-            $tanggal = date('Y-m-d', strtotime($year . date('-m-d')));
 
-            bukuUmum($transasksi, 'debit', 'pupd9876', 'operasional', $laba, null, null, $tanggal);
-            bukuUmum($transasksi, 'debit', 'kas', 'operasional', $persediaan->hpp * $masuk, null, null, $tanggal);
+
             Persediaan::where('id', $persediaan->id)->update(['masuk' => $request->masuk]);
+            histori($id, 'persediaans', ['masuk' => $persediaan->masuk], 'update', $persediaan->id);
+
+            if ($request->no_kas) {
+                $bukJual = bukuUmum($transasksi, 'tetap', 'bopd9876', 'operasional', $persediaan->hpp * $masuk, null, null, $tanggal);
+                histori($id, 'buks', $bukJual->id, 'create', $bukJual->id);
+            } else {
+                $bukOmset =  bukuUmum($transasksi, 'debit', 'pupd9876', 'operasional', $omset, null, null, $tanggal);
+                $bukJual = bukuUmum($transasksi, 'tetap', 'bopd9876', 'operasional', $persediaan->hpp * $masuk, null, null, $tanggal);
+                histori($id, 'buks', $bukOmset->id, 'create', $bukOmset->id);
+                histori($id, 'buks', $bukJual->id, 'create', $bukJual->id);
+            }
         }
         if (isset($request->keluar) && $request->keluar != $persediaan->keluar) {
-            $transasksi = 'Kembalikan ' . $request->keluar - $persediaan->keluar . ' ' . $persediaan->item;
+            $transasksi = 'Pembelian Persedian ' . $request->keluar - $persediaan->keluar . ' ' . $persediaan->item;
             $laba = ($request->keluar - $persediaan->keluar) * ($persediaan->nilai_jual - $persediaan->hpp);
             $keluar = $request->keluar - $persediaan->keluar;
-            bukuUmum($transasksi, 'kredit', 'kas', 'operasional', $persediaan->hpp * $keluar, null, null, $tanggal);
+            $bukJual = bukuUmum($transasksi, 'kredit', 'kas', 'operasional', $persediaan->hpp * $keluar, null, null, $tanggal);
             Persediaan::where('id', $persediaan->id)->update(['keluar' => $request->keluar]);
+
+            histori($id, 'persediaans', ['keluar' => $persediaan->keluar], 'update', $persediaan->id);
+            histori($id, 'buks', $bukJual->id, 'create', $bukJual->id);
         }
         return redirect()->back()->with('success', 'Data Berhasil dirubah!');
     }
@@ -198,7 +226,49 @@ class PersediaanController extends Controller
             'keluar' => '',
         ]);
 
+        $id = rendem();
+        $buk = Buk::where('akun', 'persediaan')->firstWhere('id_akun', $persediaan->id);
+
+        $year = session('selected_year', date('Y'));
+        $tanggal = date('Y-m-d', strtotime($year . date('-m-d')));
+
+        if (isset($request->masuk) && $request->masuk != $persediaan->masuk) {
+            $transasksi = 'Jual ' . $request->masuk - $persediaan->masuk . ' ' . $persediaan->item;
+            $laba = ($request->masuk - $persediaan->masuk) * ($persediaan->nilai_jual - $persediaan->hpp);
+
+            $masuk = $request->masuk - $persediaan->masuk;
+            $omset = $persediaan->hpp * $masuk + $laba;
+
+
+
+            Persediaan::where('id', $persediaan->id)->update(['masuk' => $request->masuk]);
+            histori($id, 'persediaans', ['masuk' => $persediaan->masuk], 'update', $persediaan->id);
+
+            if ($request->no_kas) {
+                $bukJual = bukuUmum($transasksi, 'tetap', 'bopd9876', 'operasional', $persediaan->hpp * $masuk, null, null, $tanggal);
+                histori($id, 'buks', $bukJual->id, 'create', $bukJual->id);
+            } else {
+                $bukOmset =  bukuUmum($transasksi, 'debit', 'pupd9876', 'operasional', $omset, null, null, $tanggal);
+                $bukJual = bukuUmum($transasksi, 'tetap', 'bopd9876', 'operasional', $persediaan->hpp * $masuk, null, null, $tanggal);
+                histori($id, 'buks', $bukOmset->id, 'create', $bukOmset->id);
+                histori($id, 'buks', $bukJual->id, 'create', $bukJual->id);
+            }
+        }
+        if (isset($request->keluar) && $request->keluar != $persediaan->keluar) {
+            $transasksi = 'Pembelian Persedian ' . $request->keluar - $persediaan->keluar . ' ' . $persediaan->item;
+            $laba = ($request->keluar - $persediaan->keluar) * ($persediaan->nilai_jual - $persediaan->hpp);
+            $keluar = $request->keluar - $persediaan->keluar;
+            $bukJual = bukuUmum($transasksi, 'kredit', 'kas', 'operasional', $persediaan->hpp * $keluar, null, null, $tanggal);
+            Persediaan::where('id', $persediaan->id)->update(['keluar' => $request->keluar]);
+
+            histori($id, 'persediaans', ['keluar' => $persediaan->keluar], 'update', $persediaan->id);
+            histori($id, 'buks', $bukJual->id, 'create', $bukJual->id);
+        }
+
         if (Persediaan::where('id', $persediaan->id)->update($validated)) {
+            histori($id, 'persediaans', $persediaan->toArray(), 'update', $persediaan->id);
+            histori($id, 'buks', ['nilai' => $buk->nilai], 'update', $buk->id);
+
             updateBukuUmum('persediaan', $persediaan->id, $request->jml_awl * $request->hpp);
         };
         return redirect('/aset/persediaan')->with('success', 'Barang berhasil diubah!');
@@ -212,8 +282,38 @@ class PersediaanController extends Controller
         // $nilai
 
         // Buk::create(['transaksi' => $persediaan->item, 'jenis' => 'kredit', 'nilai' => , 'user_id' => $user_id]);
-        Persediaan::where('id', $persediaan->id)->delete();
+        histori(rendem(), 'persediaans', $persediaan->toArray(), 'delete', $persediaan->id);
+        $persediaan->delete();
 
         return redirect('/aset/persediaan')->with('error', 'Barang berhasil dihapus!');
+    }
+
+    public function reset()
+    {
+        $persediaans = Persediaan::user()->get();
+        $id = rendem();
+
+        foreach ($persediaans as $persediaan) {
+            $jumlah_akhir = $persediaan->jml_awl - ($persediaan->masuk - $persediaan->keluar);
+            $data = [
+                'masuk' => 0,
+                'keluar' => 0,
+                'jml_awl' => $jumlah_akhir
+
+
+            ];
+
+            $data_lama = [
+                'masuk' => $persediaan->masuk,
+                'keluar' => $persediaan->keluar,
+                'jml_awl' => $persediaan->jml_awl
+
+            ];
+
+            histori($id, 'persediaans', $data_lama, 'update', $persediaan->id);
+            Persediaan::where('id', $persediaan->id)->update($data);
+        }
+
+        return redirect('/aset/persediaan')->with('success', 'Barang berhasil reset!');
     }
 }

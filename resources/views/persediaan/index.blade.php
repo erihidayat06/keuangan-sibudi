@@ -74,6 +74,9 @@
                     <div class="row cols-2 cols-lg-2">
                         <div class="col">
                             <a href="/aset/persediaan/create" class="btn btn-sm btn-primary mb-3">Tambah Barang</a>
+                            <a href="/aset/persediaan/reset/set-ulang" class="btn btn-sm btn-warning mb-3"
+                                onclick="return confirm('Apakah yakin mau di reset?')"><i
+                                    class="bi bi-arrow-counterclockwise"></i> Reset</a>
 
                         </div>
                         <div class="col text-end">
@@ -93,7 +96,7 @@
                                 <th scope="col">Nilai_Jual</th>
                                 <th scope="col">Jumlah_Awal</th>
                                 <th scope="col">Nilai_Awal</th>
-                                <th scope="col">______Penjualan______</th>
+                                <th scope="col">_____________Penjualan___________</th>
                                 <th scope="col">______Pembelian_____</th>
                                 <th scope="col">Jumlah_Akhir</th>
                                 <th scope="col">Nilai_Akhir</th>
@@ -109,8 +112,9 @@
                                 @php
                                     $nilai_awal = $barang->jml_awl * $barang->hpp;
                                     $jumlah_akhir = $barang->jml_awl - ($barang->masuk - $barang->keluar);
+                                    $jumlah = $barang->jml_awl - $barang->masuk;
                                     $nilai_akhir = $jumlah_akhir * $barang->hpp;
-                                    $laba = ($barang->jml_awl - $jumlah_akhir) * ($barang->nilai_jual - $barang->hpp);
+                                    $laba = ($barang->jml_awl - $jumlah) * ($barang->nilai_jual - $barang->hpp);
                                 @endphp
                                 <tr>
                                     <th scope="row">{{ $i++ }}</th>
@@ -130,7 +134,14 @@
                                                 @csrf
                                                 @method('PUT')
                                                 <div class="input-group mb-3">
-                                                    <input type="number" class="form-control"
+                                                    <div class="form-check  ">
+                                                        <input class="form-check-input" type="checkbox" value="true"
+                                                            name="no_kas" id="flexCheckChecked">
+                                                        <label class="form-check-label" for="flexCheckChecked">
+                                                            Hilang
+                                                        </label>
+                                                    </div>
+                                                    <input type="number" class="form-control ms-2"
                                                         aria-describedby="button-addon2"
                                                         value="{{ $barang->masuk == null ? 0 : $barang->masuk }}"
                                                         name="masuk"

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Buk;
 use App\Models\Modal;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class ModalController extends Controller
@@ -15,7 +17,6 @@ class ModalController extends Controller
     public function index()
     {
         $modals = Modal::user()->get();
-
         return view('modal.index', ['modals'  => $modals]);
     }
 
@@ -47,10 +48,7 @@ class ModalController extends Controller
      */
     public function store(Request $request)
     {
-
-
-
-        $validated  = $request->validate([
+        $validated = $request->validate([
             'tahun' => 'required',
             'sumber' => 'required|string|max:100',
             'mdl_desa' => 'max:11',
@@ -59,22 +57,38 @@ class ModalController extends Controller
         ]);
 
         $validated['created_at'] = created_at();
-
         $validated['user_id'] = auth()->user()->id;
-        if (Modal::create($validated) && $request->has('no_kas')) {
+        $modalCreate = Modal::create($validated);
+        if ($modalCreate && $request->has('no_kas')) {
 
-            if (isset($validated['mdl_desa'])) {
-                bukuUmum('Modal Tambah dari desa', 'debit', 'kas', 'pendanaan', $request->mdl_desa,  'modal', Modal::latest()->first()->id, created_at());
-            } elseif (isset($validated['mdl_masyarakat'])) {
-                bukuUmum('Modal Tambah dari masyarakat', 'debit', 'kas', 'pendanaan',  $request->mdl_masyarakat, 'modal', Modal::latest()->first()->id, created_at());
-            } elseif (isset($validated['mdl_bersama'])) {
-                bukuUmum('Modal Tambah dari BUMDesa bersama', 'debit', 'kas', 'pendanaan',  $request->mdl_bersama, 'modal', Modal::latest()->first()->id, created_at());
+
+            // Array untuk mapping jenis modal
+            foreach (['mdl_desa' => 'desa', 'mdl_masyarakat' => 'masyarakat', 'mdl_bersama' => 'BUMDesa bersama'] as $key => $source) {
+                if (isset($validated[$key])) {
+                    $bukuUmum =  bukuUmum(
+                        "Modal Tambah dari $source",
+                        'debit',
+                        'kas',
+                        'pendanaan',
+                        $request->$key,
+                        'modal',
+                        $modalCreate->id,
+                        created_at()
+                    );
+
+                    $id = rendem();
+
+                    histori($id, 'modals', $validated, 'create', $modalCreate->id);
+                    histori($id, 'buks', $request->$key, 'create', $bukuUmum->id);
+
+                    break; // Menghentikan loop setelah kondisi terpenuhi
+                }
             }
-        };
-
+        }
 
         return redirect('/modal');
     }
+
 
     /**
      * Display the specified resource.
@@ -99,6 +113,8 @@ class ModalController extends Controller
      */
     public function update(Request $request, modal $modal)
     {
+        $modalArray = $modal->toArray();
+
         $validated = $request->validate([
             'tahun' => 'required',
             'sumber' => 'required|string|max:100',
@@ -107,26 +123,47 @@ class ModalController extends Controller
             'mdl_bersama' => 'max:11',
         ]);
 
-
         $validated['user_id'] = auth()->user()->id;
 
-        if (Modal::where('id', $modal->id)->update($validated)) {
-            if ($modal->mdl_desa != null) {
-                updateBukuUmum('modal', $modal->id, $request->mdl_desa);
-            } elseif ($modal->mdl_masyarakat != null) {
-                updateBukuUmum('modal', $modal->id, $request->mdl_masyarakat);
-            } elseif ($modal->mdl_bersama != null) {
-                updateBukuUmum('modal', $modal->id, $request->mdl_bersama);
-            };
-        };
+        // Update modal
+        $modalUpdate = Modal::where('id', $modal->id)->update($validated);
+        $idBuk = Buk::where('akun', 'modal')->where('id_akun', $modal->id)->first()->id;
+
+        if ($modalUpdate) {
+            $modalData = [
+                'mdl_desa' => $request->mdl_desa,
+                'mdl_masyarakat' => $request->mdl_masyarakat,
+                'mdl_bersama' => $request->mdl_bersama,
+            ];
+
+            foreach ($modalData as $key => $value) {
+                if (!is_null($modal->$key)) {
+                    // Ambil nilai lama dari $modalArray
+                    $value_dulu = $modalArray[$key];
+
+                    // Update buku umum
+                    updateBukuUmum('modal', $modal->id, $value);
+
+                    // Catat histori
+                    $id = rendem();
+                    histori($id, 'modals', $modalArray, 'update', $modal->id);
+                    histori($id, 'buks', ['nilai' => $value_dulu], 'update', $idBuk);
+
+                    break; // Berhenti setelah menemukan dan memperbarui yang pertama
+                }
+            }
+        }
+
         return redirect('/modal');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(modal $modal)
     {
+        histori(rendem(), 'modals', $modal->toArray(), 'delete', $modal->id);
 
         Modal::where('id', $modal->id)->delete();
         return redirect()->back();

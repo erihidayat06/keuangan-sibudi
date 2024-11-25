@@ -38,6 +38,8 @@
                                     Masuk</option>
                                 <option value="kredit" {{ old('jenis', $transaksi->jenis) == 'kredit' ? 'selected' : '' }}>
                                     Keluar</option>
+                                <option value="tetap" {{ old('jenis', $transaksi->jenis) == 'tetap' ? 'selected' : '' }}>
+                                    Tetap</option>
                             </select>
                             @error('jenis')
                                 <div class="invalid-feedback">{{ $message }}</div>

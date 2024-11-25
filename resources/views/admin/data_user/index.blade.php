@@ -1,5 +1,7 @@
 @extends('layouts.main')
 
+
+
 @section('container')
     <div class="row">
         <div class="col-lg-12">
@@ -23,6 +25,7 @@
                                 <th scope="col">Sisa Langganan (Hari)</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">password</th>
+                                <th scope="col">Langganan</th>
                                 <th scope="col">Aksi</th>
                             </tr>
                         </thead>
@@ -41,12 +44,16 @@
 
                                         // Hitung selisihnya
                                         $interval = $today->diff($targetDate);
+
+                                        // Jika tanggal tujuan kurang dari hari ini, atur selisih ke 0
+                                        $remainingDays = $targetDate < $today ? 0 : $interval->days;
                                     @endphp
+
                                     <tr>
                                         <th scope="row">{{ $i++ }}</th>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
-                                        <td>{{ $interval->days }}
+                                        <td>{{ $remainingDays }}
 
                                         </td>
                                         <td>
@@ -66,6 +73,13 @@
 
                                         </td>
                                         <td>
+                                            <!-- Button trigger modal -->
+                                            <a href="" data-bs-toggle="modal"
+                                                data-bs-target="#langganan{{ $user->id }}">
+                                                Ubah Langganan
+                                            </a>
+                                        </td>
+                                        <td>
                                             <form action="/admin/data-user/{{ $user->id }}" class="ms-2"
                                                 method="POST">
                                                 @csrf
@@ -80,12 +94,57 @@
                                     </tr>
                                 @endif
                                 <!-- Modal -->
+                                <div class="modal fade" id="langganan{{ $user->id }}" tabindex="-1"
+                                    aria-labelledby="langganan{{ $user->id }}Label" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="langganan{{ $user->id }}Label">Update
+                                                    Langganan
+                                                </h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <form action="/admin/langganan/{{ $user->id }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <div class="modal-body">
+                                                    <label for="langganan">Langganan {{ $user->id }}</label>
+                                                    <select class="form-select" aria-label="Default select example"
+                                                        name="langganan">
+                                                        @php
+
+                                                            if ($user->referral == true) {
+                                                                $jenis = 'bumdesa';
+                                                            } elseif ($user->referral == false) {
+                                                                $jenis = 'bumdes-bersama';
+                                                            }
+                                                        @endphp
+
+                                                        @foreach ($langganans->where('jenis', $jenis) as $langganan)
+                                                            <option value="{{ $langganan->jumlah_bulan }}">
+                                                                {{ $langganan->waktu }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save
+                                                        changes</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal -->
                                 <div class="modal fade" id="user{{ $user->id }}" tabindex="-1"
                                     aria-labelledby="user{{ $user->id }}Label" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="user{{ $user->id }}Label">Modal title
+                                                <h1 class="modal-title fs-5" id="user{{ $user->id }}Label">Ganti
+                                                    Password
                                                 </h1>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>

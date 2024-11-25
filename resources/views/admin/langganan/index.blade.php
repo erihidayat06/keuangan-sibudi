@@ -20,7 +20,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Jumlah Hari</th>
+                                <th scope="col">Jumlah Bulan</th>
                                 <th scope="col">Harga</th>
                                 <th scope="col">Nama Waktu</th>
                                 <th scope="col">Aksi</th>

@@ -86,6 +86,13 @@
                                 @php
                                     $masa_pakai = masaPakai($aset->tgl_beli, $aset->wkt_ekonomis)['masa_pakai'];
                                     $penyusutan = ($aset->nilai / $aset->wkt_ekonomis) * $aset->jumlah;
+                                    $jumlah_penyusutan = 0;
+
+                                    if ($masa_pakai == $aset->wkt_ekonomis) {
+                                        $jumlah_penyusutan = 0;
+                                    } else {
+                                        $jumlah_penyusutan = ($aset->nilai / $aset->wkt_ekonomis) * $aset->jumlah;
+                                    }
                                     $saat_ini = $aset->nilai * $aset->jumlah - $masa_pakai * $penyusutan;
                                 @endphp
                                 <tr>
@@ -98,7 +105,7 @@
                                     <td>
                                         {{ $masa_pakai }}
                                     </td>
-                                    <td>{{ formatRupiah($penyusutan) }}</td>
+                                    <td>{{ formatRupiah($jumlah_penyusutan) }}</td>
                                     <td>{{ formatRupiah($saat_ini) }}</td>
                                     <td>
                                         <div class="d-flex justify-content-start">

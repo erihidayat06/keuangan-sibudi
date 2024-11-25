@@ -24,8 +24,12 @@
 
                         <div class="mb-3">
                             <label for="hasil" class="form-label">Hasil</label>
-                            <input type="text" class="form-control" id="hasil" name="hasil" required
-                                value="{{ old('hasil', $pendapatan->hasil) }}">
+                            <select name="hasil" id="hasil" class="form-control">
+                                <option value="untung" {{ old('hasil', $pendapatan) == 'untung' ? 'selected' : '' }}>Untung
+                                </option>
+                                <option value="rugi" {{ old('hasil', $pendapatan) == 'rugi' ? 'selected' : '' }}>Rugi
+                                </option>
+                            </select>
                             @error('hasil')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
