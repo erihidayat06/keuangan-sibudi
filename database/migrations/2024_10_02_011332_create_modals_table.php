@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('sumber');
             $table->integer('mdl_desa')->nullable();
             $table->integer('mdl_masyarakat')->nullable();
+            $table->integer('mdl_bersama')->nullable();
             $table->foreignId('user_id');
             $table->timestamps();
         });

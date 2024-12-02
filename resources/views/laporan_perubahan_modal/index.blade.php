@@ -65,11 +65,13 @@
                             <td class="text-end"></td>
                             <td class="text-end red-text">{{ formatRupiah($modal_masyarakat) }}</td>
                         </tr>
-                        <tr class="">
-                            <td colspan="2">Penyertaan modal bersama</td>
-                            <td class="text-end"></td>
-                            <td class="text-end red-text">{{ formatRupiah($modal_bersama) }}</td>
-                        </tr>
+                        @can('referral')
+                            <tr class="">
+                                <td colspan="2">Penyertaan modal bersama</td>
+                                <td class="text-end"></td>
+                                <td class="text-end red-text">{{ formatRupiah($modal_bersama) }}</td>
+                            </tr>
+                        @endcan
 
 
 
