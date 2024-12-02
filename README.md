@@ -2,7 +2,7 @@
 
 ## 📺 Demo Website:
 
-Kamu bisa melihat demo website pada link berikut: [Cafe Journey](https://apksibudi.my.id/)
+Kamu bisa melihat demo website pada link berikut: [Apk Sibudi](https://apksibudi.my.id/)
 
 ## 📚 Stack yang digunakan:
 
