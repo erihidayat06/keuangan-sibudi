@@ -70,7 +70,7 @@ class AdminDataUserController extends Controller
         ]);
 
         $validated['password'] = Hash::make($request->password);
-        $validated['tgl_langganan'] = date('Y-m-d', strtotime('+3 months'));
+        $validated['tgl_langganan'] = date('Y-m-d', strtotime('+' . $request->langganan . ' months'));
         $validated['status'] = true;
 
 

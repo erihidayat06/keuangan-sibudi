@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Buk;
+use App\Models\Unit;
 use App\Models\Ekuit;
 use App\Models\Modal;
-use App\Models\Unit;
+use App\Models\Tutup;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -51,45 +52,94 @@ class CetakLaporanController extends Controller
         $ekuitas = Ekuit::user()->first();
         $nmDesa = auth()->user()->profil->desa;
 
-        // Data yang akan dikirim ke view PDF
-        $data = [
-            'tahun' => $selectedYear,
-            'saldo_lalu' => $saldo_lalu,
-            'saldo' => $saldo_lalu,
-            'kas_akhir' => $kas_akhir,
-            'perubahan_kas' => $perubahan_kas,
-            'pendapatan' => $labaRugi['pendapatan'],
-            'pendapatanBulan' => $labaRugi['pendapatanBulan'],
-            'pendapatanTahun' => $labaRugi['pendapatanTahun'],
-            'totalBiaya' => $labaRugi['totalBiaya'],
-            'akumulasiBiaya' => $labaRugi['akumulasiBiaya'],
-            'labaRugi' => $labaRugi['labaRugi'],
-            'totalLabaRugi' => $labaRugi['totalLabaRugi'],
-            'akumulasi_penyusutan' => $labaRugi['akumulasi_penyusutan'],
-            'piutang' => $neraca['piutang'],
-            'saldo_pinjam' => $neraca['saldo_pinjam'],
-            'persediaan_dagang' => $neraca['persediaan_dagang'],
-            'bayar_dimuka' => $neraca['bayar_dimuka'],
-            'investasi' => $neraca['investasi'],
-            'bangunan' => $neraca['bangunan'],
-            'aktiva_lain' => $neraca['aktiva_lain'],
-            'total_aktiva' => $neraca['total_aktiva'],
-            'kas' => $neraca['kas'],
-            'hutang' => $neraca['hutang'],
-            'modal_desa' => $modalDesa,
-            'modal_masyarakat' => $modalMasyarakat,
-            'modal_bersama' => $neraca['modal_bersama'],
-            'ditahan' => $neraca['ditahan'],
-            'laba_rugi_berjalan' => $labaRugi['totalLabaRugi'],
-            'passiva' => $neraca['passiva'],
-            'ekuitas' => $ekuitas,
-            'laba_berjalan' => labaRugi($ekuitas->tahun)['totalLabaRugi'],
-            'buku_umum' => $bukuUmum,
-            'masuk' => $masuk,
-            'keluar' => $keluar,
-            'units' => Unit::user()->get(),
-            'nm_desa' => $nmDesa,
-        ];
+        $tutup =  Tutup::user()->where('tahun', session('selected_year', date('Y')))->get()->first();
+        $tahun = $ekuitas->tahun ?? session('selected_year') ?? date('Y');
+
+        if (isset($tutup)) {
+            $data_neraca = json_decode($tutup->data, true);
+            $data_neraca['tutup'] = true;
+            $data = [
+                'tahun' => $selectedYear,
+                'saldo_lalu' => $saldo_lalu,
+                'saldo' => $saldo_lalu,
+                'kas_akhir' => $kas_akhir,
+                'perubahan_kas' => $perubahan_kas,
+                'pendapatan' => $labaRugi['pendapatan'],
+                'pendapatanBulan' => $labaRugi['pendapatanBulan'],
+                'pendapatanTahun' => $labaRugi['pendapatanTahun'],
+                'totalBiaya' => $labaRugi['totalBiaya'],
+                'akumulasiBiaya' => $labaRugi['akumulasiBiaya'],
+                'labaRugi' => $labaRugi['labaRugi'],
+                'totalLabaRugi' => $labaRugi['totalLabaRugi'],
+                'akumulasi_penyusutan' => $labaRugi['akumulasi_penyusutan'],
+                'piutang' => $data_neraca['piutang'],
+                'saldo_pinjam' => $data_neraca['saldo_pinjam'],
+                'persediaan_dagang' => $data_neraca['persediaan_dagang'],
+                'bayar_dimuka' => $data_neraca['bayar_dimuka'],
+                'investasi' => $data_neraca['investasi'],
+                'bangunan' => $data_neraca['bangunan'],
+                'aktiva_lain' => $data_neraca['aktiva_lain'],
+                'total_aktiva' => $data_neraca['total_aktiva'],
+                'kas' => $data_neraca['kas'],
+                'hutang' => $data_neraca['hutang'],
+                'modal_desa' => $modalDesa,
+                'modal_masyarakat' => $modalMasyarakat,
+                'modal_bersama' => $neraca['modal_bersama'],
+                'ditahan' => $neraca['ditahan'],
+                'laba_rugi_berjalan' => $labaRugi['totalLabaRugi'],
+                'passiva' => $neraca['passiva'],
+                'ekuitas' => $ekuitas,
+                'laba_berjalan' => labaRugiTahun($tahun)['totalLabaRugi'],
+                'buku_umum' => $bukuUmum,
+                'masuk' => $masuk,
+                'keluar' => $keluar,
+                'units' => Unit::user()->get(),
+                'nm_desa' => $nmDesa,
+            ];
+        } else {
+            // Data yang akan dikirim ke view PDF
+            $data = [
+                'tahun' => $selectedYear,
+                'saldo_lalu' => $saldo_lalu,
+                'saldo' => $saldo_lalu,
+                'kas_akhir' => $kas_akhir,
+                'perubahan_kas' => $perubahan_kas,
+                'pendapatan' => $labaRugi['pendapatan'],
+                'pendapatanBulan' => $labaRugi['pendapatanBulan'],
+                'pendapatanTahun' => $labaRugi['pendapatanTahun'],
+                'totalBiaya' => $labaRugi['totalBiaya'],
+                'akumulasiBiaya' => $labaRugi['akumulasiBiaya'],
+                'labaRugi' => $labaRugi['labaRugi'],
+                'totalLabaRugi' => $labaRugi['totalLabaRugi'],
+                'akumulasi_penyusutan' => $labaRugi['akumulasi_penyusutan'],
+                'piutang' => $neraca['piutang'],
+                'saldo_pinjam' => $neraca['saldo_pinjam'],
+                'persediaan_dagang' => $neraca['persediaan_dagang'],
+                'bayar_dimuka' => $neraca['bayar_dimuka'],
+                'investasi' => $neraca['investasi'],
+                'bangunan' => $neraca['bangunan'],
+                'aktiva_lain' => $neraca['aktiva_lain'],
+                'total_aktiva' => $neraca['total_aktiva'],
+                'kas' => $neraca['kas'],
+                'bank' => $neraca['bank'],
+                'hutang' => $neraca['hutang'],
+                'modal_desa' => $modalDesa,
+                'modal_masyarakat' => $modalMasyarakat,
+                'modal_bersama' => $neraca['modal_bersama'],
+                'ditahan' => $neraca['ditahan'],
+                'laba_rugi_berjalan' => $labaRugi['totalLabaRugi'],
+                'passiva' => $neraca['passiva'],
+                'ekuitas' => $ekuitas,
+                'laba_berjalan' => labaRugiTahun($tahun)['totalLabaRugi'],
+                'buku_umum' => $bukuUmum,
+                'masuk' => $masuk,
+                'keluar' => $keluar,
+                'units' => Unit::user()->get(),
+                'nm_desa' => $nmDesa,
+            ];
+        }
+
+        // dd($data);
 
         // Generate PDF
         $pdf = PDF::loadView('laporan_keuangan.pdf', $data)->setPaper([0, 0, 595.276, 935.433], 'portrait');

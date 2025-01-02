@@ -157,6 +157,17 @@
                                         @enderror
                                     </td>
                                 </tr>
+                                <!-- Row 19: No NIB -->
+                                <tr>
+                                    <td><label for="no_nib">No ijin Berusaha (NIB)</label></td>
+                                    <td>
+                                        <input type="text" class="form-control @error('no_nib') is-invalid @enderror"
+                                            id="no_nib" name="no_nib" value="{{ old('no_nib', $profil) }}">
+                                        @error('no_nib')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
 

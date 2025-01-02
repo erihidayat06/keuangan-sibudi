@@ -81,6 +81,12 @@
                             <td class="text-red">{{ formatRupiah($hutang) }}</td>
                         </tr>
                         <tr>
+                            <td><span class="ms">Bank</span></span></td>
+                            <td class="text-red">{{ formatRupiah($bank) }}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
                             <td><span class="ms">Piutang</span></span></td>
                             <td class="text-red">{{ formatRupiah($piutang) }}</td>
                             <td></td>

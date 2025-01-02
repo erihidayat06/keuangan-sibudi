@@ -83,7 +83,8 @@ class InvestasiController extends Controller
         $investasi = Investasi::create($validated);
         $id = rendem();
         if ($investasi) {
-            $buk =  bukuUmum('Investasi ' . $request->item, 'kredit', 'kas', 'iventasi', $request->nilai * $request->jumlah, 'investasi', Investasi::latest()->first()->id, $request->tgl_beli);
+            $buk =  bukuUmum('Investasi ' . $request->item, 'kredit', 'kas', 'iventasi', $request->nilai * $request->jumlah, 'investasi', $investasi->id, $request->tgl_beli);
+
             histori($id, 'investasis', $validated, 'create', $investasi->id);
             histori($id, 'buks', $validated, 'create', $buk->id);
         };
@@ -145,6 +146,7 @@ class InvestasiController extends Controller
 
         $validated['user_id'] = auth()->user()->id;
         $buk = Buk::where('akun', 'investasi')->firstWhere('id_akun', $investasi->id);
+
         $id = rendem();
 
         histori($id, 'investasis', $investasi->toArray(), 'update', $investasi->id);

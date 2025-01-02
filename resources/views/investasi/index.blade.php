@@ -85,16 +85,38 @@
                             @foreach ($asets as $aset)
                                 @php
                                     $masa_pakai = masaPakai($aset->tgl_beli, $aset->wkt_ekonomis)['masa_pakai'];
-                                    $penyusutan = ($aset->nilai / $aset->wkt_ekonomis) * $aset->jumlah;
-                                    $jumlah_penyusutan = 0;
 
-                                    if ($masa_pakai == $aset->wkt_ekonomis) {
-                                        $jumlah_penyusutan = 0;
+                                    // Default nilai penyusutan
+                                    $penyusutan =
+                                        $masa_pakai != $aset->wkt_ekonomis
+                                            ? $aset->jumlah * ($aset->nilai / $aset->wkt_ekonomis)
+                                            : 0;
+                                    $jumlah_penyusutan = $masa_pakai >= $aset->wkt_ekonomis ? 0 : $penyusutan;
+
+                                    $bulan_sekarang = date('n'); // Ambil bulan saat ini
+
+                                    if (
+                                        $bulan_sekarang >= 1 &&
+                                        $bulan_sekarang <= 4 &&
+                                        session('selected_year', date('Y')) == date('Y')
+                                    ) {
+                                        // Jika bulan Januari - April
+                                        $penyusutan = 0;
+                                        $ok = null;
+                                        $saat_ini =
+                                            $aset->nilai * $aset->jumlah -
+                                            $masa_pakai * ($aset->jumlah * ($aset->nilai / $aset->wkt_ekonomis));
                                     } else {
-                                        $jumlah_penyusutan = ($aset->nilai / $aset->wkt_ekonomis) * $aset->jumlah;
+                                        // Jika bukan bulan Januari - April
+                                        $saat_ini = $aset->nilai * $aset->jumlah - $masa_pakai * $penyusutan;
                                     }
-                                    $saat_ini = $aset->nilai * $aset->jumlah - $masa_pakai * $penyusutan;
+
+                                    if ($jumlah_penyusutan == 0) {
+                                        $saat_ini = 0;
+                                    }
+
                                 @endphp
+
                                 <tr>
                                     <th scope="row">{{ $i++ }}</th>
                                     <td>{{ $aset->item }}</td>

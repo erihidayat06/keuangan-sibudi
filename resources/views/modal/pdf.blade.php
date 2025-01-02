@@ -92,7 +92,7 @@
                             @foreach ($modals as $modal)
                                 <tr>
                                     <th scope="row">{{ $i++ }}</th>
-                                    <td>{{ date('Y', strtotime($modal->tahun)) }}</td>
+                                    <td>{{ $modal->tahun }}</td>
                                     <td>{{ $modal->sumber }}</td>
                                     <td>{{ formatRupiah($modal->mdl_desa) }}</td>
                                     <td>{{ formatRupiah($modal->mdl_masyarakat) }}</td>

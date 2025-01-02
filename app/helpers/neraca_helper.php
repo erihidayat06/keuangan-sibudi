@@ -11,6 +11,7 @@ use App\Models\Pinjaman;
 use App\Models\Investasi;
 use App\Models\Aktivalain;
 use App\Models\Persediaan;
+use App\Models\Rekonsiliasi;
 
 if (!function_exists('neraca')) {
     function neraca()
@@ -36,59 +37,28 @@ if (!function_exists('neraca')) {
         }
 
         // Bayar di muka
-        $asets = Bdmuk::user()->whereYear('created_at', '<=', session('selected_year', date('Y')))->get();
+        $asets_bdmuk = Bdmuk::user()->whereYear('created_at', '<=', session('selected_year', date('Y')))->get();
 
         $bayar_dimuka = 0;
-        foreach ($asets as $aset) {
-            if ($aset->wkt_ekonomis != 0) {
-                $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            } else {
-                $penyusutan = 0;
-            }
-            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'] * $penyusutan;
-            $bayar_dimuka = $bayar_dimuka + $saat_ini;
-        }
+        $bayar_dimuka = akumulasiPenyusutan($asets_bdmuk)['inven'];
 
         // Investasi
-        $asets = Investasi::user()->whereYear('tgl_beli', '<=', session('selected_year', date('Y')))->get();
+        $asets_inventari = Investasi::user()->whereYear('tgl_beli', '<=', session('selected_year', date('Y')))->get();
         $investasi = 0;
-        foreach ($asets as $aset) {
-
-
-            $penyusutan = $aset->nilai / $aset->wkt_ekonomis  * $aset->jumlah;
-            $saat_ini =
-                $aset->jumlah * $aset->nilai - masaPakai($aset->tgl_beli, $aset->wkt_ekonomis)['masa_pakai'] * $penyusutan;
-            $investasi = $investasi + $saat_ini;
-        }
+        $investasi = akumulasiPenyusutanIventasi($asets_inventari)['inven'];
 
 
         // bangunan
-        $asets = Bangunan::user()->whereYear('created_at', '<=', session('selected_year', date('Y')))->get();
+        $asets_bangunan = Bangunan::user()->whereYear('created_at', '<=', session('selected_year', date('Y')))->get();
 
         $bangunan = 0;
-        foreach ($asets as $aset) {
-            if ($aset->wkt_ekonomis != 0) {
-                $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            } else {
-                $penyusutan = 0;
-            }
-            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'] * $penyusutan;
-            $bangunan = $bangunan + $saat_ini;
-        }
+        $bangunan = akumulasiPenyusutan($asets_bangunan)['inven'];
 
 
         // Aktiva Lain
-        $asets = Aktivalain::user()->whereYear('created_at', '<=', session('selected_year', date('Y')))->get();
+        $asets_aktiva = Aktivalain::user()->whereYear('created_at', '<=', session('selected_year', date('Y')))->get();
         $aktiva_lain = 0;
-        foreach ($asets as $aset) {
-            if ($aset->wkt_ekonomis != 0) {
-                $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-            } else {
-                $penyusutan = 0;
-            }
-            $saat_ini = $aset->nilai - masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'] * $penyusutan;
-            $aktiva_lain = $aktiva_lain + $saat_ini;
-        }
+        $aktiva_lain = akumulasiPenyusutan($asets_aktiva)['inven'];
 
         // Kas
         $transaksis = Buk::user()->whereYear('tanggal', '<=', session('selected_year', date('Y')))->get();
@@ -97,7 +67,11 @@ if (!function_exists('neraca')) {
 
         $saldo = $debit - $kredit;
 
-        $total_aktiva = $saldo + $sisa_putang + $saldo_pinjam + $persediaan_dagang + $bayar_dimuka +  $investasi + $bangunan + $aktiva_lain;
+        // Rekonsiliasi
+        $rekon = Rekonsiliasi::user()->get();
+
+        $total_aktiva = $saldo + $sisa_putang + $saldo_pinjam + $persediaan_dagang + $bayar_dimuka +  $investasi + $bangunan + $aktiva_lain +
+            $rekon->sum('jumlah');;
 
 
 
@@ -119,6 +93,9 @@ if (!function_exists('neraca')) {
 
         // Ditahan
         $dithns = Dithn::user()->whereYear('created_at', '<=', session('selected_year', date('Y')))->get();
+
+
+
 
         $ditahan = 0;
         foreach ($dithns as $dithn) {
@@ -146,7 +123,8 @@ if (!function_exists('neraca')) {
             'modal_bersama' => $modal_bersama,
             'ditahan' => $ditahan,
             'laba_rugi_berjalan' => labaRugi(session('selected_year', date('Y')))['totalLabaRugi'],
-            'passiva' => $passiva,
+            'bank' => $rekon->sum('jumlah')
+
         ];
     }
 }

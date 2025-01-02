@@ -18,7 +18,11 @@ class LaporanPerubahanModalController extends Controller
         $modal_desa = Modal::user()->get()->sum('mdl_desa');
         $modal_masyarakat = Modal::user()->get()->sum('mdl_masyarakat');
         $modal_bersama = Modal::user()->get()->sum('mdl_bersama');
-        $tahun = !isset($ekuitas->tahun) ? session('selected_year', date('Y')) : $ekuitas->tahun;
+        $tahun = $ekuitas->tahun ?? session('selected_year');
+
+        // dd($tahun);
+
+        // dd(labaRugiTahun($tahun)['totalLabaRugi']);
 
 
         return view('laporan_perubahan_modal.index', [
@@ -27,7 +31,7 @@ class LaporanPerubahanModalController extends Controller
             'modal_bersama' => $modal_bersama,
             'ekuitas' => $ekuitas,
             'ditahan' => $neraca['ditahan'],
-            'laba_berjalan' => labaRugi($tahun)['totalLabaRugi']
+            'laba_berjalan' => labaRugiTahun($tahun)['totalLabaRugi']
         ]);
     }
 
@@ -38,14 +42,19 @@ class LaporanPerubahanModalController extends Controller
 
         $neraca =  neraca();
         $modal_desa = Modal::user()->get()->sum('mdl_desa');
+        $modal_bersama = Modal::user()->get()->sum('mdl_bersama');
         $modal_masyarakat = Modal::user()->get()->sum('mdl_masyarakat');
+        $tahun = $ekuitas->tahun ?? session('selected_year') ?? date('Y');
+
+
+
         $data = [
             'modal_desa' => $modal_desa,
             'modal_masyarakat' => $modal_masyarakat,
             'modal_bersama' => $modal_bersama,
             'ekuitas' => $ekuitas,
             'ditahan' => $neraca['ditahan'],
-            'laba_berjalan' => labaRugi($ekuitas->tahun)['totalLabaRugi']
+            'laba_berjalan' => labaRugiTahun($tahun)['totalLabaRugi']
         ];
 
         // Gunakan facade PDF
@@ -91,9 +100,12 @@ class LaporanPerubahanModalController extends Controller
 
     public function ditahan(Ekuit $ekuit)
     {
+
         $id = rendem();
-        $hasil = labaRugi($ekuit->tahun)['totalLabaRugi'] > 0 ? 'Untung' : 'Rugi';
-        $labaRugi =   labaRugi($ekuit->tahun)['totalLabaRugi'];
+        $hasil = labaRugiTahun($ekuit->tahun)['totalLabaRugi'] > 0 ? 'Untung' : 'Rugi';
+        $labaRugi =   labaRugiTahun($ekuit->tahun)['totalLabaRugi'];
+
+
         $dataDitahan = [
             'tahun' => $ekuit->tahun,
             'hasil' => $hasil,

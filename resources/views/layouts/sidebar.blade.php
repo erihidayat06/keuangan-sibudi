@@ -9,6 +9,7 @@
                     <span>Dashboard Admin</span>
                 </a>
             </li><!-- End Dashboard Nav -->
+
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('admin/data-user') ? '' : 'collapsed' }}" href="/admin/data-user">
                     <i class="bi bi-people"></i>
@@ -49,6 +50,12 @@
                 </a>
             </li><!-- End Dashboard Nav -->
             <li class="nav-item">
+                <a class="nav-link {{ Request::is('visi/misi') ? '' : 'collapsed' }}" href="/visi/misi">
+                    <i class="bi bi-award-fill"></i>
+                    <span>Visi Misi</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
                 <a class="nav-link {{ Request::is('unit*') ? '' : 'collapsed' }}" href="/unit">
                     <i class="bi bi-diagram-3"></i>
                     <span>Unit Usaha</span>
@@ -79,6 +86,11 @@
                         <a href="/aset/buk" class="{{ Request::is('aset/buk*') ? 'active' : '' }}">
                             <i class="bi bi-circle "></i><span>Buku
                                 Kas</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/aset/bank" class="{{ Request::is('aset/bank*') ? 'active' : '' }}">
+                            <i class="bi bi-circle"></i><span>Bank</span>
                         </a>
                     </li>
                     <li>
@@ -146,12 +158,12 @@
                 </a>
             </li><!-- End Dashboard Nav -->
 
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link {{ Request::is('rekonsiliasi*') ? '' : 'collapsed' }}" href="/rekonsiliasi">
                     <i class="bi bi-percent"></i>
                     <span>Rekonsiliasi Kas</span>
                 </a>
-            </li><!-- End Dashboard Nav -->
+            </li><!-- End Dashboard Nav --> --}}
 
 
 
@@ -196,6 +208,19 @@
                     href="/export-pdf/cetak-laporan">
                     <i class="bi bi-filetype-pdf"></i>
                     <span>Cetak Laporan</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-heading">Lembar Pengesahan</li>
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('proker*') ? '' : 'collapsed' }}" href="/proker">
+                    <i class="bi bi-file-easel"></i>
+                    <span>Program Kerja</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('lpj*') ? '' : 'collapsed' }}" href="/lpj">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span>Laporan Pertanggungjawaban</span>
                 </a>
             </li><!-- End Dashboard Nav -->
             @php

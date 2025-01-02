@@ -13,6 +13,7 @@ class Investasi extends Model
 
     public function scopeUser($query)
     {
+        // dd(session('selected_year', date('Y')));
         return $query->where('user_id', auth()->user()->id)->whereYear('tgl_beli', '<=', session('selected_year', date('Y')));
     }
 

@@ -72,6 +72,7 @@
                         <tbody>
                             @php
                                 $i = 1;
+                                $tahun_ini = session('selected_year', date('Y'));
                             @endphp
                             @foreach ($asets as $aset)
                                 @php

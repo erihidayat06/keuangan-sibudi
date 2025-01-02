@@ -32,6 +32,8 @@ return new class extends Migration
             $table->string('no_badan', 50)->nullable();
             $table->string('no_perdes', 50)->nullable();
             $table->string('no_sk', 50)->nullable();
+            $table->text('visi')->nullable();
+            $table->text('misi')->nullable();
             $table->foreignId('user_id');
             $table->timestamps();
         });

@@ -81,34 +81,29 @@
                             @endphp
                             @foreach ($asets as $aset)
                                 @php
-                                    $masaPakai = masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'];
-                                    $jumlah_penyusutan = 0;
-                                    if ($masaPakai) {
+                                    if ($aset->wkt_ekonomis != 0) {
                                         $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-                                    } else {
-                                        $penyusutan = 0;
                                     }
 
-                                    if ($masaPakai == $aset->wkt_ekonomis) {
-                                        $jumlah_penyusutan = 0;
-                                    } else {
-                                        $jumlah_penyusutan = $aset->nilai / $aset->wkt_ekonomis;
-                                    }
-
+                                    // Hitung nilai aset saat ini berdasarkan masa pakai dan penyusutan
                                     $saat_ini =
                                         $aset->nilai -
                                         masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'] * $penyusutan;
+                                    if ($saat_ini == 0) {
+                                        $penyusutan = 0;
+                                    }
+
                                 @endphp
                                 <tr>
                                     <th scope="row">{{ $i++ }}</th>
                                     <td>{{ formatTanggal($aset->created_at) }}</td>
-                                    <td>{{ $aset->keterangan }}</td>
+                                    <td>{{ $aset->jenis }}</td>
                                     <td>{{ formatRupiah($aset->nilai) }}</td> <!-- Format nilai dengan formatRupiah -->
                                     <td>{{ $aset->wkt_ekonomis }}</td>
                                     <td>
                                         {{ masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'] }}
                                     </td>
-                                    <td>{{ formatRupiah($jumlah_penyusutan) }}</td>
+                                    <td>{{ formatRupiah($penyusutan) }}</td>
                                     <td>{{ formatRupiah($saat_ini) }}</td>
                                     <td>
                                         <div class="d-flex justify-content-start">

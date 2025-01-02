@@ -13,7 +13,7 @@ class Dithn extends Model
 
     public function scopeUser($query)
     {
-        return $query->where('user_id', auth()->user()->id)->whereYear('created_at', '<=', session('selected_year', date('Y')));
+        return $query->where('user_id', auth()->user()->id)->whereYear('tahun', '<=', session('selected_year', date('Y')));
     }
 
     protected $casts = [

@@ -5,8 +5,23 @@
         <div class="col-lg-10">
             <div class="card overflow-auto">
                 <div class="card-body">
-                    <a href="/export-pdf/neraca" class="btn btn-danger mt-3"><i class="bi bi-filetype-pdf"></i>
-                        PDF</a>
+                    <div class="d-flex justify-content-start mt-3">
+
+                        <a href="/export-pdf/neraca" class="btn btn-danger "><i class="bi bi-filetype-pdf"></i>
+                            PDF</a>
+
+                        @if (session('selected_year', date('Y')) <= date('Y'))
+                            <form action="/laporan-keuangan/neraca/tutup" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-primary ms-3"
+                                    onclick="return confirm('Apakah yakin neraca mau ditutup?')"
+                                    {{ $tutup == true ? 'disabled' : '' }}><i
+                                        class="bi
+                                bi-book-half"></i>
+                                    Tutup</button>
+                            </form>
+                        @endif
+                    </div>
                     <div class="card-title">1. Laporan Neraca</div>
 
                     <table class="table">
@@ -26,6 +41,12 @@
                                 <td>{{ formatRupiah($kas) }}</td>
                                 <td>Hutang</td>
                                 <td>{{ formatRupiah($hutang) }}</td>
+                            </tr>
+                            <tr>
+                                <td>Bank</td>
+                                <td>{{ formatRupiah($bank) }}</td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>Piutang</td>
