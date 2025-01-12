@@ -22,7 +22,7 @@
          @foreach ($units as $unit)
              @php
                  $omset = json_decode($target_lalu->omset ?? '{}', true)['pu' . $unit->kode] ?? 0;
-                 $totalOmset += $omset;
+                 $totalOmset += intval($omset);
              @endphp
              <tr>
                  <td></td>
