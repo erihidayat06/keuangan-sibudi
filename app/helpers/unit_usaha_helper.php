@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Unit;
+use App\Models\Proker;
+use App\Models\Target;
 
 if (!function_exists('unitUsaha')) {
     function unitUsaha()
@@ -8,6 +10,24 @@ if (!function_exists('unitUsaha')) {
         return auth()->user()->profil;
     }
 }
+
+if (!function_exists('proker')) {
+    function proker()
+    {
+        $user_id = auth()->user()->id;
+        if (Proker::user()->where('tahun', session('selected_year', date('Y')))->get()->first() == null) {
+            Proker::create(['user_id' => $user_id, 'tahun' => session('selected_year', date('Y'))]);
+        }
+
+        $proker = Proker::user()->where('tahun', session('selected_year', date('Y')))->get()->first();
+        if (Target::user()->where('tahun', session('selected_year', date('Y')))->get()->first() == null) {
+            Target::create(['user_id' => $user_id, 'tahun' => session('selected_year', date('Y')), 'proker_id' => $proker->id]);
+        }
+    }
+}
+
+
+
 
 if (!function_exists('namaUnitUsaha')) {
     function namaUnitUsaha()

@@ -99,7 +99,7 @@
                 <a href="/proker/penambahan/modal" class="btn  btn-primary">Selanjutnya</a>
             @elseif ($title == 'G. RENCANA PENAMBAHAN MODAL')
                 <a href="{{ $back }}" class="btn  btn-secondary">Kembali</a>
-                <button type="submit" class="btn  btn-primary">Simpan</button>
+
                 <a href="/cetak/proker" class="btn  btn-danger">Cetak</a>
             @elseif (isset($back))
                 <a href="{{ $back }}" class="btn  btn-secondary">Kembali</a>

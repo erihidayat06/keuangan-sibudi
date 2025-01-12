@@ -212,7 +212,7 @@ Route::delete('/proker/rencana/kerjasama/{kerjasama:id}', [ProkerController::cla
 Route::get('/proker/penambahan/modal', [PenambahanModalController::class, 'penambahanModal'])->middleware('auth', 'langganan', 'bumdes');
 Route::post('/proker/alokasi/store', [PenambahanModalController::class, 'alokasiStore'])->middleware('auth', 'langganan', 'bumdes');
 Route::post('/proker/resiko/store', [PenambahanModalController::class, 'resikoStore'])->middleware('auth', 'langganan', 'bumdes');
-Route::post('/update-status', [PenambahanModalController::class, 'updateStatus'])->name('update.status')->middleware('auth', 'langganan', 'bumdes');
+Route::post('/update-status/{proker:id}', [PenambahanModalController::class, 'updateStatus'])->name('update.status')->middleware('auth', 'langganan', 'bumdes');
 Route::put('/proker/penambahan/modal/{proker:id}', [PenambahanModalController::class, 'penambahanModalUpdate'])->middleware('auth', 'langganan', 'bumdes');
 
 Route::get('/cetak/proker', [CetakProkerController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes')->middleware('auth', 'langganan', 'bumdes');

@@ -184,6 +184,7 @@
 
     <p>Apakah ada Rencana Pengajuan Penambahan Penyertaan Modal di tahun berikutnya</p>
     <div class="form-check">
+        <input type="hidden" id="proker-id" value="{{ $proker->id }}">
         <input class="form-check-input" type="radio" value="Ada" name="status" id="flexRadioDefault1" data-id="1"
             {{ $proker->status == 'Ada' ? 'checked' : '' }}>
         <label class="form-check-label" for="flexRadioDefault1">
@@ -206,12 +207,13 @@
                 var newStatus = $(this).val(); // Ambil nilai status baru
                 var id = $(this).data('id'); // Ambil ID yang terkait dengan status
 
+                var proker_id = $('#proker-id').val(); // Ambil nilai status baru
                 // Perbarui status di tabel
                 $('#status-' + id).text(newStatus);
 
                 // Kirimkan request AJAX untuk memperbarui status di database
                 $.ajax({
-                    url: '/update-status', // URL endpoint untuk memperbarui status
+                    url: '/update-status/' + proker_id, // URL endpoint untuk memperbarui status
                     method: 'POST',
                     data: {
                         id: id,
@@ -283,123 +285,127 @@
                     name="jumlah">
             </div>
 
-            <label class="mt-3" for="alokasi">4. Bagaimana alokasi penggunaan penyertaan modal</label>
-            <br>
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary mb-3 mt-3" data-bs-toggle="modal"
-                data-bs-target="#alokasiModal">
-                Tambah Data
-            </button>
-            <table class="table table-bordered ">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Item</th>
-                        <th scope="col">Jenis Biaya<br>(Investasi/Operasional)</th>
-                        <th scope="col">Nilai</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php
-                        $i = 1;
-                    @endphp
-                    <!-- Contoh Data -->
-                    @foreach ($alokasis as $alokasi)
-                        <tr>
-                            <td>{{ $i++ }}</td>
-                            <td>{{ $alokasi->item }}</td>
-                            <td>{{ $alokasi->jenis_biaya }}</td>
-                            <td>{{ $alokasi->nilai }}</td>
-                        </tr>
-                    @endforeach
 
-                </tbody>
-            </table>
-            <label class="mt-3" for="aspek_pasar">5. Bagaimana analisa aspek pasar pada usaha tersebut</label>
+            <label class="mt-3" for="aspek_pasar">4. Bagaimana analisa aspek pasar pada usaha tersebut</label>
             <div class="ms-4">
                 <textarea class="form-control" id="aspek_pasar" name="aspek_pasar" rows="3">{{ old('aspek_pasar', $proker) }}</textarea>
             </div>
 
-            <label class="mt-3" for="aspek_keuangan">6. Bagaimana analisa aspek keuangan pada pengembangan usaha
+            <label class="mt-3" for="aspek_keuangan">5. Bagaimana analisa aspek keuangan pada pengembangan usaha
                 tersebut</label>
             <div class="ms-4">
                 <textarea class="form-control" id="aspek_keuangan" name="aspek_keuangan" rows="3">{{ old('aspek_keuangan', $proker) }}</textarea>
             </div>
 
 
-            <label class="mt-3" for="teknis">7. Bagaimana analisa aspek teknis pada pengembangan usaha tersebut
-            </label><br>
-            <!-- Button trigger modal -->
-            <button type="button" id="teknis" class="btn btn-primary mb-3 mt-3" data-bs-toggle="modal"
-                data-bs-target="#resikoModal">
-                Tambah Resiko Usaha
-            </button>
-            <table class="table table-bordered ">
-                <thead class="table">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Resiko Jalannya Usaha</th>
-                        <th scope="col">Penyebab</th>
-                        <th scope="col">Antisipasi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php
-                        $i = 1;
-                    @endphp
-                    <!-- Contoh Data -->
-                    @foreach ($rasios as $rasio)
-                        <tr>
-                            <td>{{ $i++ }}</td>
-                            <td>{{ $rasio->resiko }}</td>
-                            <td>{{ $rasio->penyebab }}</td>
-                            <td>{{ $rasio->antisipasi }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
 
-            <label class="mt-3" for="aspek_lainya">8. Bagaimana analisa aspek lainnya (hukum, Lingkungan, sosial,
+            <label class="mt-3" for="aspek_lainya">6. Bagaimana analisa aspek lainnya (hukum, Lingkungan, sosial,
                 politik, dll) pada
                 pengembangan usaha tersebut</label>
             <div class="ms-4">
                 <textarea class="form-control" id="aspek_lainya" name="aspek_lainya" rows="3">{{ old('aspek_lainya', $proker) }}</textarea>
             </div>
 
-            <label class="mt-3" for="strategi_pemasaran">9. Bagaimana strategi pemasaran yang akan dilakukan</label>
+            <label class="mt-3" for="strategi_pemasaran">7. Bagaimana strategi pemasaran yang akan dilakukan</label>
             <div class="ms-4">
                 <textarea class="form-control" id="strategi_pemasaran" name="strategi_pemasaran" rows="3">{{ old('strategi_pemasaran', $proker) }}</textarea>
             </div>
 
-            <label class="mt-3" for="kesimpulan">10. Kesimpulan tentang rencana penambahan modal</label>
+            <label class="mt-3" for="kesimpulan">8. Kesimpulan tentang rencana penambahan modal</label>
             <div class="ms-4">
                 <textarea class="form-control" id="kesimpulan" name="kesimpulan" rows="3">{{ old('kesimpulan', $proker) }}</textarea>
             </div>
 
         </div>
+        <button type="submit" class="btn  btn-primary mt-5 ms-3">Simpan</button>
+    </form>
 
 
-        <script>
-            // Ambil elemen radio buttons dan elemen .lengkapi
-            const radioAda = document.getElementById('flexRadioDefault1');
-            const radioTidakAda = document.getElementById('flexRadioDefault2');
-            const lengkapi = document.querySelector('.lengkapi');
+    <label class="mt-3" for="alokasi">9. Bagaimana alokasi penggunaan penyertaan modal</label>
+    <br>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary mb-3 mt-3" data-bs-toggle="modal" data-bs-target="#alokasiModal">
+        Tambah Data
+    </button>
+    <table class="table table-bordered ">
+        <thead class="table-light">
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Item</th>
+                <th scope="col">Jenis Biaya<br>(Investasi/Operasional)</th>
+                <th scope="col">Nilai</th>
+            </tr>
+        </thead>
+        <tbody>
+            @php
+                $i = 1;
+            @endphp
+            <!-- Contoh Data -->
+            @foreach ($alokasis as $alokasi)
+                <tr>
+                    <td>{{ $i++ }}</td>
+                    <td>{{ $alokasi->item }}</td>
+                    <td>{{ $alokasi->jenis_biaya }}</td>
+                    <td>{{ $alokasi->nilai }}</td>
+                </tr>
+            @endforeach
 
-            // Fungsi untuk toggle elemen .lengkapi
-            function toggleLengkapi() {
-                if (radioAda.checked) {
-                    lengkapi.style.display = 'block'; // Tampilkan jika "Ada" dipilih
-                } else {
-                    lengkapi.style.display = 'none'; // Sembunyikan jika "Tidak Ada" dipilih
-                }
+        </tbody>
+    </table>
+
+    <label class="mt-3" for="teknis">10. Bagaimana analisa aspek teknis pada pengembangan usaha tersebut
+    </label><br>
+    <!-- Button trigger modal -->
+    <button type="button" id="teknis" class="btn btn-primary mb-3 mt-3" data-bs-toggle="modal"
+        data-bs-target="#resikoModal">
+        Tambah Resiko Usaha
+    </button>
+    <table class="table table-bordered ">
+        <thead class="table">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Resiko Jalannya Usaha</th>
+                <th scope="col">Penyebab</th>
+                <th scope="col">Antisipasi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @php
+                $i = 1;
+            @endphp
+            <!-- Contoh Data -->
+            @foreach ($rasios as $rasio)
+                <tr>
+                    <td>{{ $i++ }}</td>
+                    <td>{{ $rasio->resiko }}</td>
+                    <td>{{ $rasio->penyebab }}</td>
+                    <td>{{ $rasio->antisipasi }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+
+    <script>
+        // Ambil elemen radio buttons dan elemen .lengkapi
+        const radioAda = document.getElementById('flexRadioDefault1');
+        const radioTidakAda = document.getElementById('flexRadioDefault2');
+        const lengkapi = document.querySelector('.lengkapi');
+
+        // Fungsi untuk toggle elemen .lengkapi
+        function toggleLengkapi() {
+            if (radioAda.checked) {
+                lengkapi.style.display = 'block'; // Tampilkan jika "Ada" dipilih
+            } else {
+                lengkapi.style.display = 'none'; // Sembunyikan jika "Tidak Ada" dipilih
             }
+        }
 
-            // Pasang event listener pada radio buttons
-            radioAda.addEventListener('change', toggleLengkapi);
-            radioTidakAda.addEventListener('change', toggleLengkapi);
+        // Pasang event listener pada radio buttons
+        radioAda.addEventListener('change', toggleLengkapi);
+        radioTidakAda.addEventListener('change', toggleLengkapi);
 
-            // Jalankan fungsi saat halaman dimuat untuk memastikan state awal
-            document.addEventListener('DOMContentLoaded', toggleLengkapi);
-        </script>
-    @endsection
-</form>
+        // Jalankan fungsi saat halaman dimuat untuk memastikan state awal
+        document.addEventListener('DOMContentLoaded', toggleLengkapi);
+    </script>
+@endsection

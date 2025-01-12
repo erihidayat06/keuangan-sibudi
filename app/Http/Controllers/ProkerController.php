@@ -66,8 +66,7 @@ class ProkerController extends Controller
     public function kualititif()
     {
 
-
-
+        proker();
 
 
         $proker = Proker::user()->where('tahun', session('selected_year', date('Y')))->get()->first();
@@ -84,6 +83,7 @@ class ProkerController extends Controller
 
     public function kualititifUpdate(Request $request, Proker $proker)
     {
+        proker();
 
         Proker::where('id', $proker->id)->update(['kualititif' => $request->kualititif]);
 
@@ -92,6 +92,7 @@ class ProkerController extends Controller
 
     public function strategi()
     {
+        proker();
         $proker = Proker::user()->where('tahun', session('selected_year', date('Y')))->get()->first();
         $title = 'C. STRATEGI DAN KEBIJAKAN TAHUN BERIKUTNYA';
         $back = '/proker/kualititif';
@@ -106,6 +107,7 @@ class ProkerController extends Controller
 
     public function strategiUpdate(Request $request, Proker $proker)
     {
+        proker();
 
         Proker::where('id', $proker->id)->update(['strategi' => $request->strategi]);
 
@@ -114,6 +116,7 @@ class ProkerController extends Controller
 
     public function sasaran()
     {
+        proker();
         $units = Unit::user()->get();
         $proker = Proker::user()->where('tahun', session('selected_year', date('Y')))->get()->first();
         $target = Target::user()->where('tahun', session('selected_year', date('Y')))->get()->first();
@@ -153,6 +156,7 @@ class ProkerController extends Controller
 
     public function sasaranUpdate(Request $request, Proker $proker)
     {
+        proker();
         // Validasi input
         $validated = $request->validate([
             'laba' => 'nullable|numeric',
@@ -198,6 +202,7 @@ class ProkerController extends Controller
 
     public function rencanaKegiatan()
     {
+        proker();
         $proker = Proker::user()->where('tahun', session('selected_year', date('Y')))->get()->first();
         $title = 'E. RENCANA KEGIATAN/PROGRAM';
         $back = '/proker/sasaran';
@@ -217,6 +222,7 @@ class ProkerController extends Controller
 
     public function kegiatanStore(Request $request)
     {
+        proker();
 
         $request->validate([
             'input.*.kegiatan' => 'nullable|string',
@@ -238,6 +244,7 @@ class ProkerController extends Controller
 
     public function KerjasamaStore(Request $request)
     {
+        proker();
 
         $request->validate([
             'input.*.pihak' => 'nullable|string',
@@ -259,6 +266,7 @@ class ProkerController extends Controller
 
     public function kegiatanDestroy(Request $request, Program $program)
     {
+        proker();
         $program->delete();
 
         return back();
@@ -266,6 +274,7 @@ class ProkerController extends Controller
 
     public function kerjasamaDestroy(Request $request, Kerjasama $kerjasama)
     {
+        proker();
         $kerjasama->delete();
 
         return back();

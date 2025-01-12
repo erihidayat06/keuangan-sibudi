@@ -48,7 +48,7 @@ class PenambahanModalController extends Controller
         return back();
     }
 
-    public function updateStatus(Request $request)
+    public function updateStatus(Request $request, Proker $proker)
     {
         // Validasi input
         $validated = $request->validate([
@@ -57,11 +57,7 @@ class PenambahanModalController extends Controller
         ]);
 
         // Temukan data berdasarkan ID
-        $proker = Proker::find($validated['id']);
-
-        // Perbarui status
-        $proker->status = $validated['status'];
-        $proker->save();
+        $proker = Proker::where('id', $proker->id)->update($validated);
 
         // Kembalikan respon sukses
         return response()->json(['message' => 'Status berhasil diperbarui!']);
