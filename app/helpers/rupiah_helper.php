@@ -5,9 +5,14 @@ use App\Models\Bukbesar;
 if (!function_exists('formatRupiah')) {
     function formatRupiah($angka)
     {
+        // Pastikan $angka adalah angka
+        $angka = is_numeric($angka) ? floatval($angka) : 0;
+
+        // Format ke dalam format rupiah
         return 'Rp' . number_format($angka, 0, ',', '.');
     }
 }
+
 
 if (!function_exists('formatNomor')) {
     function formatNomor($angka)
