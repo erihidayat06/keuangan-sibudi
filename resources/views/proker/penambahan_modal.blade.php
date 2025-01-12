@@ -319,9 +319,10 @@
 
             <button type="submit" class="btn  btn-primary mt-5 ms-3">Simpan</button>
     </form>
+    <br>
 
 
-    <label class="mt-3" for="alokasi">9. Bagaimana alokasi penggunaan penyertaan modal</label>
+    <label class="mt-5" for="alokasi">9. Bagaimana alokasi penggunaan penyertaan modal</label>
     <br>
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary mb-3 mt-3" data-bs-toggle="modal" data-bs-target="#alokasiModal">
