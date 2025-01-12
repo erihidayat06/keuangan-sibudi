@@ -92,7 +92,7 @@ if (!function_exists('neraca')) {
         $modal_bersama = $modals->sum('mdl_bersama');
 
         // Ditahan
-        $dithns = Dithn::user()->whereYear('created_at', '<=', session('selected_year', date('Y')))->get();
+        $dithns = Dithn::user()->get();
 
 
 
