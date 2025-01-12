@@ -36,7 +36,7 @@
             @foreach ($units as $unit)
                 @php
                     $omset = json_decode($target->omset ?? '{}', true)['pu' . $unit->kode] ?? 0;
-                    $totalOmset += $omset;
+                    $totalOmset += intval($omset);
                 @endphp
                 <tr>
                     <td></td>
@@ -70,7 +70,7 @@
             @foreach ($units as $unit)
                 @php
                     $pembiayaan = json_decode($target->pembiayaan ?? '{}', true)['bo' . $unit->kode] ?? 0;
-                    $biaya += $pembiayaan;
+                    $totalpembiayaan += intval($pembiayaan);
                 @endphp
                 <tr>
                     <td></td>
