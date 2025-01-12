@@ -52,7 +52,6 @@ class PenambahanModalController extends Controller
     {
         // Validasi input
         $validated = $request->validate([
-            'id' => 'required|exists:prokers,id',
             'status' => 'required|string',
         ]);
 

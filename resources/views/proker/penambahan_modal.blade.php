@@ -316,8 +316,8 @@
                 <textarea class="form-control" id="kesimpulan" name="kesimpulan" rows="3">{{ old('kesimpulan', $proker) }}</textarea>
             </div>
 
-        </div>
-        <button type="submit" class="btn  btn-primary mt-5 ms-3">Simpan</button>
+
+            <button type="submit" class="btn  btn-primary mt-5 ms-3">Simpan</button>
     </form>
 
 
@@ -384,7 +384,7 @@
             @endforeach
         </tbody>
     </table>
-
+    </div>
 
     <script>
         // Ambil elemen radio buttons dan elemen .lengkapi
