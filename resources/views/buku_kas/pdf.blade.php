@@ -51,7 +51,7 @@
                                 <th scope="col">Tanggal</th>
                                 <th scope="col">Transaksi</th>
                                 <th scope="col">(Debit/Kredit)</th>
-                                <th scope="col">Jenis Dana</th>
+                                <th scope="col">Jenis Transaksi</th>
                                 <th scope="col">Nilai</th>
                                 <th scope="col">Saldo</th>
                                 <th scope="col">Jenis LR</th>

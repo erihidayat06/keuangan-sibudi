@@ -30,7 +30,7 @@
                     {{ $program->kegiatan }}
                 </td>
                 <td>
-                    {{ $program->alokasi }}
+                    {{ formatRupiah($program->alokasi) }}
                 </td>
                 <td>
                     {{ $program->sumber }}

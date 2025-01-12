@@ -78,11 +78,11 @@
                                         $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
                                     }
 
-                                    // Hitung nilai aset saat ini berdasarkan masa pakai dan penyusutan
-                                    $saat_ini =
-                                        $aset->nilai -
+                                    $masa_pakai =
                                         masaPakai($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'] * $penyusutan;
-                                    if ($saat_ini == 0) {
+                                    // Hitung nilai aset saat ini berdasarkan masa pakai dan penyusutan
+                                    $saat_ini = $aset->nilai - $masa_pakai;
+                                    if ($masa_pakai == 0 || $saat_ini == 0) {
                                         $penyusutan = 0;
                                     }
 

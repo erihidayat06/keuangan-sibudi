@@ -144,7 +144,7 @@
                 <p class="text-center">{{ $profil->nm_pengawas }} </p>
             </td>
             <td>
-                <p class="text-center mb-100">Pengawas Penasehat </p>
+                <p class="text-center mb-100">Penasehat BUMDesa</p>
                 <p class="text-center">{{ $profil->nm_penasehat }} </p>
             </td>
         </tr>
