@@ -70,7 +70,7 @@
             @foreach ($units as $unit)
                 @php
                     $pembiayaan = json_decode($target->pembiayaan ?? '{}', true)['bo' . $unit->kode] ?? 0;
-                    $totalpembiayaan += intval($pembiayaan);
+                    $pembiayaan += intval($pembiayaan);
                 @endphp
                 <tr>
                     <td></td>
