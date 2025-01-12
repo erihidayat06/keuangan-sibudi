@@ -57,7 +57,8 @@
          @foreach ($units as $unit)
              @php
                  $pembiayaan = json_decode($target_lalu->pembiayaan ?? '{}', true)['bo' . $unit->kode] ?? 0;
-                 $biaya += $pembiayaan;
+                 $pembiayaans = intval($pembiayaan);
+                 $biaya += $pembiayaans;
              @endphp
              <tr>
                  <td></td>
