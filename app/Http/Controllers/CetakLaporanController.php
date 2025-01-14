@@ -88,6 +88,7 @@ class CetakLaporanController extends Controller
                 'ditahan' => $neraca['ditahan'],
                 'laba_rugi_berjalan' => $labaRugi['totalLabaRugi'],
                 'passiva' => $neraca['passiva'],
+                'bank' => $neraca['bank'],
                 'ekuitas' => $ekuitas,
                 'laba_berjalan' => labaRugiTahun($tahun)['totalLabaRugi'],
                 'buku_umum' => $bukuUmum,
