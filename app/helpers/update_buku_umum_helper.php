@@ -41,7 +41,7 @@ if (!function_exists('akumulasiPenyusutan')) {
                 }
             }
             if ($masa_pakai == $aset->wkt_ekonomis) {
-                $saat_ini = 0;
+                $saat_ini += 0;
             }
 
             // Tambahkan nilai saat ini ke investasi
@@ -96,7 +96,7 @@ if (!function_exists('akumulasiPenyusutanIventasi')) {
             ];
 
             if ($masa_pakai == $aset->wkt_ekonomis) {
-                $saat_ini = 0;
+                $saat_ini += 0;
             }
             $investasi += $saat_ini;
             $akumulasi += $penyusutan;
@@ -141,7 +141,7 @@ if (!function_exists('akumulasiPenyusutanTahun')) {
             }
 
             if ($masa_pakai == $aset->wkt_ekonomis) {
-                $saat_ini = 0;
+                $saat_ini += 0;
             }
 
             // Tambahkan nilai saat ini ke investasi
@@ -186,7 +186,7 @@ if (!function_exists('akumulasiPenyusutanIventasiTahun')) {
 
 
             if ($masa_pakai > $aset->wkt_ekonomis) {
-                $saat_ini = 0;
+                $saat_ini += 0;
             }
 
             $investasi += $saat_ini;
