@@ -40,8 +40,10 @@ if (!function_exists('akumulasiPenyusutan')) {
                     $akumulasi += $penyusutan;
                 }
             }
-            if ($masa_pakai == $aset->wkt_ekonomis) {
-                $saat_ini += 0;
+            if ($aset->wkt_ekonomis == 0) {
+                $saat_ini = $aset->nilai;
+            } elseif ($aset->wkt_ekonomis != 0 && $masa_pakai == $aset->wkt_ekonomis) {
+                $saat_ini = 0;
             }
 
             // Tambahkan nilai saat ini ke investasi
@@ -95,9 +97,14 @@ if (!function_exists('akumulasiPenyusutanIventasi')) {
                 'Jumlah' => $aset->jumlah
             ];
 
-            if ($masa_pakai == $aset->wkt_ekonomis) {
-                $saat_ini += 0;
+            if ($aset->wkt_ekonomis == 0) {
+                $saat_ini = $aset->nilai;
+            } elseif ($aset->wkt_ekonomis != 0 && $masa_pakai == $aset->wkt_ekonomis) {
+                $saat_ini = 0;
             }
+
+
+
             $investasi += $saat_ini;
             $akumulasi += $penyusutan;
         }
@@ -140,8 +147,10 @@ if (!function_exists('akumulasiPenyusutanTahun')) {
                 }
             }
 
-            if ($masa_pakai == $aset->wkt_ekonomis) {
-                $saat_ini += 0;
+            if ($aset->wkt_ekonomis == 0) {
+                $saat_ini = $aset->nilai;
+            } elseif ($aset->wkt_ekonomis != 0 && $masa_pakai == $aset->wkt_ekonomis) {
+                $saat_ini = 0;
             }
 
             // Tambahkan nilai saat ini ke investasi
@@ -185,8 +194,10 @@ if (!function_exists('akumulasiPenyusutanIventasiTahun')) {
 
 
 
-            if ($masa_pakai > $aset->wkt_ekonomis) {
-                $saat_ini += 0;
+            if ($aset->wkt_ekonomis == 0) {
+                $saat_ini = $aset->nilai;
+            } elseif ($aset->wkt_ekonomis != 0 && $masa_pakai == $aset->wkt_ekonomis) {
+                $saat_ini = 0;
             }
 
             $investasi += $saat_ini;
