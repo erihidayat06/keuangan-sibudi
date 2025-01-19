@@ -36,7 +36,7 @@
                         <td>{{ $i++ }}</td>
                         <td>{{ $alokasi->item }}</td>
                         <td>{{ $alokasi->jenis_biaya }}</td>
-                        <td>{{ $alokasi->nilai }}</td>
+                        <td>{{ formatRupiah($alokasi->nilai) }}</td>
                     </tr>
                 @endforeach
 
