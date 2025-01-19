@@ -15,20 +15,16 @@ class CetakLaporanController extends Controller
     public function exportPdf()
     {
         $selectedYear = session('selected_year', date('Y'));
-        $startYear = 2000;
+        $transaksis_lalu = Buk::user()->whereYear('tanggal', '<', session('selected_year', date('Y')))->get();
+        $debit_lalu = $transaksis_lalu->where('jenis', 'debit')->sum('nilai');
+        $kredit_lalu = $transaksis_lalu->where('jenis', 'kredit')->sum('nilai');
+        $saldo_lalu = $debit_lalu - $kredit_lalu;
 
-        // Saldo awal
-        $saldo_lalu = 0;
-
-        // Hitung saldo tahun-tahun sebelumnya
-        for ($year = $selectedYear - 1; $year >= $startYear; $year--) {
-            $transaksis_lalu = Buk::user()->whereYear('tanggal', $year)->get();
-            $debit_lalu = $transaksis_lalu->where('jenis', 'debit')->sum('nilai');
-            $kredit_lalu = $transaksis_lalu->where('jenis', 'kredit')->sum('nilai');
-            $saldo_lalu += $debit_lalu - $kredit_lalu;
-
-            if ($transaksis_lalu->isEmpty()) break;
-        }
+        $transaksis = Buk::user()->whereYear('tanggal', session('selected_year', date('Y')))->get();
+        $debit = $transaksis->where('jenis', 'debit')->sum('nilai');
+        $kredit = $transaksis->where('jenis', 'kredit')->sum('nilai');
+        $saldo = $debit - $kredit;
+        $saldo = $saldo + $saldo_lalu;
 
         // Hitung transaksi tahun yang dipilih
         $bukuUmum = Buk::user()->whereYear('tanggal', $selectedYear)->get();
@@ -62,7 +58,7 @@ class CetakLaporanController extends Controller
                 'tahun' => $selectedYear,
                 'saldo_lalu' => $saldo_lalu,
                 'saldo' => $saldo_lalu,
-                'kas_akhir' => $kas_akhir,
+                'kas_akhir' => $saldo,
                 'perubahan_kas' => $perubahan_kas,
                 'pendapatan' => $labaRugi['pendapatan'],
                 'pendapatanBulan' => $labaRugi['pendapatanBulan'],

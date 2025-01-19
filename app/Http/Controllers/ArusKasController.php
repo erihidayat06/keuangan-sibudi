@@ -10,28 +10,20 @@ class ArusKasController extends Controller
 {
     public function index()
     {
-        $selectedYear = session('selected_year', date('Y')); // Tahun yang dipilih
-        $startYear = 2000; // Tahun awal untuk memulai pencarian (sesuaikan sesuai kebutuhan)
 
-        $saldo_lalu = 0; // Inisialisasi saldo awal
+        $transaksis_lalu = Buk::user()->whereYear('tanggal', '<', session('selected_year', date('Y')))->get();
+        $debit_lalu = $transaksis_lalu->where('jenis', 'debit')->sum('nilai');
+        $kredit_lalu = $transaksis_lalu->where('jenis', 'kredit')->sum('nilai');
+        $saldo_lalu = $debit_lalu - $kredit_lalu;
 
-        // Loop untuk menghitung saldo hingga akhir tahun sebelumnya
-        for ($year = $selectedYear - 1; $year >= $startYear; $year--) {
-            $transaksis_lalu = Buk::user()->whereYear('tanggal', $year)->get();
-            $debit_lalu = $transaksis_lalu->where('jenis', 'debit')->sum('nilai');
-            $kredit_lalu = $transaksis_lalu->where('jenis', 'kredit')->sum('nilai');
-
-            // Tambahkan ke saldo lalu
-            $saldo_lalu += $debit_lalu - $kredit_lalu;
-
-            // Hentikan perulangan jika tidak ada transaksi pada tahun tersebut
-            if ($transaksis_lalu->isEmpty()) {
-                break;
-            }
-        }
+        $transaksis = Buk::user()->whereYear('tanggal', session('selected_year', date('Y')))->get();
+        $debit = $transaksis->where('jenis', 'debit')->sum('nilai');
+        $kredit = $transaksis->where('jenis', 'kredit')->sum('nilai');
+        $saldo = $debit - $kredit;
+        $saldo = $saldo + $saldo_lalu;
 
         // Ambil data buku umum hanya untuk tahun yang dipilih
-        $bukuUmum = Buk::user()->whereYear('tanggal', $selectedYear)->get();
+        $bukuUmum = Buk::user()->whereYear('tanggal', session('selected_year', date('Y')))->get();
 
         // Hitung transaksi tahun yang dipilih
         $debit = $bukuUmum->where('jenis', 'debit')->sum('nilai');
@@ -53,7 +45,7 @@ class ArusKasController extends Controller
             'buku_umum' => $bukuUmum,
             'masuk' => $masuk,
             'keluar' => $keluar,
-            'kas_akhir' => $kas_akhir,
+            'kas_akhir' => $saldo,
             'perubahan_kas' => $perubahan_kas
         ]);
     }
@@ -63,25 +55,16 @@ class ArusKasController extends Controller
     public function exportPdf()
     {
         $selectedYear = session('selected_year', date('Y')); // Tahun yang dipilih
-        $startYear = 2000; // Tahun awal untuk memulai pencarian (sesuaikan sesuai kebutuhan)
+        $transaksis_lalu = Buk::user()->whereYear('tanggal', '<', session('selected_year', date('Y')))->get();
+        $debit_lalu = $transaksis_lalu->where('jenis', 'debit')->sum('nilai');
+        $kredit_lalu = $transaksis_lalu->where('jenis', 'kredit')->sum('nilai');
+        $saldo_lalu = $debit_lalu - $kredit_lalu;
 
-        $saldo_lalu = 0; // Inisialisasi saldo awal
-
-        // Loop untuk menghitung saldo hingga akhir tahun sebelumnya
-        for ($year = $selectedYear - 1; $year >= $startYear; $year--) {
-            $transaksis_lalu = Buk::user()->whereYear('tanggal', $year)->get();
-            $debit_lalu = $transaksis_lalu->where('jenis', 'debit')->sum('nilai');
-            $kredit_lalu = $transaksis_lalu->where('jenis', 'kredit')->sum('nilai');
-
-            // Tambahkan ke saldo lalu
-            $saldo_lalu += $debit_lalu - $kredit_lalu;
-
-            // Hentikan perulangan jika tidak ada transaksi pada tahun tersebut
-            if ($transaksis_lalu->isEmpty()) {
-                break;
-            }
-        }
-
+        $transaksis = Buk::user()->whereYear('tanggal', session('selected_year', date('Y')))->get();
+        $debit = $transaksis->where('jenis', 'debit')->sum('nilai');
+        $kredit = $transaksis->where('jenis', 'kredit')->sum('nilai');
+        $saldo = $debit - $kredit;
+        $saldo = $saldo + $saldo_lalu;
         // Ambil data buku umum hanya untuk tahun yang dipilih
         $bukuUmum = Buk::user()->whereYear('tanggal', $selectedYear)->get();
 
@@ -103,7 +86,7 @@ class ArusKasController extends Controller
             'buku_umum' => $bukuUmum,
             'masuk' => $masuk,
             'keluar' => $keluar,
-            'kas_akhir' => $kas_akhir,
+            'kas_akhir' => $saldo,
             'perubahan_kas' => $perubahan_kas,
         ];
 
