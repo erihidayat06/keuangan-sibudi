@@ -74,7 +74,7 @@ if (!function_exists('akumulasiPenyusutanIventasi')) {
             // dd($tahun);
 
             // Default nilai penyusutan
-            $penyusutan = $masa_pakai != $aset->wkt_ekonomis ? ($aset->jumlah * ($aset->nilai / $aset->wkt_ekonomis)) : 0;
+            $penyusutan = $tahun <= ($aset->wkt_ekonomis) ? ($aset->jumlah * ($aset->nilai / $aset->wkt_ekonomis)) : 0;
 
             if ($bulan_sekarang >= 1 && $bulan_sekarang <= 4 && session('selected_year', date('Y'))  == date('Y')) {
                 // Jika bulan Januari - April
@@ -131,10 +131,10 @@ if (!function_exists('akumulasiPenyusutanTahun')) {
             } else {
                 $penyusutan = 0;
             }
-
             // Hitung nilai aset saat ini berdasarkan masa pakai dan penyusutan
             $masa_pakai = masaPakaiTahun($aset->created_at, $aset->wkt_ekonomis)['masa_pakai'];
             $saat_ini = $aset->nilai - $masa_pakai * $penyusutan;
+
 
             // Periksa apakah bulan saat ini adalah antara Januari hingga April
             if ($currentMonth >= 1 && $currentMonth <= 4 && $currentMonth  == date('Y')) {
@@ -179,7 +179,7 @@ if (!function_exists('akumulasiPenyusutanIventasiTahun')) {
 
 
             // Default nilai penyusutan
-            $penyusutan = $masa_pakai != $aset->wkt_ekonomis ? ($aset->jumlah * ($aset->nilai / $aset->wkt_ekonomis)) : 0;
+            $penyusutan = $tahun <= ($aset->wkt_ekonomis) ? ($aset->jumlah * ($aset->nilai / $aset->wkt_ekonomis)) : 0;
 
             if ($bulan_sekarang >= 1 && $bulan_sekarang <= 4 && $currentYear == date('Y')) {
                 // Jika bulan Januari - April

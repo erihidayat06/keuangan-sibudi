@@ -85,13 +85,13 @@
                             @foreach ($asets as $aset)
                                 @php
                                     $masa_pakai = masaPakai($aset->tgl_beli, $aset->wkt_ekonomis)['masa_pakai'];
+                                    $tahun = masaPakai($aset->tgl_beli, $aset->wkt_ekonomis)['tahun'];
 
-                                    // Default nilai penyusutan
                                     $penyusutan =
-                                        $masa_pakai != $aset->wkt_ekonomis
+                                        $tahun <= $aset->wkt_ekonomis
                                             ? $aset->jumlah * ($aset->nilai / $aset->wkt_ekonomis)
                                             : 0;
-                                    $jumlah_penyusutan = $masa_pakai >= $aset->wkt_ekonomis ? 0 : $penyusutan;
+                                    $jumlah_penyusutan = $tahun >= $aset->wkt_ekonomis ? 0 : $penyusutan;
 
                                     $bulan_sekarang = date('n'); // Ambil bulan saat ini
 
