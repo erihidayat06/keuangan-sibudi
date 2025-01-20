@@ -74,7 +74,7 @@ if (!function_exists('akumulasiPenyusutanIventasi')) {
             // dd($tahun);
 
             // Default nilai penyusutan
-            $penyusutan = $tahun <= ($aset->wkt_ekonomis) ? ($aset->jumlah * ($aset->nilai / $aset->wkt_ekonomis)) : 0;
+            $penyusutan = $tahun < ($aset->wkt_ekonomis) ? ($aset->jumlah * ($aset->nilai / $aset->wkt_ekonomis)) : 0;
 
             if ($bulan_sekarang >= 1 && $bulan_sekarang <= 4 && session('selected_year', date('Y'))  == date('Y')) {
                 // Jika bulan Januari - April
@@ -179,7 +179,7 @@ if (!function_exists('akumulasiPenyusutanIventasiTahun')) {
 
 
             // Default nilai penyusutan
-            $penyusutan = $tahun <= ($aset->wkt_ekonomis) ? ($aset->jumlah * ($aset->nilai / $aset->wkt_ekonomis)) : 0;
+            $penyusutan = $tahun < ($aset->wkt_ekonomis) ? ($aset->jumlah * ($aset->nilai / $aset->wkt_ekonomis)) : 0;
 
             if ($bulan_sekarang >= 1 && $bulan_sekarang <= 4 && $currentYear == date('Y')) {
                 // Jika bulan Januari - April

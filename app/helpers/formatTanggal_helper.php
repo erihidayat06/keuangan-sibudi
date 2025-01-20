@@ -30,6 +30,7 @@ if (!function_exists('masaPakai')) {
         $selisih = $currentYear - $tahunBeli;
         $selisih_tahun = $currentYear - $tahunBeli;
 
+        // dd($currentYear . $tahunBeli);
 
 
         // Logika hanya berlaku jika tahun yang dipilih adalah tahun sekarang
