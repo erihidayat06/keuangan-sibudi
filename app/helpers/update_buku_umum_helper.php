@@ -109,9 +109,6 @@ if (!function_exists('akumulasiPenyusutanIventasi')) {
             $akumulasi += $penyusutan;
         }
 
-        // Debug untuk memeriksa hasil penyusutan per aset
-        // dd($array_penyusutan);
-
         return ['inven' => $investasi, 'akumu' => $akumulasi];
     }
 }
