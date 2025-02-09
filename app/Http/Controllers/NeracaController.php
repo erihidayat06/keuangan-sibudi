@@ -46,6 +46,7 @@ class NeracaController extends Controller
 
     public function delete(Tutup $tutup)
     {
+        histori(rendem(), 'tutups', $tutup->toArray(), 'delete', $tutup->id);
         $tutup->delete();
 
         return redirect()->back()->with('success', 'Buku telah di buka kembali');
