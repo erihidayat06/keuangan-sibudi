@@ -11,14 +11,16 @@
                             PDF</a>
 
                         @if (session('selected_year', date('Y')) <= date('Y'))
-                            <form action="/laporan-keuangan/neraca/tutup" method="POST">
+                            <form
+                                action="{{ $setatus == true ? '/laporan-keuangan/neraca/tutup/delete/' . $data_tutup->id : '/laporan-keuangan/neraca/tutup' }}"
+                                method="POST">
                                 @csrf
-                                <button type="submit" class="btn btn-primary ms-3"
-                                    onclick="return confirm('Apakah yakin neraca mau ditutup?')"
-                                    {{ $tutup == true ? 'disabled' : '' }}><i
+                                <button type="submit"
+                                    class="btn {{ $setatus == true ? 'btn-warning' : 'btn-primary' }} ms-3"
+                                    onclick="return confirm('Apakah yakin neraca mau lanjut?')"><i
                                         class="bi
                                 bi-book-half"></i>
-                                    Tutup</button>
+                                    {{ $setatus == true ? 'Buka Kembali' : 'Tutup Buku' }}</button>
                             </form>
                         @endif
                     </div>

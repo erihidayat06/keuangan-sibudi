@@ -136,6 +136,7 @@ Route::get('/export-pdf/rekonsiliasi', [RekonsiliasiController::class, 'exportPd
 Route::get('/laporan-keuangan/neraca', [NeracaController::class, 'index'])->middleware('auth', 'langganan', 'bumdes');
 Route::get('/export-pdf/neraca', [NeracaController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
 Route::post('/laporan-keuangan/neraca/tutup', [NeracaController::class, 'tutup'])->middleware('auth', 'langganan', 'bumdes');
+Route::post('/laporan-keuangan/neraca/tutup/delete/{tutup:id}', [NeracaController::class, 'delete'])->middleware('auth', 'langganan', 'bumdes');
 
 // Laporan laba rugi
 Route::get('/laporan-keuangan/laporan-laba-rugi', [LaporanLabaRugiController::class, 'index'])->middleware('auth', 'langganan', 'bumdes');

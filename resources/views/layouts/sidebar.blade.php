@@ -212,15 +212,15 @@
             </li><!-- End Dashboard Nav -->
             <li class="nav-heading">Lembar Pengesahan</li>
             <li class="nav-item">
-                <a class="nav-link {{ Request::is('proker*') ? '' : 'collapsed' }}" href="/proker">
-                    <i class="bi bi-file-easel"></i>
-                    <span>Program Kerja</span>
-                </a>
-            </li><!-- End Dashboard Nav -->
-            <li class="nav-item">
                 <a class="nav-link {{ Request::is('lpj*') ? '' : 'collapsed' }}" href="/lpj">
                     <i class="bi bi-file-earmark-text"></i>
                     <span>Laporan Pertanggungjawaban</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('proker*') ? '' : 'collapsed' }}" href="/proker">
+                    <i class="bi bi-file-easel"></i>
+                    <span>Program Kerja</span>
                 </a>
             </li><!-- End Dashboard Nav -->
             @php

@@ -15,8 +15,11 @@ class NeracaController extends Controller
 
         if (isset($tutup)) {
             $data = json_decode($tutup->data, true);
-            $data['tutup'] = true;
-            return view('neraca.index', $data);
+            $setatus = true;
+            $data_tutup = $tutup;
+
+
+            return view('neraca.index', $data, ['setatus' => $setatus, 'data_tutup' => $data_tutup]);
         } else {
             return view('neraca.index', [
                 'piutang' => $neraca['piutang'],
@@ -36,9 +39,16 @@ class NeracaController extends Controller
                 'laba_rugi_berjalan' => labaRugi(session('selected_year', date('Y')))['totalLabaRugi'],
                 'passiva' => $neraca['passiva'],
                 'bank' => $neraca['bank'],
-                'tutup' => false
+                'setatus' => false
             ]);
         }
+    }
+
+    public function delete(Tutup $tutup)
+    {
+        $tutup->delete();
+
+        return redirect()->back()->with('success', 'Buku telah di buka kembali');
     }
 
     public function exportPdf()
