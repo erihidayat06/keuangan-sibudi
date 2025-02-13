@@ -17,34 +17,40 @@ class AkpsController extends Controller
      */
     public function index()
     {
-        $akp = Akps::user()->whereyear('created_at', session('selected_year', date('Y')))->get()->first();
+        $selectedYear = session('selected_year', date('Y'));
 
-        $created_at = Carbon::now()->year(session('selected_year', date('Y')));
-        if ($akp == null) {
-            Akps::create(['user_id' => auth()->user()->id, 'created_at' => $created_at]);
+        // Cek apakah data AKP sudah ada
+        $akp = Akps::user()->whereYear('created_at', $selectedYear)->first();
+
+        // Jika tidak ada, buat baru
+        if (!$akp) {
+            $akp = Akps::create([
+                'user_id' => auth()->id(),
+                'created_at' => now(),
+            ]);
         }
 
+        // Cek apakah kebutuhan sudah ada
+        $kebutuhan_create = Kebutuhan::user()->whereYear('created_at', $selectedYear)->first();
 
-        $kebutuhan_create = Kebutuhan::user()->whereyear('created_at', session('selected_year', date('Y')))->get()->first();
-
-        $created_at = Carbon::now()->year(session('selected_year', date('Y')));
-        if ($kebutuhan_create == null) {
+        if (!$kebutuhan_create) {
             $data = [
-                ['user_id' => auth()->user()->id, 'created_at' => $created_at, 'uraian' => 'Biaya Sewa Tanah', 'kategori' => 'Sewa Tanah/Bangunan', 'jumlah' => 1],
-                ['user_id' => auth()->user()->id, 'created_at' => $created_at, 'uraian' => 'Biaya Sewa Bangunan', 'kategori' => 'Sewa Tanah/Bangunan', 'jumlah' => 1],
-                ['user_id' => auth()->user()->id, 'created_at' => $created_at, 'uraian' => 'Transportasi hasil panen', 'kategori' => 'Distribusi', 'jumlah' => null],
-                ['user_id' => auth()->user()->id, 'created_at' => $created_at, 'uraian' => 'Perbaikan dan pemeliharaan', 'kategori' => 'Sarana Prasarana', 'jumlah' => null],
-                ['user_id' => auth()->user()->id, 'created_at' => $created_at, 'uraian' => 'Pelatihan pemberdayaan masyarakat', 'kategori' => 'Pekerja', 'jumlah' => null],
-                ['user_id' => auth()->user()->id, 'created_at' => $created_at, 'uraian' => 'Tenaga Kerja', 'kategori' => 'Pekerja', 'jumlah' => null],
-                ['user_id' => auth()->user()->id, 'created_at' => $created_at, 'uraian' => 'Pembelian Pupuk', 'kategori' => 'Bahan Pemeliharaan', 'jumlah' => null],
+                ['user_id' => auth()->id(), 'created_at' => now(), 'uraian' => 'Biaya Sewa Tanah', 'kategori' => 'Sewa Tanah/Bangunan', 'jumlah' => 1],
+                ['user_id' => auth()->id(), 'created_at' => now(), 'uraian' => 'Biaya Sewa Bangunan', 'kategori' => 'Sewa Tanah/Bangunan', 'jumlah' => 1],
+                ['user_id' => auth()->id(), 'created_at' => now(), 'uraian' => 'Transportasi hasil panen', 'kategori' => 'Distribusi', 'jumlah' => null],
+                ['user_id' => auth()->id(), 'created_at' => now(), 'uraian' => 'Perbaikan dan pemeliharaan', 'kategori' => 'Sarana Prasarana', 'jumlah' => null],
+                ['user_id' => auth()->id(), 'created_at' => now(), 'uraian' => 'Pelatihan pemberdayaan masyarakat', 'kategori' => 'Pekerja', 'jumlah' => null],
+                ['user_id' => auth()->id(), 'created_at' => now(), 'uraian' => 'Tenaga Kerja', 'kategori' => 'Pekerja', 'jumlah' => null],
+                ['user_id' => auth()->id(), 'created_at' => now(), 'uraian' => 'Pembelian Pupuk', 'kategori' => 'Bahan Pemeliharaan', 'jumlah' => null],
             ];
             Kebutuhan::insert($data);
         }
 
-
+        // Ambil data penjualan
         $penjualan = Penjualan::user()->tahun()->get();
 
-        $kebutuhans =  [
+        // Kategori kebutuhan yang akan diambil
+        $kategori_kebutuhan = [
             'Sewa Tanah/Bangunan',
             'Sewa Alat',
             'Pengadaan Alat',
@@ -56,21 +62,20 @@ class AkpsController extends Controller
             'Distribusi'
         ];
 
-        foreach ($kebutuhans as $index => $value) {
-            $kebutuhan[$value] = Kebutuhan::user()->kategori($value)->tahun()->get();
-        };
+        // Ambil data kebutuhan berdasarkan kategori
+        $kebutuhan = collect($kategori_kebutuhan)->mapWithKeys(function ($kategori) {
+            return [$kategori => Kebutuhan::user()->kategori($kategori)->tahun()->get()];
+        });
 
-
-
-
-        $title = 'ANALISA KETAHANAN PANGAN';
+        // Return view dengan data
         return view('akps.index', [
-            'title' => $title,
+            'title' => 'ANALISA KETAHANAN PANGAN',
             'akp' => $akp,
             'penjualans' => $penjualan,
-            'kebutuhans' => $kebutuhan
+            'kebutuhans' => $kebutuhan,
         ]);
     }
+
 
     /**
      * Update the specified resource in storage.

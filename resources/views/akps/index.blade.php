@@ -17,6 +17,8 @@
             /* Hilangkan efek shadow */
         }
     </style>
+
+
     <div class="pagetitle">
         <h1>PENGISIAN FORMULIR ANALISA KETAHANAN PANGAN</h1>
         <nav>
@@ -32,7 +34,6 @@
             <div class="card-title">
                 <h5>Kuesioner</h5>
             </div>
-
             <form action="/akp/{{ $akp->id }}" method="POST">
                 @csrf
                 @method('PUT')

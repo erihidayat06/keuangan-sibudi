@@ -234,11 +234,11 @@ Route::get('/aset/export-pdf/bank', [BankController::class, 'exportPdf'])->middl
 Route::put('/aset/rekonsiliasi/bayar/{rekonsiliasi:id}', [BankController::class, 'bayar'])->middleware('auth', 'langganan', 'bumdes');
 
 // Akps
-Route::get('/akp', [AkpsController::class, 'index']);
-Route::put('/akp/{akps:id}', [AkpsController::class, 'update']);
-Route::post('/akp/penjualan', [PenjualanController::class, 'update']);
-Route::post('/akp/kebutuhan', [KebutuhanController::class, 'update']);
-Route::get('/akp/export/pdf', [CetakAKPController::class, 'export']);
+Route::get('/akp', [AkpsController::class, 'index'])->middleware('auth', 'langganan', 'bumdes');
+Route::put('/akp/{akps:id}', [AkpsController::class, 'update'])->middleware('auth', 'langganan', 'bumdes');
+Route::post('/akp/penjualan', [PenjualanController::class, 'update'])->middleware('auth', 'langganan', 'bumdes');
+Route::post('/akp/kebutuhan', [KebutuhanController::class, 'update'])->middleware('auth', 'langganan', 'bumdes');
+Route::get('/akp/export/pdf', [CetakAKPController::class, 'export'])->middleware('auth', 'langganan', 'bumdes');
 
 
 // Undo
