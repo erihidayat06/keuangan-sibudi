@@ -18,6 +18,7 @@ class AkpsController extends Controller
     public function index()
     {
         $selectedYear = session('selected_year', date('Y'));
+        $now = Carbon::now()->setYear($selectedYear);
 
         // Cek apakah data AKP sudah ada
         $akp = Akps::user()->whereYear('created_at', $selectedYear)->first();
@@ -26,7 +27,7 @@ class AkpsController extends Controller
         if (!$akp) {
             $akp = Akps::create([
                 'user_id' => auth()->id(),
-                'created_at' => now(),
+                'created_at' => $now,
             ]);
         }
 
