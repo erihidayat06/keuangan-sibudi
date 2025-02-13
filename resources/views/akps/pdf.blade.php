@@ -196,13 +196,13 @@
                 <td>6</td>
                 <td class="fw-bold">Pagu Dana Desa</td>
                 <td>:</td>
-                <td>{{ $akp->dana }}</td>
+                <td>{{ formatRupiah($akp->dana) }}</td>
             </tr>
             <tr>
                 <td>7</td>
                 <td class="fw-bold">Alokasi DD untuk Ketahanan Pangan&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>:</td>
-                <td>{{ $akp->alokasi }}</td>
+                <td>{{ formatRupiah($akp->alokas) }}</td>
             </tr>
             <tr>
                 <td>8</td>
@@ -562,7 +562,7 @@
                 <tr class="border-none">
 
                     <td colspan="6" class="text-end fw-bold border-none">TOTAL BIAYA MODAL PRODUKSI</td>
-                    <td class="fw-bold">{{ $y }}</td>
+                    <td class="fw-bold">{{ formatRupiah($y) }}</td>
                 </tr>
             </table>
         </div>
@@ -760,22 +760,34 @@
                     <td class="table-border">1</td>
                     <td class="table-border">Modal Awal</td>
                     <td class="table-border">{{ formatRupiah($x) }}</td>
-                    <td class="table-border">{{ formatRupiah($x) }}</td>
-                    <td class="table-border">{{ formatRupiah($x + ($akp->pembiayaan / 100) * $x) }}</td>
+                    @php
+                        $tahun2 = $x + ($akp->pembiayaan / 100) * $x;
+                        $tahun3 = $tahun2 + ($akp->pembiayaan / 100) * $tahun2;
+                    @endphp
+                    <td class="table-border">{{ formatRupiah($tahun2) }}</td>
+                    <td class="table-border">{{ formatRupiah($tahun3) }}</td>
                 </tr>
                 <tr class="table-border">
                     <td class="table-border">2</td>
                     <td class="table-border">Modal Produksi</td>
                     <td class="table-border">{{ formatRupiah($y) }}</td>
-                    <td class="table-border">{{ formatRupiah($y) }}</td>
-                    <td class="table-border">{{ formatRupiah(($akp->pembiayaan / 100) * $y) }}</td>
+                    @php
+                        $ytahun2 = $y + ($akp->pembiayaan / 100) * $y;
+                        $ytahun3 = $ytahun2 + ($akp->pembiayaan / 100) * $ytahun2;
+                    @endphp
+                    <td class="table-border">{{ formatRupiah($ytahun2) }}</td>
+                    <td class="table-border">{{ formatRupiah($ytahun3) }}</td>
                 </tr>
                 <tr class="table-border">
                     <td class="table-border">3</td>
                     <td class="table-border">Modal Pekerja</td>
                     <td class="table-border">{{ formatRupiah($z) }}</td>
-                    <td class="table-border">{{ formatRupiah($z) }}</td>
-                    <td class="table-border">{{ formatRupiah(($akp->pembiayaan / 100) * $z) }}</td>
+                    @php
+                        $ztahun2 = $z + ($akp->pembiayaan / 100) * $z;
+                        $ztahun3 = $ztahun2 + ($akp->pembiayaan / 100) * $ztahun2;
+                    @endphp
+                    <td class="table-border">{{ formatRupiah($ztahun2) }}</td>
+                    <td class="table-border">{{ formatRupiah($ztahun3) }}</td>
                 </tr>
                 <tr class="table-border">
                     <td class="table-border">4</td>
@@ -800,7 +812,7 @@
                         {{ formatRupiah($q2) }}
                     </td>
                     <td class="fw-bold">&nbsp;
-                        {{ formatRupiah($q3 + (0.5 / 100) * $unit_usaha) }}
+                        {{ formatRupiah($q3) }}
                     </td>
 
                 </tr>
@@ -863,9 +875,9 @@
 
                     <td class="table-border">C</td>
                     <td class="table-border">Laba Usaha</td>
-                    <td class="table-border">{{ formatRupiah($total_pendapatan + $total_pengeluaran) }}</td>
-                    <td class="table-border">{{ formatRupiah($total_pendapatan2 + $total_pengeluaran2) }}</td>
-                    <td class="table-border">{{ formatRupiah($total_pendapatan3 + $total_pengeluaran3) }}</td>
+                    <td class="table-border">{{ formatRupiah($total_pendapatan - $total_pengeluaran) }}</td>
+                    <td class="table-border">{{ formatRupiah($total_pendapatan2 - $total_pengeluaran2) }}</td>
+                    <td class="table-border">{{ formatRupiah($total_pendapatan3 - $total_pengeluaran3) }}</td>
                 </tr>
                 <tr class="table-border">
 

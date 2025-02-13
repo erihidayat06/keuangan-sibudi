@@ -38,13 +38,15 @@ class CetakAKPController extends Controller
 
 
         $x = 0;
-        $kategori = ['Bibit/ Benih', 'Sewa Tanah/Bangunan', 'Pengadaan Alat'];
+        $kategori = ['Bibit/ Benih', 'Sewa Tanah/Bangunan', 'Pengadaan Alat', 'Sewa Alat'];
 
         foreach ($kategori as $key) {
             foreach ($kebutuhan[$key] as $item) {
                 $x += $item->harga * $item->jumlah * $item->volume;
             }
         }
+
+
 
         $y = 0;
         $kategori = ['Distribusi', 'Sarana Prasarana', 'Bahan Pemeliharaan', 'Pembiayaan-pembiayaan mingguan'];
@@ -74,14 +76,20 @@ class CetakAKPController extends Controller
         }
 
 
-        $p1 = $manual;
+
 
         $q1 = $x + $y + $z;
-        $q2 = 0.5 / 100 * $total_pendapatan + $q1;
         $persentase = $akp->pembiayaan / 100;
-        $q3 = $x * (1 + $persentase) + $y * (1 + $persentase) + $z * (1 + $persentase);
+        $xtahun2 = $x + ($persentase * $x);
+        $ytahun2 = $y + ($persentase * $y);
+        $ztahun2 = $z + ($persentase * $z);
+        $q2 = 0.5 / 100 * $total_pendapatan + $xtahun2 + $ytahun2 + $ztahun2;
+        $xtahun3 = $xtahun2 + ($persentase * $xtahun2);
+        $ytahun3 = $ytahun2 + ($persentase * $ytahun2);
+        $ztahun3 = $ztahun2 + ($persentase * $ztahun2);
+        $q3 = 0.5 / 100 * $total_pendapatan + $xtahun3 + $ytahun3 + $ztahun3;
 
-
+        $p1 = $manual;
         $kas_unit = $p1 - $q1;
         $unit_usaha = $total_pendapatan + (10 / 100 * $total_pendapatan);
         $p2 = $p1 - $q1 + $total_pendapatan;

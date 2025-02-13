@@ -38,9 +38,15 @@
 
                     <thead>
                         <tr>
+
                             <th>No</th>
                             <th>Uraian</th>
-                            <th>Satuan&nbsp;Penjualan</th>
+                            @if ($kategori == 'sewatanahbangunan' || $kategori == 'sewaalat')
+                                <th>Satuan</th>
+                            @else
+                                <th>Satuan&nbsp;Penjualan</th>
+                            @endif
+
                             <th>Harga</th>
                             <th>Kebutuhan</th>
                             <th>Berapa&nbsp;kali&nbsp;dalam&nbsp;setahun</th>

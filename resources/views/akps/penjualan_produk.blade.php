@@ -27,7 +27,7 @@
             <tr>
                 <th>No</th>
                 <th>Kegiatan</th>
-                <th>Satuan Penjualan</th>
+                <th>Satuan</th>
                 <th>Harga</th>
                 <th>Target Panen</th>
                 <th>Jumlah Panen dalam setahun</th>

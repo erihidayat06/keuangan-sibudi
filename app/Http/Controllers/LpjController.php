@@ -12,6 +12,7 @@ use App\Models\Proker;
 use App\Models\Target;
 use App\Models\Alokasi;
 use App\Models\Program;
+use setasign\Fpdi\Fpdi;
 use App\Models\Kerjasama;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -57,33 +58,30 @@ class LpjController extends Controller
 
     public function exportPdf()
     {
-        $lpj = Lpj::user()->where('tahun', session('selected_year', date('Y')))->get()->first();
-        $profil = Profil::user()->get()->first();
+        // Ambil data yang diperlukan
+        $lpj = Lpj::user()->where('tahun', session('selected_year', date('Y')))->first();
+        $profil = Profil::user()->first();
         $units = Unit::user()->get();
         $modals = Modal::user()->get();
         $labaRugi = labaRugiTahun(session('selected_year', date('Y')));
         $neraca = neraca();
-        $target = Target::user()->where('tahun', session('selected_year', date('Y')) - 1)->get()->first();
-        $units = Unit::user()->get();
-        $proker = Proker::user()->where('tahun', session('selected_year', date('Y')))->get()->first();
+        $target = Target::user()->where('tahun', session('selected_year', date('Y')) - 1)->first();
+        $proker = Proker::user()->where('tahun', session('selected_year', date('Y')))->first();
         $programs = Program::user()->where('tahun', session('selected_year', date('Y')))->get();
         $kerjasamas = Kerjasama::user()->where('tahun', session('selected_year', date('Y')))->get();
         $alokasis = Alokasi::user()->where('tahun', session('selected_year', date('Y')))->get();
         $rasios = Rasio::user()->where('tahun', session('selected_year', date('Y')))->get();
-        $ekuitas = Ekuit::user()->get()->first();
+        $ekuitas = Ekuit::user()->first();
 
-
-
-        $modal_desa = Modal::user()->get()->sum('mdl_desa');
-        $modal_masyarakat = Modal::user()->get()->sum('mdl_masyarakat');
-        $modal_bersama = Modal::user()->get()->sum('mdl_bersama');
+        $modal_desa = Modal::user()->sum('mdl_desa');
+        $modal_masyarakat = Modal::user()->sum('mdl_masyarakat');
+        $modal_bersama = Modal::user()->sum('mdl_bersama');
         $tahun = $ekuitas->tahun ?? session('selected_year');
 
         $data = [
             'profil' => $profil,
             'units' => $units,
             'modals'  => $modals,
-            'units' => $units,
             'pendapatan' => $labaRugi['pendapatan'],
             'pendapatanBulan' => $labaRugi['pendapatanBulan'],
             'pendapatanTahun' => $labaRugi['pendapatanTahun'],
@@ -109,10 +107,34 @@ class LpjController extends Controller
             'laba_berjalan' => labaRugiTahun($tahun)['totalLabaRugi']
         ];
 
-        // Generate PDF
+        // 1. Buat PDF dari Blade View
         $pdf = PDF::loadView('lpj.pdf', $data)->setPaper([0, 0, 595.276, 935.433], 'portrait');
+        $pdfPath = storage_path('app/public/generated_lpj.pdf');
+        file_put_contents($pdfPath, $pdf->output());
 
-        // Stream atau unduh PDF
-        return $pdf->stream('lpj.pdf');
+        // 2. Gabungkan dengan daftar-isi.pdf
+        $pdfMerger = new Fpdi();
+        $files = [
+            public_path('assets/pdf/daftar-isi.pdf'), // PDF daftar isi
+            $pdfPath // PDF yang baru dibuat dari DomPDF
+        ];
+
+        foreach ($files as $file) {
+            if (file_exists($file)) {
+                $pageCount = $pdfMerger->setSourceFile($file);
+                for ($i = 1; $i <= $pageCount; $i++) {
+                    $tpl = $pdfMerger->importPage($i);
+                    $pdfMerger->AddPage();
+                    $pdfMerger->useTemplate($tpl);
+                }
+            }
+        }
+
+        // 3. Simpan hasil PDF gabungan
+        $mergedPdfPath = storage_path('app/public/merged_lpj.pdf');
+        $pdfMerger->Output($mergedPdfPath, 'F');
+
+        // 4. Download hasil PDF gabungan
+        return response()->file($mergedPdfPath)->deleteFileAfterSend(true);
     }
 }
