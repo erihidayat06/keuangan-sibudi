@@ -110,6 +110,41 @@
              <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['bno4'] ?? [])) }}</td>
          </tr>
 
+         @php
+
+             $biaya_non = 0;
+             $biaya_non =
+                 old('gaji', $target_lalu->gaji ?? 0) +
+                 old('atk', $target_lalu->atk ?? 0) +
+                 old('penyusutan', $target_lalu->penyusutan ?? 0) +
+                 old('rapat', $target_lalu->rapat ?? 0) +
+                 old('lain', $target_lalu->lain ?? 0);
+
+             $biaya_tahun =
+                 array_sum($pendapatan['bno1']) +
+                 array_sum($pendapatan['bno2']) +
+                 array_sum($pendapatan['bno3']) +
+                 $akumulasi_penyusutan +
+                 array_sum($pendapatan['bno4']);
+
+             $total = $biaya + $biaya_non;
+         @endphp
+
+         <tr class="border-bottom">
+             <td></td>
+             <td>Total Biaya Non Operasional</td>
+             <td class="text-end">{{ formatRupiah($biaya_non) }}</td>
+             <td class="text-end red-text">{{ formatRupiah($biaya_tahun) }}</td>
+         </tr>
+
+         <tr class="border-bottom">
+             <td></td>
+             <td>Total Biaya</td>
+             <td class="text-end">{{ formatRupiah($total) }}</td>
+             <td class="text-end red-text">{{ formatRupiah($biaya_tahun + $pendapatanTahun['bo']) }}</td>
+         </tr>
+
+
          <tr>
              <td>3</td>
              <td>

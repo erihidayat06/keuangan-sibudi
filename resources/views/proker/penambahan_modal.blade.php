@@ -293,8 +293,70 @@
 
             <label class="mt-3" for="aspek_keuangan">5. Bagaimana analisa aspek keuangan pada pengembangan usaha
                 tersebut</label>
+            <style>
+                .dotted-input {
+                    border: none;
+                    border-bottom: 1px dotted #000;
+                    outline: none;
+                    width: 100%;
+                    background: transparent;
+                }
+            </style>
             <div class="ms-4">
-                <textarea class="form-control" id="aspek_keuangan" name="aspek_keuangan" rows="3">{{ old('aspek_keuangan', $proker) }}</textarea>
+                @php
+                    // Decode JSON menjadi array, jika null, set array kosong
+                    $aspek_keuangan = json_decode($proker->aspek_keuangan, true) ?? [];
+
+                    // Pastikan array tidak kosong sebelum mengakses indeks pertama
+                    $data_keuangan = $aspek_keuangan[0] ?? [];
+                @endphp
+
+                <table class="table-border mt-3">
+                    <tr>
+                        <td>Pendapatan Unit dalam setahun</td>
+                        <td><span class="ms-4">Rp</span></td>
+                        <td>
+                            <input type="text" name="aspek_keuangan[0][pendapatan]"
+                                value="{{ old('aspek_keuangan.0.pendapatan', $data_keuangan['pendapatan'] ?? '') }}"
+                                class="dotted-input">
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Biaya operasional dalam setahun</td>
+                        <td><span class="ms-4">Rp</span></td>
+                        <td>
+                            <input type="text" name="aspek_keuangan[0][biaya]"
+                                value="{{ old('aspek_keuangan.0.biaya', $data_keuangan['biaya'] ?? '') }}"
+                                class="dotted-input">
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Laba diperoleh dalam satu tahun</td>
+                        <td><span class="ms-4">Rp</span></td>
+                        <td>
+                            <input type="text" name="aspek_keuangan[0][laba]"
+                                value="{{ old('aspek_keuangan.0.laba', $data_keuangan['laba'] ?? '') }}"
+                                class="dotted-input">
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Pengembalian Modal (ROI)</td>
+                        <td><span class="ms-4">Rp</span></td>
+                        <td>
+                            <input type="text" name="aspek_keuangan[0][pengembalian]"
+                                value="{{ old('aspek_keuangan.0.pengembalian', $data_keuangan['pengembalian'] ?? '') }}"
+                                class="dotted-input">
+                        </td>
+                        <td>Tahun</td>
+                    </tr>
+                </table>
+
+
+                <p class="mt-3">Rincian lainya:</p>
+                <textarea class="form-control" id="aspek_keuangan" name="aspek_keuangan[0][rincian]" rows="3">{{ old('aspek_keuangan.0.rincian', $data_keuangan['rincian'] ?? '') }}</textarea>
             </div>
 
 

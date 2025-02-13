@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lpj;
 use App\Models\Unit;
 use App\Models\Ekuit;
 use App\Models\Modal;
@@ -68,7 +69,12 @@ class ProkerController extends Controller
 
         proker();
 
+        $user_id = auth()->user()->id;
+        if (Lpj::user()->where('tahun', session('selected_year', date('Y')))->get()->first() == null) {
+            Lpj::create(['user_id' => $user_id, 'tahun' => session('selected_year', date('Y'))]);
+        }
 
+        $lpj = Lpj::user()->where('tahun', session('selected_year', date('Y')))->get()->first();
         $proker = Proker::user()->where('tahun', session('selected_year', date('Y')))->get()->first();
         $title = 'B. KINERJA BUMDES';
         $back = '/proker';
@@ -77,13 +83,15 @@ class ProkerController extends Controller
             'title' => $title,
             'next' => $next,
             'back' => $back,
-            'proker' => $proker
+            'proker' => $proker,
+            'lpj' => $lpj
         ]);
     }
 
     public function kualititifUpdate(Request $request, Proker $proker)
     {
         proker();
+
 
         Proker::where('id', $proker->id)->update(['kualititif' => $request->kualititif]);
 
@@ -93,6 +101,12 @@ class ProkerController extends Controller
     public function strategi()
     {
         proker();
+        $user_id = auth()->user()->id;
+        if (Lpj::user()->where('tahun', session('selected_year', date('Y')))->get()->first() == null) {
+            Lpj::create(['user_id' => $user_id, 'tahun' => session('selected_year', date('Y'))]);
+        }
+
+        $lpj = Lpj::user()->where('tahun', session('selected_year', date('Y')))->get()->first();
         $proker = Proker::user()->where('tahun', session('selected_year', date('Y')))->get()->first();
         $title = 'C. STRATEGI DAN KEBIJAKAN TAHUN BERIKUTNYA';
         $back = '/proker/kualititif';
@@ -101,7 +115,8 @@ class ProkerController extends Controller
             'title' => $title,
             'next' => $next,
             'back' => $back,
-            'proker' => $proker
+            'proker' => $proker,
+            'lpj' => $lpj
         ]);
     }
 

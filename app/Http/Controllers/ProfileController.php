@@ -45,7 +45,7 @@ class ProfileController extends Controller
             'no_badan' => 'nullable|string|max:50',
             'no_perdes' => 'nullable|string|max:50',
             'no_sk' => 'nullable|string|max:50',
-            'no_nib' => 'nullable|string|max:50',
+            'unt_usaha1' => 'nullable|string|max:50',
             'visi' => 'nullable|string',
             'misi' => 'nullable|string',
         ]);

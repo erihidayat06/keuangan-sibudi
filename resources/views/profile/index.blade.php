@@ -159,11 +159,12 @@
                                 </tr>
                                 <!-- Row 19: No NIB -->
                                 <tr>
-                                    <td><label for="no_nib">No ijin Berusaha (NIB)</label></td>
+                                    <td><label for="unt_usaha1">No ijin Berusaha (NIB)</label></td>
                                     <td>
-                                        <input type="text" class="form-control @error('no_nib') is-invalid @enderror"
-                                            id="no_nib" name="no_nib" value="{{ old('no_nib', $profil) }}">
-                                        @error('no_nib')
+                                        <input type="text"
+                                            class="form-control @error('unt_usaha1') is-invalid @enderror" id="unt_usaha1"
+                                            name="unt_usaha1" value="{{ old('unt_usaha1', $profil) }}">
+                                        @error('unt_usaha1')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </td>

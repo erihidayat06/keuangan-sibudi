@@ -9,7 +9,7 @@ if (!function_exists('formatRupiah')) {
         $angka = is_numeric($angka) ? floatval($angka) : 0;
 
         // Format ke dalam format rupiah
-        return 'Rp' . number_format($angka, 0, ',', '.');
+        return 'Rp'  . number_format($angka, 0, ',', '.');
     }
 }
 

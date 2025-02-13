@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>RENCANA PROGRAM KERJA BUMDESA TAHUN</title>
+    <title>LAPORAN PENANGGUNG JAWABAN BUMDESA</title>
     <style>
         body {
             font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
@@ -179,7 +179,7 @@
             kontribusi PADes yang diberikan sebesar {{ formatRupiah($pades) }} sehingga total
             pada tahun {{ date('Y') + 1 }} sebesar {{ formatRupiah($modal_akhir) }}
             Pada tahun {{ date('Y') }} {{ $lpj->penambahan_modal }} ada penambahan penyertaan
-            modal desa. {{ $lpj->hasil_capaian }}</p>
+            modal desa. {!! $lpj->hasil_capaian !!}</p>
     </div>
 
     <p>B. LOPORAN MANAJEMEN</p>
@@ -187,9 +187,9 @@
         <p class=" p-0">1. Laporan Direktur</p>
 
         <div class="isi">
-            <p>{{ $lpj->kebijakan_strategi }}</p>
-            <p>{{ $lpj->tantangan_hambatan }}</p>
-            <p>{{ $lpj->apresiasi }}</p>
+            <p>{!! $lpj->kebijakan_strategi !!}</p>
+            <p>{!! $lpj->tantangan_hambatan !!}</p>
+            <p>{!! $lpj->apresiasi !!}</p>
         </div>
         <p class="text-end">{{ $profil->kecamatan }}, ........................................</p>
         <p class="text-end">Direktur BUMDesa</p>
@@ -201,10 +201,10 @@
             <p class=" p-0">2. Laporan Pengawas</p>
 
             <div class="isi">
-                <p>{{ $lpj->tugas_pengawasan }}</p>
-                <p>{{ $lpj->pandangan_pengawas }}</p>
-                <p>{{ $lpj->catatan_pengawas }}</p>
-                <p>{{ $lpj->rekomendasi_pengawas }}</p>
+                <p>{!! $lpj->tugas_pengawasan !!}</p>
+                <p>{!! $lpj->pandangan_pengawas !!}</p>
+                <p>{!! $lpj->catatan_pengawas !!}</p>
+                <p>{!! $lpj->rekomendasi_pengawas !!}</p>
             </div>
             <p class="text-end">{{ $profil->kecamatan }}, ........................................</p>
             <p class="text-end">Pengawas BUMDesa</p>
@@ -378,21 +378,21 @@
             <div class="mb"></div>
             <p>2. Kualititif </p>
             <div class="isi">
-                <p class="align-justify p-0">{{ $lpj->hasil_kinerja }}</p>
+                <p class="align-justify p-0">{!! $lpj->hasil_kinerja !!}</p>
             </div>
         </div>
         <p>E. PERMASALAHAN YANG MEMPENGARUHI USAHA</p>
         <div class="isi">
-            <p class="align-justify p-0">{{ $lpj->permasalahan_usaha }}</p>
+            <p class="align-justify p-0">{!! $lpj->permasalahan_usaha !!}</p>
         </div>
 
         <p>F. POTENSI, PELUANG DAN PROSPEK USAHA </p>
         <div class="isi">
-            <p class="align-justify p-0">{{ $lpj->potensi_peluang }}</p>
+            <p class="align-justify p-0">{!! $lpj->potensi_peluang !!}</p>
         </div>
         <p>G. STRATEGI DAN KEBIJAKAN TAHUN BERIKUTNYA</p>
         <div class="isi">
-            <p class="align-justify p-0">{{ $lpj->strategi_kebijakan }}</p>
+            <p class="align-justify p-0">{!! $lpj->strategi_kebijakan !!}</p>
         </div>
 
     </div>

@@ -70,12 +70,14 @@
                 </tr>
                 @php
                     $biaya = 0;
+
                 @endphp
 
                 @foreach ($units as $unit)
                     @php
                         $pembiayaan = json_decode($target->pembiayaan ?? '{}', true)['bo' . $unit->kode] ?? 0;
                         $biaya += $pembiayaan;
+
                     @endphp
                     <tr>
                         <td></td>
@@ -116,6 +118,15 @@
                 </tr>
                 <tr>
                     <td></td>
+                    <td>Rapat-rapat</td>
+                    <td class="text-end red-text">{{ formatRupiah(array_sum($pendapatan['bno3'])) }}</td>
+                    <td class="text-end">
+                        <input class="form-control text-end" type="text" name="rapat"
+                            value="{{ old('rapat', $target->rapat) }}">
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
                     <td>Akumulasi Penyusutan</td>
                     <td class="text-end red-text">{{ formatRupiah($akumulasi_penyusutan) }}</td>
                     <td class="text-end">
@@ -133,12 +144,46 @@
                     </td>
                 </tr>
 
+                @php
+
+                    $biaya_non = 0;
+                    $biaya_non =
+                        old('gaji', $target->gaji) +
+                        old('atk', $target->atk) +
+                        old('penyusutan', $target->penyusutan) +
+                        old('penyusutan', $target->rapat) +
+                        old('lain', $target->lain);
+
+                    $biaya_tahun =
+                        array_sum($pendapatan['bno1']) +
+                        array_sum($pendapatan['bno2']) +
+                        array_sum($pendapatan['bno3']) +
+                        $akumulasi_penyusutan +
+                        array_sum($pendapatan['bno4']);
+
+                    $total = $biaya + $biaya_non;
+                @endphp
+
+                <tr class="border-bottom">
+                    <td></td>
+                    <td>Total Biaya Non Operasional</td>
+                    <td class="text-end red-text">{{ formatRupiah($biaya_tahun) }}</td>
+                    <td class="text-end">{{ formatRupiah($biaya_non) }}</td>
+                </tr>
+
+                <tr class="border-bottom">
+                    <td></td>
+                    <td>Total Biaya</td>
+                    <td class="text-end red-text">{{ formatRupiah($biaya_tahun + $pendapatanTahun['bo']) }}</td>
+                    <td class="text-end">{{ formatRupiah($total) }}</td>
+                </tr>
+
                 <!-- Proyeksi lainnya -->
                 <tr>
                     <td>3</td>
                     <td>
                         <p class="{{ $totalLabaRugi < 0 ? 'yellow-text' : 'green-text' }}">
-                            Proyeksi {{ $totalLabaRugi < 0 ? 'Rugi' : 'Laba' }}
+                            Proyeksi Laba
                         </p>
                     </td>
                     <td class="text-end red-text">{{ formatRupiah($totalLabaRugi) }}</td>

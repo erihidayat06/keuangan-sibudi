@@ -39,6 +39,11 @@
                         <td>{{ formatRupiah($alokasi->nilai) }}</td>
                     </tr>
                 @endforeach
+                @if (count($alokasis) <= 0)
+                    <tr class="text-center">
+                        <td colspan="4">Data alokasi kosong</td>
+                    </tr>
+                @endif
 
             </tbody>
         </table>
@@ -54,8 +59,93 @@
         <p>
             b. Aspek Keuangan
         </p>
-        <div class="isi">
-            <p>{{ $proker->aspek_keuangan }}</p>
+        <div>
+
+            <style>
+                /* Style untuk tabel */
+                .financial-table {
+                    width: 100%;
+                    border-collapse: collapse;
+
+                    border: none !important;
+                }
+
+                /* Style untuk sel dalam tabel */
+                .financial-table td {
+                    border: none !important;
+                    padding: 0px 20px;
+                    vertical-align: middle;
+                }
+
+                /* Membuat teks 'Rp' lebih tebal */
+                .financial-table td span {
+                    font-weight: bold;
+                    border: none !important;
+                }
+
+                /* Input dengan border bawah saja */
+                .dotted-input {
+                    border: none;
+                    border-bottom: 1px dotted #000;
+                    outline: none;
+                    width: 100%;
+                    padding: 5px;
+                    font-size: 14px;
+                    background: transparent;
+                    text-align: start;
+
+                }
+            </style>
+            @php
+                // Decode JSON menjadi array, jika null, set array kosong
+                $aspek_keuangan = json_decode($proker->aspek_keuangan, true) ?? [];
+
+                // Pastikan array tidak kosong sebelum mengakses indeks pertama
+                $data_keuangan = $aspek_keuangan[0] ?? [];
+            @endphp
+            <table class="financial-table mt-3">
+                <tr>
+                    <td>Pendapatan Unit dalam setahun</td>
+                    <td>
+                        <input type="text" name="aspek_keuangan[0][pendapatan]"
+                            value="{{ formatRupiah(old('aspek_keuangan.0.pendapatan', $data_keuangan['pendapatan'] ?? '')) }}"
+                            class="dotted-input">
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Biaya operasional dalam setahun</td>
+                    <td>
+                        <input type="text" name="aspek_keuangan[0][biaya]"
+                            value="{{ formatRupiah(old('aspek_keuangan.0.biaya', $data_keuangan['biaya'] ?? '')) }}"
+                            class="dotted-input">
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Laba diperoleh dalam satu tahun</td>
+                    <td>
+                        <input type="text" name="aspek_keuangan[0][laba]"
+                            value="{{ formatRupiah(old('aspek_keuangan.0.laba', $data_keuangan['laba'] ?? '')) }}"
+                            class="dotted-input">
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Pengembalian Modal (ROI)</td>
+                    <td>
+                        <input type="text" name="aspek_keuangan[0][pengembalian]"
+                            value="{{ formatRupiah(old('aspek_keuangan.0.pengembalian', $data_keuangan['pengembalian'] ?? '')) }}"
+                            class="dotted-input">
+                    </td>
+                    <td>/Tahun</td>
+                </tr>
+            </table>
+            <div class="isi" style="margin-top: 10px;">
+                {{ old('aspek_keuangan.0.rincian', $data_keuangan['rincian'] ?? '') }}
+            </div>
+
+
         </div>
         <p>
             c. Aspek Teknis
@@ -83,6 +173,11 @@
                             <td>{{ $rasio->antisipasi }}</td>
                         </tr>
                     @endforeach
+                    @if (count($rasios) <= 0)
+                        <tr class="text-center">
+                            <td colspan="4">Data rasio kosong</td>
+                        </tr>
+                    @endif
                 </tbody>
             </table>
         </div>

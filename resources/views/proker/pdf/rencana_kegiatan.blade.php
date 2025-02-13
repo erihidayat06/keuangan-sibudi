@@ -38,5 +38,11 @@
 
             </tr>
         @endforeach
+
+        @if (count($programs) <= 0)
+            <tr class="text-center">
+                <td colspan="4">Data program kosong</td>
+            </tr>
+        @endif
     </tbody>
 </table>

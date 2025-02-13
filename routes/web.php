@@ -35,6 +35,10 @@ use App\Http\Controllers\RekonsiliasiController;
 use App\Http\Controllers\AdminDataUserController;
 use App\Http\Controllers\GantiPasswordController;
 use App\Http\Controllers\AdminLanggananController;
+use App\Http\Controllers\AnalisaKetahananPangan\AkpsController;
+use App\Http\Controllers\AnalisaKetahananPangan\CetakAKPController;
+use App\Http\Controllers\AnalisaKetahananPangan\KebutuhanController;
+use App\Http\Controllers\AnalisaKetahananPangan\PenjualanController;
 use App\Http\Controllers\LaporanLabaRugiController;
 use App\Http\Controllers\PenambahanModalController;
 use App\Http\Controllers\LaporanPerubahanModalController;
@@ -229,6 +233,12 @@ Route::post('/aset/bank/update', [BankController::class, 'updateJumlah'])->name(
 Route::get('/aset/export-pdf/bank', [BankController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
 Route::put('/aset/rekonsiliasi/bayar/{rekonsiliasi:id}', [BankController::class, 'bayar'])->middleware('auth', 'langganan', 'bumdes');
 
+// Akps
+Route::get('/akp', [AkpsController::class, 'index']);
+Route::put('/akp/{akps:id}', [AkpsController::class, 'update']);
+Route::post('/akp/penjualan', [PenjualanController::class, 'update']);
+Route::post('/akp/kebutuhan', [KebutuhanController::class, 'update']);
+Route::get('/akp/export/pdf', [CetakAKPController::class, 'export']);
 
 
 // Undo

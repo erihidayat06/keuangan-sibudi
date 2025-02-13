@@ -7,6 +7,7 @@
     <form action="/proker/kualititif/{{ $proker->id }}" method="POST">
         @csrf
         @method('PUT')
-        <textarea name="kualititif" id="" cols="30" rows="10" class="form-control">{{ old('kualititif', $proker) }}</textarea>
+        <input id="kualititif" type="hidden" name="kualititif" value="{{ old('hasil_kinerja', $lpj->hasil_kinerja ?? '') }}">
+        {!! old('hasil_kinerja', $lpj->hasil_kinerja ?? '') !!}
     @endsection
 </form>

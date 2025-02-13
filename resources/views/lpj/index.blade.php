@@ -40,8 +40,15 @@
                 </div>
 
                 <div class="mb-3">
+                    <!-- Input Hidden untuk Trix Editor Misi -->
                     <label for="hasil_capaian" class="form-label">3. Gambarkan hasil capaian selama satu tahun!</label>
-                    <textarea name="hasil_capaian" id="hasil_capaian" rows="3" class="form-control">{{ $lpj->hasil_capaian }}</textarea>
+                    <input id="hasil_capaian" type="hidden" name="hasil_capaian"
+                        value="{{ old('hasil_capaian', $lpj->hasil_capaian ?? '') }}">
+                    <trix-editor input="hasil_capaian" class="@error('hasil_capaian') is-invalid @enderror"></trix-editor>
+                    @error('hasil_capaian')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                    {{-- <textarea name="hasil_capaian" id="hasil_capaian" rows="3" class="form-control">{{ $lpj->hasil_capaian }}</textarea> --}}
                 </div>
 
                 <h3 class="card-title">Laporan Direktur</h3>
@@ -49,40 +56,81 @@
                 <div class="mb-3">
                     <label for="kebijakan_strategi" class="form-label">4. Kebijakan dan strategi yang telah dilakukan
                         manajemen</label>
-                    <textarea name="kebijakan_strategi" id="kebijakan_strategi" rows="3" class="form-control" required>{{ $lpj->kebijakan_strategi }}</textarea>
+                    <input id="kebijakan_strategi" type="hidden" name="kebijakan_strategi"
+                        value="{{ old('kebijakan_strategi', $lpj->kebijakan_strategi ?? '') }}">
+                    <trix-editor input="kebijakan_strategi"
+                        class="@error('kebijakan_strategi') is-invalid @enderror"></trix-editor>
+                    @error('kebijakan_strategi')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
                     <label for="tantangan_hambatan" class="form-label">5. Tantangan dan hambatan yang dihadapi</label>
-                    <textarea name="tantangan_hambatan" id="tantangan_hambatan" rows="3" class="form-control" required>{{ $lpj->tantangan_hambatan }}</textarea>
+                    <input id="tantangan_hambatan" type="hidden" name="tantangan_hambatan"
+                        value="{{ old('tantangan_hambatan', $lpj->tantangan_hambatan ?? '') }}">
+                    <trix-editor input="tantangan_hambatan"
+                        class="@error('tantangan_hambatan') is-invalid @enderror"></trix-editor>
+                    @error('tantangan_hambatan')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
                     <label for="apresiasi" class="form-label">6. Penyampaian apresiasi</label>
-                    <textarea name="apresiasi" id="apresiasi" rows="3" class="form-control" required>{{ $lpj->apresiasi }}</textarea>
+                    <input id="apresiasi" type="hidden" name="apresiasi"
+                        value="{{ old('apresiasi', $lpj->apresiasi ?? '') }}">
+                    <trix-editor input="apresiasi" class="@error('apresiasi') is-invalid @enderror"></trix-editor>
+                    @error('apresiasi')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <h3 class="card-title">Laporan Pengawas</h3>
 
                 <div class="mb-3">
                     <label for="tugas_pengawasan" class="form-label">7. Tugas Pengawasan yang telah dilakukan</label>
-                    <textarea name="tugas_pengawasan" id="tugas_pengawasan" rows="3" class="form-control" required>{{ $lpj->tugas_pengawasan }}</textarea>
+                    <input id="tugas_pengawasan" type="hidden" name="tugas_pengawasan"
+                        value="{{ old('tugas_pengawasan', $lpj->tugas_pengawasan ?? '') }}">
+                    <trix-editor input="tugas_pengawasan"
+                        class="@error('tugas_pengawasan') is-invalid @enderror"></trix-editor>
+                    @error('tugas_pengawasan')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
                     <label for="pandangan_pengawas" class="form-label">8. Pandangan Pengawas atas realisasi program
                         kerja</label>
-                    <textarea name="pandangan_pengawas" id="pandangan_pengawas" rows="3" class="form-control" required>{{ $lpj->pandangan_pengawas }}</textarea>
+                    <input id="pandangan_pengawas" type="hidden" name="pandangan_pengawas"
+                        value="{{ old('pandangan_pengawas', $lpj->pandangan_pengawas ?? '') }}">
+                    <trix-editor input="pandangan_pengawas"
+                        class="@error('pandangan_pengawas') is-invalid @enderror"></trix-editor>
+                    @error('pandangan_pengawas')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
                     <label for="catatan_pengawas" class="form-label">9. Catatan dari pengawas</label>
-                    <textarea name="catatan_pengawas" id="catatan_pengawas" rows="3" class="form-control" required>{{ $lpj->catatan_pengawas }}</textarea>
+                    <input id="catatan_pengawas" type="hidden" name="catatan_pengawas"
+                        value="{{ old('catatan_pengawas', $lpj->catatan_pengawas ?? '') }}">
+                    <trix-editor input="catatan_pengawas"
+                        class="@error('catatan_pengawas') is-invalid @enderror"></trix-editor>
+                    @error('catatan_pengawas')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
                     <label for="rekomendasi_pengawas" class="form-label">10. Rekomendasi pengawas</label>
-                    <textarea name="rekomendasi_pengawas" id="rekomendasi_pengawas" rows="3" class="form-control" required>{{ $lpj->rekomendasi_pengawas }}</textarea>
+                    <input id="rekomendasi_pengawas" type="hidden" name="rekomendasi_pengawas"
+                        value="{{ old('rekomendasi_pengawas', $lpj->rekomendasi_pengawas ?? '') }}">
+                    <trix-editor input="rekomendasi_pengawas"
+                        class="@error('rekomendasi_pengawas') is-invalid @enderror"></trix-editor>
+                    @error('rekomendasi_pengawas')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <h3 class="card-title">Laporan Kinerja</h3>
@@ -90,22 +138,46 @@
                 <div class="mb-3">
                     <label for="hasil_kinerja" class="form-label">11. Interpretasikan hasil Kinerja masing-masing unit
                         usaha</label>
-                    <textarea name="hasil_kinerja" id="hasil_kinerja" rows="3" class="form-control" required>{{ $lpj->hasil_kinerja }}</textarea>
+                    <input id="hasil_kinerja" type="hidden" name="hasil_kinerja"
+                        value="{{ old('hasil_kinerja', $lpj->hasil_kinerja ?? '') }}">
+                    <trix-editor input="hasil_kinerja" class="@error('hasil_kinerja') is-invalid @enderror"></trix-editor>
+                    @error('hasil_kinerja')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
                     <label for="permasalahan_usaha" class="form-label">12. Permasalahan yang mempengaruhi usaha</label>
-                    <textarea name="permasalahan_usaha" id="permasalahan_usaha" rows="3" class="form-control" required>{{ $lpj->permasalahan_usaha }}</textarea>
+                    <input id="permasalahan_usaha" type="hidden" name="permasalahan_usaha"
+                        value="{{ old('permasalahan_usaha', $lpj->permasalahan_usaha ?? '') }}">
+                    <trix-editor input="permasalahan_usaha"
+                        class="@error('permasalahan_usaha') is-invalid @enderror"></trix-editor>
+                    @error('permasalahan_usaha')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
+
                     <label for="potensi_peluang" class="form-label">13. Potensi, Peluang dan Prospek Usaha</label>
-                    <textarea name="potensi_peluang" id="potensi_peluang" rows="3" class="form-control" required>{{ $lpj->potensi_peluang }}</textarea>
+                    <input id="potensi_peluang" type="hidden" name="potensi_peluang"
+                        value="{{ old('potensi_peluang', $lpj->potensi_peluang ?? '') }}">
+                    <trix-editor input="potensi_peluang"
+                        class="@error('potensi_peluang') is-invalid @enderror"></trix-editor>
+                    @error('potensi_peluang')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
                     <label for="strategi_kebijakan" class="form-label">14. Strategi dan Kebijakan tahun berikutnya</label>
-                    <textarea name="strategi_kebijakan" id="strategi_kebijakan" rows="3" class="form-control" required>{{ $lpj->strategi_kebijakan }}</textarea>
+                    <input id="strategi_kebijakan" type="hidden" name="strategi_kebijakan"
+                        value="{{ old('strategi_kebijakan', $lpj->strategi_kebijakan ?? '') }}">
+                    <trix-editor input="strategi_kebijakan"
+                        class="@error('strategi_kebijakan') is-invalid @enderror"></trix-editor>
+                    @error('strategi_kebijakan')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
                 <style>
                     .selanjutnya {

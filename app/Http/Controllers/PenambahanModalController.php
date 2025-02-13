@@ -28,6 +28,7 @@ class PenambahanModalController extends Controller
 
     public function penambahanModalUpdate(Request $request, Proker $proker)
     {
+
         // Validasi input dari request untuk memastikan data yang dibutuhkan ada
         $validated = $request->validate([
             'kualititif' => 'nullable|string',
@@ -36,11 +37,13 @@ class PenambahanModalController extends Controller
             'status_unit' => 'nullable|string',
             'jumlah' => 'nullable|numeric',
             'aspek_pasar' => 'nullable|string',
-            'aspek_keuangan' => 'nullable|string',
+            'aspek_keuangan' => 'nullable',
             'aspek_lainya' => 'nullable|string',
             'strategi_pemasaran' => 'nullable|string',
             'kesimpulan' => 'nullable|string',
         ]);
+
+        $validated['aspek_keuangan'] = json_encode($request->aspek_keuangan);
 
         // Update hanya data yang diterima dan valid
         $proker->update($validated);

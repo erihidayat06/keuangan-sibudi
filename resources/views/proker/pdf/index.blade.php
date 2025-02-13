@@ -125,7 +125,7 @@
 
     <h3 class="judul">LEMBAR PENGESAHAN</h3>
     <h3 class="judul">RENCANA PROGRAM KERJA BUMDESA TAHUN</h3>
-    <h3 class="judul mb">{{ session('selected_year', date('Y')) }}</h3>
+    <h3 class="judul mb">{{ session('selected_year', date('Y')) + 1 }}</h3>
 
     <p class="align-justify mb">Rencana Program Kerja berisi sasaran kinerja, rencana keuangan dan
         permodalan, rencana kegiatan dan kerjasama beserta informasi lain dalam
@@ -328,13 +328,13 @@
             <div class="mb"></div>
             <p>2. Kualititif </p>
             <div class="isi">
-                <p class="align-justify">{{ $proker->kualititif }}</p>
+                <p class="align-justify p-0">{!! $proker->kualititif !!}</p>
             </div>
         </div>
         <p>C. STRATEGI DAN KEBIJAKAN TAHUN BERIKUTNYA </p>
         <div class="isi">
 
-            <p class="align-justify">{{ $proker->strategi }}</p>
+            <p class="align-justify p-0">{!! $proker->strategi !!}</p>
         </div>
         {{-- Breack --}}
         <div class="page-break"></div>

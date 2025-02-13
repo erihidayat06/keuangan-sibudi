@@ -214,13 +214,20 @@
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('lpj*') ? '' : 'collapsed' }}" href="/lpj">
                     <i class="bi bi-file-earmark-text"></i>
-                    <span>Laporan Pertanggungjawaban</span>
+                    <span>Laporan Pertanggung jawaban</span>
                 </a>
             </li><!-- End Dashboard Nav -->
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('proker*') ? '' : 'collapsed' }}" href="/proker">
                     <i class="bi bi-file-easel"></i>
                     <span>Program Kerja</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('akp*') ? '' : 'collapsed' }}" href="/akp">
+                    <i class="bi bi-clipboard2-data-fill"></i>
+                    <span>Analisa Aspek Ketahanan Pangan</span>
                 </a>
             </li><!-- End Dashboard Nav -->
             @php
