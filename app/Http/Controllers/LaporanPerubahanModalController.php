@@ -20,6 +20,7 @@ class LaporanPerubahanModalController extends Controller
         $modal_bersama = Modal::user()->get()->sum('mdl_bersama');
         $tahun = $ekuitas->tahun ?? session('selected_year');
 
+
         // dd($tahun);
 
         // dd(labaRugiTahun($tahun)['totalLabaRugi']);

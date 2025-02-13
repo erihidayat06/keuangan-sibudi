@@ -72,10 +72,12 @@ class LpjController extends Controller
         $rasios = Rasio::user()->where('tahun', session('selected_year', date('Y')))->get();
         $ekuitas = Ekuit::user()->get()->first();
 
+
+
         $modal_desa = Modal::user()->get()->sum('mdl_desa');
         $modal_masyarakat = Modal::user()->get()->sum('mdl_masyarakat');
         $modal_bersama = Modal::user()->get()->sum('mdl_bersama');
-        $tahun = session('selected_year') ?? date('Y');
+        $tahun = $ekuitas->tahun ?? session('selected_year');
 
         $data = [
             'profil' => $profil,

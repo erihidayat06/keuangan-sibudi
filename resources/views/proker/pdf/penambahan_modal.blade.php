@@ -54,7 +54,7 @@
             a. Aspek pasar dan pemasaran
         </p>
         <div class="isi">
-            <p>{{ $proker->aspek_pasar }}</p>
+            <p>{!! $proker->aspek_pasar !!}</p>
         </div>
         <p>
             b. Aspek Keuangan
@@ -142,7 +142,7 @@
                 </tr>
             </table>
             <div class="isi" style="margin-top: 10px;">
-                {{ old('aspek_keuangan.0.rincian', $data_keuangan['rincian'] ?? '') }}
+                {!! old('aspek_keuangan.0.rincian', $data_keuangan['rincian'] ?? '') !!}
             </div>
 
 
@@ -185,21 +185,21 @@
             d. Aspek lainnya
         </p>
         <div class="isi">
-            <p>{{ $proker->aspek_lainya }}</p>
+            <p class="p-0">{!! $proker->aspek_lainya !!}</p>
 
         </div>
 
         <p>4. Strategi Pemasaran</p>
         <div class="isi">
-            <p>
-                {{ $proker->strategi_pemasaran }}
+            <p class="p-0">
+                {!! $proker->strategi_pemasaran !!}
             </p>
         </div>
 
         <p>5. Kesimpulan tentang usaha yang akan dirintis/dikembangkan</p>
         <div class="isi">
-            <p>
-                {{ $proker->kesimpulan }}
+            <p class="p-0">
+                {!! $proker->kesimpulan !!}
             </p>
         </div>
     </div>

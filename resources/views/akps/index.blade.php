@@ -129,6 +129,6 @@
 
 
     <div class="selanjutnya text-end">
-        <a href="/akp/export/pdf" class="btn  btn-danger shadow"><i class="bi bi-filetype-pdf"></i> Cetak</a>
+        <a href="/akp/pdf" class="btn  btn-danger shadow"><i class="bi bi-filetype-pdf"></i> Cetak</a>
     </div>
 @endsection

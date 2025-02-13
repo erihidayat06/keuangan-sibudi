@@ -288,7 +288,13 @@
 
             <label class="mt-3" for="aspek_pasar">4. Bagaimana analisa aspek pasar pada usaha tersebut</label>
             <div class="ms-4">
-                <textarea class="form-control" id="aspek_pasar" name="aspek_pasar" rows="3">{{ old('aspek_pasar', $proker) }}</textarea>
+                <input id="aspek_pasar" type="hidden" name="aspek_pasar"
+                    value="{{ old('aspek_pasar', $proker->aspek_pasar ?? '') }}">
+                <trix-editor input="aspek_pasar" class="@error('aspek_pasar') is-invalid @enderror"></trix-editor>
+                @error('aspek_pasar')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+                {{-- <textarea class="form-control" id="aspek_pasar" name="aspek_pasar" rows="3">{{ old('aspek_pasar', $proker) }}</textarea> --}}
             </div>
 
             <label class="mt-3" for="aspek_keuangan">5. Bagaimana analisa aspek keuangan pada pengembangan usaha
@@ -356,7 +362,13 @@
 
 
                 <p class="mt-3">Rincian lainya:</p>
-                <textarea class="form-control" id="aspek_keuangan" name="aspek_keuangan[0][rincian]" rows="3">{{ old('aspek_keuangan.0.rincian', $data_keuangan['rincian'] ?? '') }}</textarea>
+                <input id="aspek_keuangan" type="hidden" name="aspek_keuangan[0][rincian]"
+                    value="{{ old('aspek_keuangan.0.rincian', $data_keuangan['rincian'] ?? '') }}">
+                <trix-editor input="aspek_keuangan" class="@error('aspek_keuangan') is-invalid @enderror"></trix-editor>
+                @error('aspek_keuangan')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+                {{-- <textarea class="form-control" id="aspek_keuangan" name="aspek_keuangan[0][rincian]" rows="3">{{ old('aspek_keuangan.0.rincian', $data_keuangan['rincian'] ?? '') }}</textarea> --}}
             </div>
 
 
@@ -365,17 +377,36 @@
                 politik, dll) pada
                 pengembangan usaha tersebut</label>
             <div class="ms-4">
-                <textarea class="form-control" id="aspek_lainya" name="aspek_lainya" rows="3">{{ old('aspek_lainya', $proker) }}</textarea>
+                <input id="aspek_lainya" type="hidden" name="aspek_lainya"
+                    value="{{ old('aspek_lainya', $proker->aspek_lainya ?? '') }}">
+                <trix-editor input="aspek_lainya" class="@error('aspek_lainya') is-invalid @enderror"></trix-editor>
+                @error('aspek_lainya')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+                {{-- <textarea class="form-control" id="aspek_lainya" name="aspek_lainya" rows="3">{{ old('aspek_lainya', $proker) }}</textarea> --}}
             </div>
 
             <label class="mt-3" for="strategi_pemasaran">7. Bagaimana strategi pemasaran yang akan dilakukan</label>
             <div class="ms-4">
-                <textarea class="form-control" id="strategi_pemasaran" name="strategi_pemasaran" rows="3">{{ old('strategi_pemasaran', $proker) }}</textarea>
+                <input id="strategi_pemasaran" type="hidden" name="strategi_pemasaran"
+                    value="{{ old('strategi_pemasaran', $proker->strategi_pemasaran ?? '') }}">
+                <trix-editor input="strategi_pemasaran"
+                    class="@error('strategi_pemasaran') is-invalid @enderror"></trix-editor>
+                @error('strategi_pemasaran')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+                {{-- <textarea class="form-control" id="strategi_pemasaran" name="strategi_pemasaran" rows="3">{{ old('strategi_pemasaran', $proker) }}</textarea> --}}
             </div>
 
             <label class="mt-3" for="kesimpulan">8. Kesimpulan tentang rencana penambahan modal</label>
             <div class="ms-4">
-                <textarea class="form-control" id="kesimpulan" name="kesimpulan" rows="3">{{ old('kesimpulan', $proker) }}</textarea>
+                <input id="kesimpulan" type="hidden" name="kesimpulan"
+                    value="{{ old('kesimpulan', $proker->kesimpulan ?? '') }}">
+                <trix-editor input="kesimpulan" class="@error('kesimpulan') is-invalid @enderror"></trix-editor>
+                @error('kesimpulan')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+                {{-- <textarea class="form-control" id="kesimpulan" name="kesimpulan" rows="3">{{ old('kesimpulan', $proker) }}</textarea> --}}
             </div>
 
 

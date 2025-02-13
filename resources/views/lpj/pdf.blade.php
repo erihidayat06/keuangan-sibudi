@@ -160,7 +160,7 @@
             $pades = $laba_berjalan * ($ekuitas->pades / 100);
             $lainya = $laba_berjalan * ($ekuitas->lainya / 100);
         }
-        $modal_akhir = $tambah + $modal_desa + $modal_masyarakat;
+        $modal_akhir = $ditahan + $tambah + $modal_desa + $modal_masyarakat + $modal_bersama;
     @endphp
     <p>A. IKHTISAR PENCAPAIAN SATU TAHUN</p>
     <div class="isi">

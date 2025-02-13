@@ -238,7 +238,7 @@ Route::get('/akp', [AkpsController::class, 'index'])->middleware('auth', 'langga
 Route::put('/akp/{akps:id}', [AkpsController::class, 'update'])->middleware('auth', 'langganan', 'bumdes');
 Route::post('/akp/penjualan', [PenjualanController::class, 'update'])->middleware('auth', 'langganan', 'bumdes');
 Route::post('/akp/kebutuhan', [KebutuhanController::class, 'update'])->middleware('auth', 'langganan', 'bumdes');
-Route::get('/akp/export/pdf', [CetakAKPController::class, 'export'])->middleware('auth', 'langganan', 'bumdes');
+Route::get('/akp/pdf', [CetakAKPController::class, 'export'])->middleware('auth', 'langganan', 'bumdes');
 
 
 // Undo
