@@ -24,7 +24,7 @@ class AkpsController extends Controller
         $akp = Akps::user()->whereYear('created_at', $selectedYear)->first();
 
         // Jika tidak ada, buat baru
-        if (!$akp) {
+        if ($akp == null) {
             $akp = Akps::create([
                 'user_id' => auth()->id(),
                 'created_at' => $now,
@@ -34,15 +34,16 @@ class AkpsController extends Controller
         // Cek apakah kebutuhan sudah ada
         $kebutuhan_create = Kebutuhan::user()->whereYear('created_at', $selectedYear)->first();
 
-        if (!$kebutuhan_create) {
+
+        if ($kebutuhan_create == null) {
             $data = [
-                ['user_id' => auth()->id(), 'created_at' => now(), 'uraian' => 'Biaya Sewa Tanah', 'kategori' => 'Sewa Tanah/Bangunan', 'jumlah' => 1],
-                ['user_id' => auth()->id(), 'created_at' => now(), 'uraian' => 'Biaya Sewa Bangunan', 'kategori' => 'Sewa Tanah/Bangunan', 'jumlah' => 1],
-                ['user_id' => auth()->id(), 'created_at' => now(), 'uraian' => 'Transportasi hasil panen', 'kategori' => 'Distribusi', 'jumlah' => null],
-                ['user_id' => auth()->id(), 'created_at' => now(), 'uraian' => 'Perbaikan dan pemeliharaan', 'kategori' => 'Sarana Prasarana', 'jumlah' => null],
-                ['user_id' => auth()->id(), 'created_at' => now(), 'uraian' => 'Pelatihan pemberdayaan masyarakat', 'kategori' => 'Pekerja', 'jumlah' => null],
-                ['user_id' => auth()->id(), 'created_at' => now(), 'uraian' => 'Tenaga Kerja', 'kategori' => 'Pekerja', 'jumlah' => null],
-                ['user_id' => auth()->id(), 'created_at' => now(), 'uraian' => 'Pembelian Pupuk', 'kategori' => 'Bahan Pemeliharaan', 'jumlah' => null],
+                ['user_id' => auth()->id(), 'created_at' => $now, 'uraian' => 'Biaya Sewa Tanah', 'kategori' => 'Sewa Tanah/Bangunan', 'jumlah' => 1],
+                ['user_id' => auth()->id(), 'created_at' => $now, 'uraian' => 'Biaya Sewa Bangunan', 'kategori' => 'Sewa Tanah/Bangunan', 'jumlah' => 1],
+                ['user_id' => auth()->id(), 'created_at' => $now, 'uraian' => 'Transportasi hasil panen', 'kategori' => 'Distribusi', 'jumlah' => null],
+                ['user_id' => auth()->id(), 'created_at' => $now, 'uraian' => 'Perbaikan dan pemeliharaan', 'kategori' => 'Sarana Prasarana', 'jumlah' => null],
+                ['user_id' => auth()->id(), 'created_at' => $now, 'uraian' => 'Pelatihan pemberdayaan masyarakat', 'kategori' => 'Pekerja', 'jumlah' => null],
+                ['user_id' => auth()->id(), 'created_at' => $now, 'uraian' => 'Tenaga Kerja', 'kategori' => 'Pekerja', 'jumlah' => null],
+                ['user_id' => auth()->id(), 'created_at' => $now, 'uraian' => 'Pembelian Pupuk', 'kategori' => 'Bahan Pemeliharaan', 'jumlah' => null],
             ];
             Kebutuhan::insert($data);
         }

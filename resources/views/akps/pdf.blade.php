@@ -202,7 +202,7 @@
                 <td>7</td>
                 <td class="fw-bold">Alokasi DD untuk Ketahanan Pangan&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>:</td>
-                <td>{{ formatRupiah($akp->alokas) }}</td>
+                <td>{{ formatRupiah($akp->alokasi) }}</td>
             </tr>
             <tr>
                 <td>8</td>
@@ -665,13 +665,13 @@
                 @endphp
                 @foreach ($penjualans as $penjualan)
                     @php
-                        $total_pendapatan += $penjualan->harga * $penjualan->jumlah;
-                        $total_satuan = $penjualan->harga * $penjualan->jumlah;
+                        $total_pendapatan += $penjualan->harga * $penjualan->jumlah * $penjualan->volume;
+                        $total_satuan = $penjualan->harga * $penjualan->jumlah * $penjualan->volume;
                     @endphp
                     <tr class="table-border">
                         <td class="table-border">{{ $i++ }}</td>
                         <td class="table-border">{{ $penjualan->kegiatan }}</td>
-                        <td class="table-border">{{ formatRupiah($penjualan->volume) }}</td>
+                        <td class="table-border">{{ $penjualan->volume }}</td>
                         <td class="table-border">{{ $penjualan->satuan }}</td>
                         <td class="table-border">{{ formatRupiah($penjualan->harga) }}</td>
                         <td class="table-border text-center">{{ $penjualan->jumlah }}</td>
