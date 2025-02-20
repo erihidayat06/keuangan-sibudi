@@ -101,7 +101,7 @@ class BuksController extends Controller
             'transaksi' => 'required|string|max:255',
             'jenis' => 'required|string|in:debit,kredit,tetap', // e.g., debit or credit
             'jenis_lr' => 'required|string', // e.g., debit or credit
-            'jenis_dana' => 'required|string|in:operasional,inventasi,pendanaan', // e.g., debit or credit
+            'jenis_dana' => 'required|string|in:operasional,investasi,pendanaan', // e.g., debit or credit
             'nilai' => 'required|numeric',
         ]);
         $validated['user_id'] = auth()->user()->id;
@@ -141,7 +141,7 @@ class BuksController extends Controller
             'transaksi' => 'required|string|max:255',
             'jenis' => 'required|string|in:debit,kredit,tetap', // e.g., debit or credit
             'jenis_lr' => 'required|string', // e.g., debit or credit
-            'jenis_dana' => 'required|string|in:operasional,inventasi,pendanaan', // e.g., debit or credit
+            'jenis_dana' => 'required|string|in:operasional,investasi,pendanaan', // e.g., debit or credit
             'nilai' => 'required|numeric',
         ]);
         $validated['user_id'] = auth()->user()->id;

@@ -31,11 +31,20 @@
             <div class="card overflow-auto">
                 <div class="card-body">
                     <h3 class="card-title">Kas Bank</h3>
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#tambahPosisiModal">
-                        Tambah Posisi
-                    </button>
+
+                    <div class="row cols-2 cols-lg-2">
+                        <div class="col">
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#tambahPosisiModal">
+                                Tambah Posisi
+                            </button>
+                        </div>
+                        <div class="col text-end">
+                            <a href="/aset/export-pdf/bank" class="btn btn-danger"><i class="bi bi-filetype-pdf"></i>
+                                PDF</a>
+                        </div>
+                    </div>
 
                     <!-- Modal -->
                     <div class="modal fade" id="tambahPosisiModal" tabindex="-1" aria-labelledby="tambahPosisiModalLabel"

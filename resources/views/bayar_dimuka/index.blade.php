@@ -97,7 +97,7 @@
                                 <tr>
                                     <th scope="row">{{ $i++ }}</th>
                                     <td>{{ formatTanggal($aset->created_at) }}</td>
-                                    <td>{{ $aset->jenis }}</td>
+                                    <td>{{ $aset->keterangan }}</td>
                                     <td>{{ formatRupiah($aset->nilai) }}</td> <!-- Format nilai dengan formatRupiah -->
                                     <td>{{ $aset->wkt_ekonomis }}</td>
                                     <td>

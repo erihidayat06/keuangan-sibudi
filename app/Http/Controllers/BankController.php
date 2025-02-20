@@ -15,8 +15,30 @@ class BankController extends Controller
     {
         $kas = neraca()['kas'];
         $rekonsiliasi = Rekonsiliasi::user()->get();
+
+        // Daftar bank yang wajib ada
+        $requiredBanks = ['Bank BRI', 'Bank BNI', 'Bank Mandiri', 'Bank BCA'];
+
+        // Ambil posisi yang sudah ada
+        $existingBanks = $rekonsiliasi->pluck('posisi')->toArray();
+
+        // Tambahkan yang belum ada
+        foreach ($requiredBanks as $bank) {
+            if (!in_array($bank, $existingBanks)) {
+                Rekonsiliasi::create([
+                    'user_id' => auth()->id(),
+                    'posisi' => $bank,
+                    'jumlah' => 0, // Default 0 jika tidak ada nilai awal
+                ]);
+            }
+        }
+
+        // Ambil ulang data setelah penambahan
+        $rekonsiliasi = Rekonsiliasi::user()->get();
+
         return view('bank.index', ['kas' => $kas, 'rekonsiliasis' => $rekonsiliasi]);
     }
+
 
 
     public function exportPdf()
