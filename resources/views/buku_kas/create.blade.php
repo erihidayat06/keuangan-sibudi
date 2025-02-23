@@ -50,7 +50,7 @@
                                 <option value="operasional" {{ old('jenis_dana') == 'operasional' ? 'selected' : '' }}>
                                     Operasional
                                 </option>
-                                <option value="investasi" {{ old('jenis_dana') == 'investasi' ? 'selected' : '' }}>
+                                <option value="iventasi" {{ old('jenis_dana') == 'iventasi' ? 'selected' : '' }}>
                                     Investasi
                                 </option>
                                 <option value="pendanaan" {{ old('jenis_dana') == 'pendanaan' ? 'selected' : '' }}>

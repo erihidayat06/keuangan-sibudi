@@ -41,7 +41,11 @@
 
                             <th>No</th>
                             <th>Uraian</th>
-                            @if ($kategori == 'sewatanahbangunan' || $kategori == 'sewaalat')
+                            @if (
+                                $kategori == 'sewatanahbangunan' ||
+                                    $kategori == 'sewaalat' ||
+                                    $kategori == 'pengadaanalat' ||
+                                    $kategori == 'saranaprasarana')
                                 <th>Satuan</th>
                             @else
                                 <th>Satuan&nbsp;Penjualan</th>
