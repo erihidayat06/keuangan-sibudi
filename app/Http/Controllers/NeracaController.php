@@ -104,6 +104,7 @@ class NeracaController extends Controller
 
         // Susun data neraca ke dalam array
         $data = [
+            'aktiva' => $neraca['total_aktiva'] ?? 0,
             'piutang' => $neraca['piutang'] ?? 0,
             'saldo_pinjam' => $neraca['saldo_pinjam'] ?? 0,
             'persediaan_dagang' => $neraca['persediaan_dagang'] ?? 0,
