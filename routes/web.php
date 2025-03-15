@@ -60,65 +60,202 @@ Route::put('/{profil:id}', [ProfileController::class, 'update'])->middleware('au
 Route::put('/visi/misi/{profil:id}', [ProfileController::class, 'update'])->middleware('auth', 'langganan', 'bumdes');
 
 // Modal
-Route::resource('/modal', ModalController::class)->middleware('auth', 'langganan', 'bumdes');
+Route::resource('/modal', ModalController::class)
+    ->middleware(['auth', 'langganan', 'bumdes'])
+    ->except(['store', 'update', 'destroy']); // Hapus metode yang akan didefinisikan manual
+
+// Terapkan middleware 'cache.neraca' hanya pada metode POST, PUT, DELETE
+Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(function () {
+    Route::post('/modal', [ModalController::class, 'store'])->name('modal.store');
+    Route::put('/modal/{modal}', [ModalController::class, 'update'])->name('modal.update');
+    Route::delete('/modal/{modal}', [ModalController::class, 'destroy'])->name('modal.destroy');
+});
+
+Route::get('/export-pdf/modal', [BuksController::class, 'index'])->middleware('auth', 'langganan', 'bumdes');
 Route::get('/export-pdf/modal', [ModalController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
 
 
 // hutang
-Route::resource('/hutang', HutangController::class)->middleware('auth', 'langganan', 'bumdes');
+Route::resource('/hutang', HutangController::class)
+    ->middleware(['auth', 'langganan', 'bumdes']) // Middleware utama tanpa cache.neraca
+    ->only(['index', 'show', 'create', 'edit']); // Hanya metode GET
+
+// Terapkan 'cache.neraca' hanya untuk metode POST, PUT, DELETE
+Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(function () {
+    Route::post('/hutang', [HutangController::class, 'store'])->name('hutang.store');
+    Route::put('/hutang/{hutang}', [HutangController::class, 'update'])->name('hutang.update');
+    Route::delete('/hutang/{hutang}', [HutangController::class, 'destroy'])->name('hutang.destroy');
+});
+
 Route::get('/export-pdf/hutang', [HutangController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
-Route::put('hutang/bayar/{hutang:id}', [HutangController::class, 'bayar'])->middleware('auth', 'langganan', 'bumdes');
+Route::put('hutang/bayar/{hutang:id}', [HutangController::class, 'bayar'])->middleware('auth', 'langganan', 'bumdes', 'cache.neraca');
 
 
 // Buku Kas
-Route::resource('/aset/buk', BuksController::class)->middleware('auth', 'langganan', 'bumdes');
+Route::resource('/aset/buk', BuksController::class)
+    ->middleware(['auth', 'langganan', 'bumdes'])
+    ->only(['index', 'show', 'create', 'edit']); // Hanya metode GET
+
+// Terapkan middleware 'cache.neraca' hanya pada metode POST, PUT, DELETE
+Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(function () {
+    Route::post('/aset/buk', [BuksController::class, 'store'])->name('buk.store');
+    Route::put('/aset/buk/{buk}', [BuksController::class, 'update'])->name('buk.update');
+    Route::delete('/aset/buk/{buk}', [BuksController::class, 'destroy'])->name('buk.destroy');
+});
+
 Route::get('/export-pdf/buk', [BuksController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
 
 // Pinjaman
-Route::resource('/aset/pinjaman', PinjamanController::class)->middleware('auth', 'langganan', 'bumdes');
-Route::put('/aset/pinjaman/bayar/{pinjaman:id}', [PinjamanController::class, 'bayar'])->middleware('auth', 'langganan', 'bumdes');
+Route::resource('/aset/pinjaman', PinjamanController::class)
+    ->middleware(['auth', 'langganan', 'bumdes'])
+    ->only(['index', 'show', 'create', 'edit']); // Hanya metode GET
+
+// Terapkan middleware 'cache.neraca' hanya pada metode POST, PUT, DELETE
+Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(function () {
+    Route::post('/aset/pinjaman', [PinjamanController::class, 'store'])->name('pinjaman.store');
+    Route::put('/aset/pinjaman/{pinjaman}', [PinjamanController::class, 'update'])->name('pinjaman.update');
+    Route::delete('/aset/pinjaman/{pinjaman}', [PinjamanController::class, 'destroy'])->name('pinjaman.destroy');
+});
+
+Route::put('/aset/pinjaman/bayar/{pinjaman:id}', [PinjamanController::class, 'bayar'])->middleware('auth', 'langganan', 'bumdes', 'cache.neraca');
 Route::get('/export-pdf/pinjaman', [PinjamanController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
-Route::post('/aset/pinjaman/unit/tambah', [PinjamanController::class, 'storeUnit'])->middleware('auth', 'langganan', 'bumdes');
+Route::post('/aset/pinjaman/unit/tambah', [PinjamanController::class, 'storeUnit'])->middleware('auth', 'langganan', 'bumdes', 'cache.neraca');
 
 
 // Piutang
-Route::resource('/aset/piutang', PiutangController::class)->middleware('auth', 'langganan', 'bumdes');
-Route::put('/aset/piutang/bayar/{piutang:id}', [PiutangController::class, 'bayar'])->middleware('auth', 'langganan', 'bumdes');
+Route::resource('/aset/piutang', PiutangController::class)
+    ->middleware(['auth', 'langganan', 'bumdes'])
+    ->only(['index', 'show', 'create', 'edit']); // Hanya metode GET
+
+// Terapkan middleware 'cache.neraca' hanya pada metode POST, PUT, DELETE
+Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(function () {
+    Route::post('/aset/piutang', [PiutangController::class, 'store'])->name('piutang.store');
+    Route::put('/aset/piutang/{piutang}', [PiutangController::class, 'update'])->name('piutang.update');
+    Route::delete('/aset/piutang/{piutang}', [PiutangController::class, 'destroy'])->name('piutang.destroy');
+});
+
+Route::put('/aset/piutang/bayar/{piutang:id}', [PiutangController::class, 'bayar'])->middleware('auth', 'langganan', 'bumdes', 'cache.neraca');
 Route::get('/export-pdf/piutang', [PiutangController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
 
 // Persedian
-Route::resource('/aset/persediaan', PersediaanController::class)->middleware('auth', 'langganan', 'bumdes');
-Route::get('/aset/persediaan/reset/set-ulang', [PersediaanController::class, 'reset'])->middleware('auth', 'langganan', 'bumdes');
-Route::put('/aset/persedian/jual/{persediaan:id}', [PersediaanController::class, 'penjualan'])->middleware('auth', 'langganan', 'bumdes');
-Route::get('/export-pdf/persediaan', [PersediaanController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
-Route::post('/aset/persediaan/unit/tambah', [PersediaanController::class, 'storeUnit'])->middleware('auth', 'langganan', 'bumdes');
+// Rute utama dengan middleware standar
+Route::resource('/aset/persediaan', PersediaanController::class)
+    ->middleware(['auth', 'langganan', 'bumdes'])
+    ->only(['index', 'show', 'create', 'edit']); // Hanya metode GET
+
+// Rute tambahan tanpa 'cache.neraca'
+Route::get('/aset/persediaan/reset/set-ulang', [PersediaanController::class, 'reset'])
+    ->middleware(['auth', 'langganan', 'bumdes']);
+
+Route::get('/export-pdf/persediaan', [PersediaanController::class, 'exportPdf'])
+    ->middleware(['auth', 'langganan', 'bumdes']);
+
+// Terapkan middleware 'cache.neraca' hanya pada metode yang mengubah data
+Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(function () {
+    Route::post('/aset/persediaan', [PersediaanController::class, 'store'])->name('persediaan.store'); // Untuk create
+    Route::put('/aset/persediaan/{persediaan}', [PersediaanController::class, 'update'])->name('persediaan.update'); // Untuk update
+    Route::delete('/aset/persediaan/{persediaan}', [PersediaanController::class, 'destroy'])->name('persediaan.destroy'); // Untuk delete
+    Route::put('/aset/persediaan/jual/{persediaan}', [PersediaanController::class, 'penjualan'])->name('persediaan.penjualan'); // Untuk penjualan
+    Route::post('/aset/persediaan/unit/tambah', [PersediaanController::class, 'storeUnit'])->name('persediaan.storeUnit'); // Tambah unit
+});
+
 
 // Bayar dimuka
-Route::resource('/aset/bdmuk', BdmukController::class)->middleware('auth', 'langganan', 'bumdes');
-Route::put('/aset/bdmuk/pakai/{bdmuk:id}', [BdmukController::class, 'pakai'])->middleware('auth', 'langganan', 'bumdes');
-Route::get('/export-pdf/bdmuk', [BdmukController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
+// Rute utama tanpa 'cache.neraca'
+Route::resource('/aset/bdmuk', BdmukController::class)
+    ->middleware(['auth', 'langganan', 'bumdes'])
+    ->only(['index', 'show', 'create', 'edit']); // Hanya metode GET
+
+// Rute tambahan tanpa 'cache.neraca'
+Route::get('/export-pdf/bdmuk', [BdmukController::class, 'exportPdf'])
+    ->middleware(['auth', 'langganan', 'bumdes']);
+
+// Terapkan middleware 'cache.neraca' hanya pada metode yang mengubah data
+Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(function () {
+    Route::post('/aset/bdmuk', [BdmukController::class, 'store'])->name('bdmuk.store'); // Tambah data
+    Route::put('/aset/bdmuk/{bdmuk}', [BdmukController::class, 'update'])->name('bdmuk.update'); // Update data
+    Route::delete('/aset/bdmuk/{bdmuk}', [BdmukController::class, 'destroy'])->name('bdmuk.destroy'); // Hapus data
+    Route::put('/aset/bdmuk/pakai/{bdmuk}', [BdmukController::class, 'pakai'])->name('bdmuk.pakai'); // Pakai aset
+});
+
 
 // Inventari
-Route::resource('/aset/investasi', InvestasiController::class)->middleware('auth', 'langganan', 'bumdes');
-Route::put('/aset/investasi/pakai/{investasi:id}', [InvestasiController::class, 'pakai'])->middleware('auth', 'langganan', 'bumdes');
-Route::get('/export-pdf/investasi', [InvestasiController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
+// Rute utama tanpa 'cache.neraca'
+Route::resource('/aset/investasi', InvestasiController::class)
+    ->middleware(['auth', 'langganan', 'bumdes'])
+    ->only(['index', 'show', 'create', 'edit']); // Hanya metode GET
+
+// Rute tambahan tanpa 'cache.neraca'
+Route::get('/export-pdf/investasi', [InvestasiController::class, 'exportPdf'])
+    ->middleware(['auth', 'langganan', 'bumdes']);
+
+// Terapkan middleware 'cache.neraca' hanya pada metode yang mengubah data
+Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(function () {
+    Route::post('/aset/investasi', [InvestasiController::class, 'store'])->name('investasi.store'); // Tambah data
+    Route::put('/aset/investasi/{investasi}', [InvestasiController::class, 'update'])->name('investasi.update'); // Update data
+    Route::delete('/aset/investasi/{investasi}', [InvestasiController::class, 'destroy'])->name('investasi.destroy'); // Hapus data
+    Route::put('/aset/investasi/pakai/{investasi}', [InvestasiController::class, 'pakai'])->name('investasi.pakai'); // Pakai aset
+});
+
 
 // Bangunan
-Route::resource('/aset/bangunan', BangunanController::class)->middleware('auth', 'langganan', 'bumdes');
-Route::put('/aset/bangunan/pakai/{bangunan:id}', [BangunanController::class, 'pakai'])->middleware('auth', 'langganan', 'bumdes');
-Route::get('/export-pdf/bangunan', [BangunanController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
+// Rute utama tanpa 'cache.neraca'
+Route::resource('/aset/bangunan', BangunanController::class)
+    ->middleware(['auth', 'langganan', 'bumdes'])
+    ->only(['index', 'show', 'create', 'edit']); // Hanya metode GET
+
+// Rute tambahan tanpa 'cache.neraca'
+Route::get('/export-pdf/bangunan', [BangunanController::class, 'exportPdf'])
+    ->middleware(['auth', 'langganan', 'bumdes']);
+
+// Terapkan middleware 'cache.neraca' hanya pada metode yang mengubah data
+Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(function () {
+    Route::post('/aset/bangunan', [BangunanController::class, 'store'])->name('bangunan.store'); // Tambah data
+    Route::put('/aset/bangunan/{bangunan}', [BangunanController::class, 'update'])->name('bangunan.update'); // Update data
+    Route::delete('/aset/bangunan/{bangunan}', [BangunanController::class, 'destroy'])->name('bangunan.destroy'); // Hapus data
+    Route::put('/aset/bangunan/pakai/{bangunan}', [BangunanController::class, 'pakai'])->name('bangunan.pakai'); // Pakai aset
+});
+
 
 // Aktiva lain
-Route::resource('/aset/aktivalain', AktivalainController::class)->middleware('auth', 'langganan', 'bumdes');
-Route::put('/aset/aktivalain/pakai/{aktivalain:id}', [AktivalainController::class, 'pakai'])->middleware('auth', 'langganan', 'bumdes');
-Route::get('/export-pdf/aktivalain', [AktivalainController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
+// Rute utama tanpa 'cache.neraca'
+Route::resource('/aset/aktivalain', AktivalainController::class)
+    ->middleware(['auth', 'langganan', 'bumdes'])
+    ->only(['index', 'show', 'create', 'edit']); // Hanya metode GET
+
+// Rute tambahan tanpa 'cache.neraca'
+Route::get('/export-pdf/aktivalain', [AktivalainController::class, 'exportPdf'])
+    ->middleware(['auth', 'langganan', 'bumdes']);
+
+// Terapkan middleware 'cache.neraca' hanya pada metode yang mengubah data
+Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(function () {
+    Route::post('/aset/aktivalain', [AktivalainController::class, 'store'])->name('aktivalain.store'); // Tambah data
+    Route::put('/aset/aktivalain/{aktivalain}', [AktivalainController::class, 'update'])->name('aktivalain.update'); // Update data
+    Route::delete('/aset/aktivalain/{aktivalain}', [AktivalainController::class, 'destroy'])->name('aktivalain.destroy'); // Hapus data
+    Route::put('/aset/aktivalain/pakai/{aktivalain}', [AktivalainController::class, 'pakai'])->name('aktivalain.pakai'); // Pakai aset
+});
+
 
 // Unit
 Route::resource('/unit', UnitController::class)->middleware('auth', 'langganan', 'bumdes');
 
 // Ditahan
-Route::resource('/dithn', DithnController::class)->middleware('auth', 'langganan', 'bumdes');
-Route::get('/export-pdf/dithn', [DithnController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
+// Rute utama tanpa 'cache.neraca'
+Route::resource('/dithn', DithnController::class)
+    ->middleware(['auth', 'langganan', 'bumdes'])
+    ->only(['index', 'show', 'create', 'edit']); // Hanya metode GET
+
+// Terapkan middleware 'cache.neraca' hanya pada metode yang mengubah data
+Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(function () {
+    Route::post('/dithn', [DithnController::class, 'store'])->name('dithn.store'); // Tambah data
+    Route::put('/dithn/{dithn}', [DithnController::class, 'update'])->name('dithn.update'); // Update data
+    Route::delete('/dithn/{dithn}', [DithnController::class, 'destroy'])->name('dithn.destroy'); // Hapus data
+});
+
+
+// Rute export PDF tetap tanpa 'cache.neraca'
+Route::get('/export-pdf/dithn', [DithnController::class, 'exportPdf'])
+    ->middleware(['auth', 'langganan', 'bumdes']);
 
 // Rincian laba rugi
 Route::get('/rincian-laba-rugi', [LabaRugiController::class, 'index'])->middleware('auth', 'langganan', 'bumdes');
@@ -131,16 +268,39 @@ Route::get('/penyusutan', [PenyusutanController::class, 'index'])->middleware('a
 // Route::put('/bagi-hasil/{dithn:id}', [BagiHasilController::class, 'update'])->middleware('auth', 'langganan', 'bumdes');
 
 // Rekonsiliasi
-Route::resource('/rekonsiliasi', RekonsiliasiController::class)->middleware('auth', 'langganan', 'bumdes');
-Route::post('/rekonsiliasi/update', [RekonsiliasiController::class, 'updateJumlah'])->name('rekonsiliasi.update');
-Route::get('/export-pdf/rekonsiliasi', [RekonsiliasiController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
+// Rute utama tanpa 'cache.neraca'
+Route::resource('/rekonsiliasi', RekonsiliasiController::class)
+    ->middleware(['auth', 'langganan', 'bumdes'])
+    ->only(['index', 'show', 'create', 'edit']); // Hanya metode GET
+
+// Terapkan middleware 'cache.neraca' hanya pada metode yang mengubah data
+Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(function () {
+    Route::post('/rekonsiliasi', [RekonsiliasiController::class, 'store'])->name('rekonsiliasi.store'); // Tambah data
+    Route::put('/rekonsiliasi/{rekonsiliasi}', [RekonsiliasiController::class, 'update'])->name('rekonsiliasi.update'); // Update data
+    Route::delete('/rekonsiliasi/{rekonsiliasi}', [RekonsiliasiController::class, 'destroy'])->name('rekonsiliasi.destroy'); // Hapus data
+    Route::post('/rekonsiliasi/updateJumlah', [RekonsiliasiController::class, 'updateJumlah'])
+        ->name('rekonsiliasi.updateJumlah'); // Update jumlah
+});
+
+
+// Rute export PDF tetap tanpa 'cache.neraca'
+Route::get('/export-pdf/rekonsiliasi', [RekonsiliasiController::class, 'exportPdf'])
+    ->middleware(['auth', 'langganan', 'bumdes']);
 
 
 // Laporan keuangan neraca
-Route::get('/laporan-keuangan/neraca', [NeracaController::class, 'index'])->middleware('auth', 'langganan', 'bumdes');
-Route::get('/export-pdf/neraca', [NeracaController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
-Route::post('/laporan-keuangan/neraca/tutup', [NeracaController::class, 'tutup'])->middleware('auth', 'langganan', 'bumdes');
-Route::post('/laporan-keuangan/neraca/tutup/delete/{tutup:id}', [NeracaController::class, 'delete'])->middleware('auth', 'langganan', 'bumdes');
+// Rute GET tanpa 'cache.neraca'
+Route::get('/laporan-keuangan/neraca', [NeracaController::class, 'index'])
+    ->middleware(['auth', 'langganan', 'bumdes']);
+
+Route::get('/export-pdf/neraca', [NeracaController::class, 'exportPdf'])
+    ->middleware(['auth', 'langganan', 'bumdes']);
+
+// Terapkan 'cache.neraca' hanya pada POST yang memodifikasi data
+Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(function () {
+    Route::post('/laporan-keuangan/neraca/tutup', [NeracaController::class, 'tutup']);
+    Route::post('/laporan-keuangan/neraca/tutup/delete/{tutup:id}', [NeracaController::class, 'delete']);
+});
 
 // Laporan laba rugi
 Route::get('/laporan-keuangan/laporan-laba-rugi', [LaporanLabaRugiController::class, 'index'])->middleware('auth', 'langganan', 'bumdes');
@@ -151,11 +311,21 @@ Route::get('/laporan-keuangan/laporan-arus-kas', [ArusKasController::class, 'ind
 Route::get('/export-pdf/laporan-arus-kas', [ArusKasController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
 
 // Laporan perubahan modal
-Route::get('/laporan-keuangan/laporan-perubahan-modal', [LaporanPerubahanModalController::class, 'index'])->middleware('auth', 'langganan', 'bumdes');
-Route::post('/laporan-keuangan/laporan-perubahan-modal', [LaporanPerubahanModalController::class, 'store'])->middleware('auth', 'langganan', 'bumdes');
-Route::get('/export-pdf/laporan-perubahan-modal', [LaporanPerubahanModalController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
-Route::put('/laporan-keuangan/laporan-perubahan-modal/{ekuit:id}', [LaporanPerubahanModalController::class, 'update'])->middleware('auth', 'langganan', 'bumdes');
-Route::get('/laporan-keuangan/laporan-perubahan-modal/ditahan/{ekuit:id}', [LaporanPerubahanModalController::class, 'ditahan'])->middleware('auth', 'langganan', 'bumdes');
+// Rute GET tanpa 'cache.neraca'
+Route::get('/laporan-keuangan/laporan-perubahan-modal', [LaporanPerubahanModalController::class, 'index'])
+    ->middleware(['auth', 'langganan', 'bumdes']);
+
+Route::get('/export-pdf/laporan-perubahan-modal', [LaporanPerubahanModalController::class, 'exportPdf'])
+    ->middleware(['auth', 'langganan', 'bumdes']);
+
+Route::get('/laporan-keuangan/laporan-perubahan-modal/ditahan/{ekuit:id}', [LaporanPerubahanModalController::class, 'ditahan'])
+    ->middleware(['auth', 'langganan', 'bumdes']);
+
+// Terapkan 'cache.neraca' hanya pada metode yang mengubah data
+Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(function () {
+    Route::post('/laporan-keuangan/laporan-perubahan-modal', [LaporanPerubahanModalController::class, 'store']);
+    Route::put('/laporan-keuangan/laporan-perubahan-modal/{ekuit:id}', [LaporanPerubahanModalController::class, 'update']);
+});
 
 Route::get('/export-pdf/cetak-laporan', [CetakLaporanController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
 
@@ -228,10 +398,14 @@ Route::put('/lpj/{lpj:id}', [LpjController::class, 'update'])->middleware('auth'
 Route::get('/cetak/lpj', [LpjController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
 
 // Bank
-Route::resource('/aset/bank', BankController::class)->middleware('auth', 'langganan', 'bumdes');
-Route::post('/aset/bank/update', [BankController::class, 'updateJumlah'])->name('Bank.update')->middleware('auth', 'langganan', 'bumdes');
-Route::get('/aset/export-pdf/bank', [BankController::class, 'exportPdf'])->middleware('auth', 'langganan', 'bumdes');
-Route::put('/aset/rekonsiliasi/bayar/{rekonsiliasi:id}', [BankController::class, 'bayar'])->middleware('auth', 'langganan', 'bumdes');
+Route::resource('/aset/bank', BankController::class)->middleware(['auth', 'langganan', 'bumdes']);
+Route::get('/aset/export-pdf/bank', [BankController::class, 'exportPdf'])->middleware(['auth', 'langganan', 'bumdes']);
+
+// Terapkan 'cache.neraca' hanya pada metode yang mengubah data
+Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(function () {
+    Route::post('/aset/bank/update', [BankController::class, 'updateJumlah'])->name('Bank.update');
+    Route::put('/aset/rekonsiliasi/bayar/{rekonsiliasi:id}', [BankController::class, 'bayar']);
+});
 
 // Akps
 Route::get('/akp', [AkpsController::class, 'index'])->middleware('auth', 'langganan', 'bumdes');
@@ -242,7 +416,7 @@ Route::get('/akp/pdf', [CetakAKPController::class, 'export'])->middleware('auth'
 
 
 // Undo
-Route::get('/undo', [UndoController::class, 'undoController'])->name('undo');
+Route::get('/undo', [UndoController::class, 'undoController'])->name('undo')->middleware('cache.neraca');
 
 // Auth
 Auth::routes();

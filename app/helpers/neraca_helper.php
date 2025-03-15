@@ -128,3 +128,82 @@ if (!function_exists('neraca')) {
         ];
     }
 }
+
+
+
+use Illuminate\Support\Facades\Cache;
+
+if (!function_exists('neracaAktiva')) {
+    function neracaAktiva()
+    {
+        $cacheKey = 'neraca_all';
+
+        return Cache::rememberForever($cacheKey, function () {
+            // --- PERHITUNGAN AKTIVA ---
+
+            // Sisa Piutang
+            $piutangs = Piutang::user()->select('nilai', 'pembayaran')->get();
+            $sisa_piutang = $piutangs->sum(fn($p) => max(0, $p->nilai - $p->pembayaran));
+
+            // Saldo Pinjam
+            $pinjamans = Pinjaman::user()->select('alokasi', 'realisasi')->get();
+            $saldo_pinjam = $pinjamans->sum('alokasi') - $pinjamans->sum('realisasi');
+
+            // Persediaan Dagang
+            $barangs = Persediaan::user()->select('jml_awl', 'masuk', 'keluar', 'hpp')->get();
+            $persediaan_dagang = $barangs->sum(fn($b) => max(0, ($b->jml_awl - ($b->masuk - $b->keluar)) * $b->hpp));
+
+            // Bayar di Muka
+            $bayar_dimuka = akumulasiPenyusutan(Bdmuk::user()->get())['inven'];
+
+            // Investasi
+            $investasi = akumulasiPenyusutanIventasi(Investasi::user()->get())['inven'];
+
+            // Bangunan
+            $bangunan = akumulasiPenyusutan(Bangunan::user()->get())['inven'];
+
+            // Aktiva Lain
+            $aktiva_lain = akumulasiPenyusutan(Aktivalain::user()->get())['inven'];
+
+            // Kas
+            $transaksis = Buk::user()->select('jenis', 'nilai')->get();
+            $saldo = $transaksis->where('jenis', 'debit')->sum('nilai') -
+                $transaksis->where('jenis', 'kredit')->sum('nilai');
+
+            // Rekonsiliasi Bank
+            $rekon = Rekonsiliasi::user()->sum('jumlah');
+
+            // Total Aktiva
+            $total_aktiva = $saldo + $sisa_piutang + $saldo_pinjam +
+                $persediaan_dagang + $bayar_dimuka +
+                $investasi + $bangunan + $aktiva_lain + $rekon;
+
+            // --- PERHITUNGAN PASIVA ---
+
+            // Hutang
+            $hutangs = Hutang::user()->select('nilai', 'pembayaran')->get();
+            $totalHutang = $hutangs->sum(fn($h) => max(0, $h->nilai - $h->pembayaran));
+
+            // Modal
+            $modals = Modal::user()->select('mdl_desa', 'mdl_masyarakat', 'mdl_bersama')->get();
+            $modal_desa = $modals->sum('mdl_desa');
+            $modal_masyarakat = $modals->sum('mdl_masyarakat');
+            $modal_bersama = $modals->sum('mdl_bersama');
+
+            // Ditahan
+            $ditahan = Dithn::user()->sum('akumulasi');
+
+            // Laba Rugi Berjalan
+            $laba_rugi_berjalan = labaRugi(null)['totalLabaRugi']; // Tidak pakai tahun
+
+            // Total Pasiva
+            $passiva = $totalHutang + $modal_desa + $modal_masyarakat +
+                $modal_bersama + $ditahan + $laba_rugi_berjalan;
+
+            return [
+                'aktiva' => $total_aktiva,
+                'passiva' => $passiva
+            ];
+        });
+    }
+}
