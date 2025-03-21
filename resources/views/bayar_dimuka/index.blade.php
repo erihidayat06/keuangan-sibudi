@@ -81,6 +81,7 @@
                             @endphp
                             @foreach ($asets as $aset)
                                 @php
+                                    $penyusutan = 0;
                                     if ($aset->wkt_ekonomis != 0) {
                                         $penyusutan = $aset->nilai / $aset->wkt_ekonomis;
                                     }
