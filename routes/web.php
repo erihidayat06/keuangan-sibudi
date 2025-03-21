@@ -155,7 +155,7 @@ Route::middleware(['auth', 'langganan', 'bumdes', 'cache.neraca'])->group(functi
     Route::post('/aset/persediaan', [PersediaanController::class, 'store'])->name('persediaan.store'); // Untuk create
     Route::put('/aset/persediaan/{persediaan}', [PersediaanController::class, 'update'])->name('persediaan.update'); // Untuk update
     Route::delete('/aset/persediaan/{persediaan}', [PersediaanController::class, 'destroy'])->name('persediaan.destroy'); // Untuk delete
-    Route::put('/aset/persediaan/jual/{persediaan}', [PersediaanController::class, 'penjualan'])->name('persediaan.penjualan'); // Untuk penjualan
+    Route::put('/aset/persedian/jual/{persediaan:id}', [PersediaanController::class, 'penjualan']); // Untuk penjualan
     Route::post('/aset/persediaan/unit/tambah', [PersediaanController::class, 'storeUnit'])->name('persediaan.storeUnit'); // Tambah unit
 });
 
