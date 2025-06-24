@@ -895,15 +895,18 @@
                     @endphp
                     <td class="table-border">E</td>
                     <td class="table-border">Laba Sebelum Pajakn</td>
-                    <td class="table-border">{{ formatRupiah($laba_sebelum_pajak) }}</td>
+                    {{-- <td class="table-border">{{ formatRupiah($laba_sebelum_pajak) }}</td>
                     <td class="table-border">{{ formatRupiah($laba_sebelum_pajak2) }}</td>
-                    <td class="table-border">{{ formatRupiah($laba_sebelum_pajak3) }}</td>
+                    <td class="table-border">{{ formatRupiah($laba_sebelum_pajak3) }}</td> --}}
+                    <td class="table-border">{{ formatRupiah($total_pendapatan - $total_pengeluaran) }}</td>
+                    <td class="table-border">{{ formatRupiah($total_pendapatan2 - $total_pengeluaran2) }}</td>
+                    <td class="table-border">{{ formatRupiah($total_pendapatan3 - $total_pengeluaran3) }}</td>
                 </tr>
                 <tr class="table-border">
                     @php
-                        $pajak = (5 / 100) * $total_pendapatan;
-                        $pajak2 = (5 / 100) * $total_pendapatan2;
-                        $pajak3 = (5 / 100) * $total_pendapatan3;
+                        $pajak = (0.5 / 100) * $total_pendapatan;
+                        $pajak2 = (0.5 / 100) * $total_pendapatan2;
+                        $pajak3 = (0.5 / 100) * $total_pendapatan3;
                     @endphp
                     <td class="table-border">F</td>
                     <td class="table-border">Pajak</td>
