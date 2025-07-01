@@ -898,9 +898,16 @@
                     {{-- <td class="table-border">{{ formatRupiah($laba_sebelum_pajak) }}</td>
                     <td class="table-border">{{ formatRupiah($laba_sebelum_pajak2) }}</td>
                     <td class="table-border">{{ formatRupiah($laba_sebelum_pajak3) }}</td> --}}
-                    <td class="table-border">{{ formatRupiah($total_pendapatan - $total_pengeluaran) }}</td>
-                    <td class="table-border">{{ formatRupiah($total_pendapatan2 - $total_pengeluaran2) }}</td>
-                    <td class="table-border">{{ formatRupiah($total_pendapatan3 - $total_pengeluaran3) }}</td>
+
+                    @php
+                        $sebelumPajak1 = $total_pendapatan - $total_pengeluaran;
+                        $sebelumPajak2 = $total_pendapatan2 - $total_pengeluaran2;
+                        $sebelumPajak3 = $total_pendapatan3 - $total_pengeluaran3;
+                    @endphp
+
+                    <td class="table-border">{{ formatRupiah($sebelumPajak1) }}</td>
+                    <td class="table-border">{{ formatRupiah($sebelumPajak2) }}</td>
+                    <td class="table-border">{{ formatRupiah($sebelumPajak3) }}</td>
                 </tr>
                 <tr class="table-border">
                     @php
@@ -918,9 +925,9 @@
 
                     <td class="table-border">G</td>
                     <td class="table-border">Laba Setelah Pajak</td>
-                    <td class="table-border">{{ formatRupiah($laba_sebelum_pajak - $pajak) }}</td>
-                    <td class="table-border">{{ formatRupiah($laba_sebelum_pajak2 - $pajak2) }}</td>
-                    <td class="table-border">{{ formatRupiah($laba_sebelum_pajak3 - $pajak3) }}</td>
+                    <td class="table-border">{{ formatRupiah($sebelumPajak1 - $pajak) }}</td>
+                    <td class="table-border">{{ formatRupiah($sebelumPajak2 - $pajak2) }}</td>
+                    <td class="table-border">{{ formatRupiah($sebelumPajak3 - $pajak3) }}</td>
                 </tr>
             </table>
         </div>

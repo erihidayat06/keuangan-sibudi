@@ -72,7 +72,7 @@ class CetakAKPController extends Controller
         $total_pendapatan = 0;
 
         foreach ($penjualans as $penjualan) {
-            $total_pendapatan += $penjualan->harga * $penjualan->jumlah;
+            $total_pendapatan += $penjualan->harga * $penjualan->jumlah * $penjualan->volume;
         }
 
 
@@ -92,9 +92,8 @@ class CetakAKPController extends Controller
         $p1 = $manual;
         $kas_unit = $p1 - $q1;
         $unit_usaha = $total_pendapatan + (10 / 100 * $total_pendapatan);
-        $p2 = $p1 - $q1 + $total_pendapatan;
+        $p2 = $kas_unit + $total_pendapatan;
         $p3 = $p2 - $q2 + $unit_usaha;
-
         $kas_bersih1 = $p1 - $q1;
         $kas_bersih2 = $p2 - $q2;
         $kas_bersih3 = $p3 - $q3;
