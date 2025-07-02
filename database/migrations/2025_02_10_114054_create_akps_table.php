@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('akps', function (Blueprint $table) {
             $table->id();
             $table->string('status')->nullable();
-            $table->integer('dana')->nullable();
-            $table->integer('alokasi')->nullable();
+            $table->bigInteger('dana')->nullable();
+            $table->bigInteger('alokasi')->nullable();
             $table->float('pendapatan')->nullable();
             $table->float('pembiayaan')->nullable();
             $table->string('tematik')->nullable();

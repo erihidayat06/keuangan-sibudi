@@ -91,4 +91,31 @@ class PenambahanModalController extends Controller
 
         return redirect()->back()->with('success', 'Data program berhasil disimpan!');
     }
+
+
+    public function resikoUpdate(Request $request, $id)
+    {
+        $request->validate([
+            'resiko' => 'required|string',
+            'penyebab' => 'required|string',
+            'antisipasi' => 'required|string',
+        ]);
+
+        $resiko = Rasio::findOrFail($id);
+        $resiko->update([
+            'resiko' => $request->resiko,
+            'penyebab' => $request->penyebab,
+            'antisipasi' => $request->antisipasi,
+        ]);
+
+        return redirect()->back()->with('success', 'Resiko usaha berhasil diperbarui.');
+    }
+
+    public function resikoDelete($id)
+    {
+        $resiko = Rasio::findOrFail($id);
+        $resiko->delete();
+
+        return redirect()->back()->with('success', 'Resiko usaha berhasil dihapus.');
+    }
 }

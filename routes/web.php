@@ -386,7 +386,21 @@ Route::post('/proker/rencana/kerjasama/store', [ProkerController::class, 'kerjas
 Route::delete('/proker/rencana/kerjasama/{kerjasama:id}', [ProkerController::class, 'kerjasamaDestroy'])->middleware('auth', 'langganan', 'bumdes');
 Route::get('/proker/penambahan/modal', [PenambahanModalController::class, 'penambahanModal'])->middleware('auth', 'langganan', 'bumdes');
 Route::post('/proker/alokasi/store', [PenambahanModalController::class, 'alokasiStore'])->middleware('auth', 'langganan', 'bumdes');
-Route::post('/proker/resiko/store', [PenambahanModalController::class, 'resikoStore'])->middleware('auth', 'langganan', 'bumdes');
+// Store Resiko Usaha
+Route::post('/proker/resiko/store', [PenambahanModalController::class, 'resikoStore'])
+    ->middleware('auth', 'langganan', 'bumdes')
+    ->name('resiko.store');
+
+// Update Resiko Usaha
+Route::put('/proker/resiko/update/{id}', [PenambahanModalController::class, 'resikoUpdate'])
+    ->middleware('auth', 'langganan', 'bumdes')
+    ->name('resiko.update');
+
+// Delete Resiko Usaha
+Route::delete('/proker/resiko/delete/{id}', [PenambahanModalController::class, 'resikoDelete'])
+    ->middleware('auth', 'langganan', 'bumdes')
+    ->name('resiko.destroy');
+
 Route::post('/update-status/{proker:id}', [PenambahanModalController::class, 'updateStatus'])->name('update.status')->middleware('auth', 'langganan', 'bumdes');
 Route::put('/proker/penambahan/modal/{proker:id}', [PenambahanModalController::class, 'penambahanModalUpdate'])->middleware('auth', 'langganan', 'bumdes');
 

@@ -128,7 +128,7 @@
                                             placeholder="Antisipasi">
                                     </td>
                                     <td>
-                                        <button type="submit" class="btn btn-sm btn-success"
+                                        <button type="button" class="btn btn-sm btn-success"
                                             id="tambahResiko">Tambah</button>
                                     </td>
                                 </tr>
@@ -447,38 +447,96 @@
         </tbody>
     </table>
 
-    <label class="mt-3" for="teknis">10. Bagaimana analisa aspek teknis pada pengembangan usaha tersebut
+    <label class="mt-3" for="teknis">
+        10. Bagaimana analisa aspek teknis pada pengembangan usaha tersebut
     </label><br>
+
     <!-- Button trigger modal -->
     <button type="button" id="teknis" class="btn btn-primary mb-3 mt-3" data-bs-toggle="modal"
         data-bs-target="#resikoModal">
         Tambah Resiko Usaha
     </button>
-    <table class="table table-bordered ">
+
+    <table class="table table-bordered">
         <thead class="table">
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">Resiko Jalannya Usaha</th>
-                <th scope="col">Penyebab</th>
-                <th scope="col">Antisipasi</th>
+                <th>#</th>
+                <th>Resiko Jalannya Usaha</th>
+                <th>Penyebab</th>
+                <th>Antisipasi</th>
+                <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
-            @php
-                $i = 1;
-            @endphp
-            <!-- Contoh Data -->
+            @php $i = 1; @endphp
             @foreach ($rasios as $rasio)
                 <tr>
                     <td>{{ $i++ }}</td>
                     <td>{{ $rasio->resiko }}</td>
                     <td>{{ $rasio->penyebab }}</td>
                     <td>{{ $rasio->antisipasi }}</td>
+                    <td>
+                        <!-- Tombol Edit -->
+                        <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                            data-bs-target="#editModal-{{ $rasio->id }}">
+                            Edit
+                        </button>
+
+                        <!-- Tombol Delete -->
+                        <form action="{{ route('resiko.destroy', $rasio->id) }}" method="POST"
+                            style="display:inline-block;">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-sm btn-danger"
+                                onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>
+                        </form>
+                    </td>
                 </tr>
+
+                <!-- Modal Edit -->
+                <div class="modal fade" id="editModal-{{ $rasio->id }}" tabindex="-1"
+                    aria-labelledby="editModalLabel-{{ $rasio->id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <form action="{{ route('resiko.update', $rasio->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel-{{ $rasio->id }}">Edit Resiko Usaha
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Tutup"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label>Resiko</label>
+                                        <input type="text" class="form-control" name="resiko"
+                                            value="{{ $rasio->resiko }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Penyebab</label>
+                                        <input type="text" class="form-control" name="penyebab"
+                                            value="{{ $rasio->penyebab }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Antisipasi</label>
+                                        <input type="text" class="form-control" name="antisipasi"
+                                            value="{{ $rasio->antisipasi }}" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Batal</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             @endforeach
         </tbody>
     </table>
-    </div>
+
 
     <script>
         // Ambil elemen radio buttons dan elemen .lengkapi

@@ -136,6 +136,23 @@
         });
     </script>
 
+    <script>
+        // Simpan posisi scroll sebelum reload
+        window.addEventListener("beforeunload", function() {
+            localStorage.setItem("scrollPos", window.scrollY);
+        });
+
+        // Saat halaman load, kembalikan posisi scroll
+        window.addEventListener("load", function() {
+            const scrollPos = localStorage.getItem("scrollPos");
+            if (scrollPos) {
+                window.scrollTo(0, parseInt(scrollPos));
+                localStorage.removeItem("scrollPos"); // hapus setelah dipakai
+            }
+        });
+    </script>
+
+
 
     <script>
         $(document).ready(function() {
