@@ -29,7 +29,7 @@ class GantiPasswordEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Email Aplikasi Sibudi',
+            subject: 'Email BUMDES PRO',
         );
     }
 

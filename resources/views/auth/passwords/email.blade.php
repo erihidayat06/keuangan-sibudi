@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Halaman Email | Keuangan sibudi</title>
+    <title>Halaman Email | BUMDES PRO</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -73,13 +73,13 @@
                             style=" margin:auto; margin-top: 100px;">
                             <div class="text-center">
                                 <h2 class="fw-bold">Selamat Datang</h2>
-                                <h2 class="fw-bold"> di Aplikasi SIBUDI</h2>
+                                <h2 class="fw-bold"> di Aplikasi BUMDES PRO</h2>
                                 <img src="/assets/img/akuntansi.png" alt="">
                             </div>
                         </div>
                         <div class="text-center d-block d-lg-none mt-3">
                             <h2 class="fw-bold">Selamat Datang</h2>
-                            <h2 class="fw-bold"> di Aplikasi SIBUDI</h2>
+                            <h2 class="fw-bold"> di Aplikasi BUMDES PRO</h2>
                         </div>
                         <div class="col-lg-4 mt-3 ">
 

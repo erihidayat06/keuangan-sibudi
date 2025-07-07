@@ -1,8 +1,8 @@
-# Wbsite Apk Sibudi
+# Wbsite BUMDES PRO
 
 ## 📺 Demo Website:
 
-Kamu bisa melihat demo website pada link berikut: [Apk Sibudi](https://apksibudi.my.id/)
+Kamu bisa melihat demo website pada link berikut: [BUMDES PRO](https://apksibudi.my.id/)
 
 ## 📚 Stack yang digunakan:
 

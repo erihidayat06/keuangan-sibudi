@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SIBUDI</title>
+    <title>BUMDES PRO</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -50,9 +50,9 @@
                 style=" margin:auto; margin-top: 20px;">
                 <div class="text-center">
                     <h2 class="fw-bold">Selamat Datang</h2>
-                    <h2 class="fw-bold"> di Aplikasi SIBUDI</h2>
+                    <h2 class="fw-bold"> di Aplikasi BUMDES PRO</h2>
                     <img src="/assets/img/akuntansi.png" alt="">
-                    <p>Aplikasi Keuangan SIBUDI merupakan website yang digunakan untuk mencatat, mengolah
+                    <p>Aplikasi BUMDES PRO merupakan website yang digunakan untuk mencatat, mengolah
                         dan meyajikan laporan keuangan secara akurat,
                         Memudahkan bagi pengelola keuangan BUMDesa untuk mengelola keuangan secara mudah,
                         dengan fitur yang lebih modern serta menyimpan data dan dokumen keuangan BUMDesa
@@ -63,7 +63,7 @@
             </div>
             <div class="text-center d-block d-lg-none mt-3">
                 <h2 class="fw-bold">Selamat Datang</h2>
-                <h2 class="fw-bold"> di Aplikasi SIBUDI</h2>
+                <h2 class="fw-bold"> di Aplikasi BUMDES PRO</h2>
             </div>
             <div class="col  mb-5">
                 <div class="card margin-top">
@@ -71,7 +71,7 @@
 
                     <div class="card-body">
                         <div class="card-title">
-                            <h3>Langganan Aplikasi SIBUDI</h3>
+                            <h3>Langganan Aplikasi BUMDES PRO</h3>
                             <ul>
                                 <li>Buat akun dan pilih paket langganan yang tersedia, Batalkan kapan saja</li>
                                 <li> Nikmati semua fitur yang tersedia di aplikasi ini dengan biaya langganan server
@@ -250,7 +250,7 @@
                 // Set value untuk dikirim melalui form
                 var duration = $('input[name="langganan"]:checked').val();
                 $('#subscription_duration').val(duration);
-                $('#product').text('Langganan akses aplikasi SIBUDI ' + duration)
+                $('#product').text('Langganan akses aplikasi BUMDES PRO ' + duration)
                 $('#harga').text(harga)
                 $('#admin').text('Rp6.500')
                 var angka = parseInt(harga.replace("Rp", "").replace(/\./g, ""));
