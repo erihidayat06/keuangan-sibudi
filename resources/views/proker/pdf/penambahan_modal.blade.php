@@ -103,7 +103,7 @@
                 // Pastikan array tidak kosong sebelum mengakses indeks pertama
                 $data_keuangan = $aspek_keuangan[0] ?? [];
             @endphp
-            <table class="financial-table mt-3">
+            {{-- <table class="financial-table mt-3">
                 <tr>
                     <td>Pendapatan Unit dalam setahun</td>
                     <td>
@@ -140,8 +140,8 @@
                     </td>
                     <td>/Tahun</td>
                 </tr>
-            </table>
-            <div class="isi" style="margin-top: 10px;">
+            </table> --}}
+            <div class="isi">
                 {!! old('aspek_keuangan.0.rincian', $data_keuangan['rincian'] ?? '') !!}
             </div>
 

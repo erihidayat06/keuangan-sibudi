@@ -9,7 +9,7 @@
 
                 <h3 class="card-title">Ikhtisar</h3>
 
-                <div class="mb-3">
+                {{-- <div class="mb-3">
                     <label for="kegiatan_usaha" class="form-label">1. Jalannya kegiatan usaha sesuai dengan rencana program
                         kerja?</label>
                     <div>
@@ -37,11 +37,11 @@
                             class="form-check-input" {{ $lpj->penambahan_modal == 'Tidak Ada' ? 'checked' : '' }}>
                         <label for="tidak_ada" class="form-check-label">Tidak Ada</label>
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="mb-3">
                     <!-- Input Hidden untuk Trix Editor Misi -->
-                    <label for="hasil_capaian" class="form-label">3. Gambarkan hasil capaian selama satu tahun!</label>
+                    <label for="hasil_capaian" class="form-label">Gambarkan hasil capaian selama satu tahun!</label>
                     <input id="hasil_capaian" type="hidden" name="hasil_capaian"
                         value="{{ old('hasil_capaian', $lpj->hasil_capaian ?? '') }}">
                     <trix-editor input="hasil_capaian" class="@error('hasil_capaian') is-invalid @enderror"></trix-editor>

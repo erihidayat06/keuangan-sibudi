@@ -78,6 +78,29 @@ class PenambahanModalController extends Controller
 
         return redirect()->back()->with('success', 'Data program berhasil disimpan!');
     }
+
+
+    public function update(Request $request, $id)
+    {
+        $alokasi = Alokasi::findOrFail($id);
+        $alokasi->update([
+            'item' => $request->item,
+            'jenis_biaya' => $request->jenis_biaya,
+            'nilai' => $request->nilai,
+        ]);
+
+        return redirect()->back()->with('success', 'Data berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        $alokasi = Alokasi::findOrFail($id);
+        $alokasi->delete();
+
+        return redirect()->back()->with('success', 'Data berhasil dihapus.');
+    }
+
+
     public function resikoStore(Request $request)
     {
         $validated = $request->all();

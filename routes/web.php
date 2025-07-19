@@ -386,6 +386,8 @@ Route::post('/proker/rencana/kerjasama/store', [ProkerController::class, 'kerjas
 Route::delete('/proker/rencana/kerjasama/{kerjasama:id}', [ProkerController::class, 'kerjasamaDestroy'])->middleware('auth', 'langganan', 'bumdes');
 Route::get('/proker/penambahan/modal', [PenambahanModalController::class, 'penambahanModal'])->middleware('auth', 'langganan', 'bumdes');
 Route::post('/proker/alokasi/store', [PenambahanModalController::class, 'alokasiStore'])->middleware('auth', 'langganan', 'bumdes');
+Route::resource('/proker/alokasi', PenambahanModalController::class)->only(['update', 'destroy']);
+
 // Store Resiko Usaha
 Route::post('/proker/resiko/store', [PenambahanModalController::class, 'resikoStore'])
     ->middleware('auth', 'langganan', 'bumdes')

@@ -165,7 +165,8 @@
     <p>A. IKHTISAR PENCAPAIAN SATU TAHUN</p>
     <div class="isi">
 
-        <p class="align-justify p-0">Unit usaha BUMDesa {{ $profil->nm_bumdes }} pada tahun
+        <p class="align-justify p-0">
+            {{-- Unit usaha BUMDesa {{ $profil->nm_bumdes }} pada tahun
             {{ session('selected_year', date('Y')) }}
             antara lain @foreach ($units as $unit)
                 {{ $unit->nm_unit }},
@@ -179,7 +180,9 @@
             kontribusi PADes yang diberikan sebesar {{ formatRupiah($pades) }} sehingga total
             pada tahun {{ date('Y') + 1 }} sebesar {{ formatRupiah($modal_akhir) }}
             Pada tahun {{ date('Y') }} {{ $lpj->penambahan_modal }} ada penambahan penyertaan
-            modal desa. {!! $lpj->hasil_capaian !!}</p>
+            modal desa.  --}}
+            {!! $lpj->hasil_capaian !!}
+        </p>
     </div>
 
     <p>B. LOPORAN MANAJEMEN</p>

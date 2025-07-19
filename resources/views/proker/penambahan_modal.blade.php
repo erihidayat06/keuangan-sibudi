@@ -317,7 +317,7 @@
                     $data_keuangan = $aspek_keuangan[0] ?? [];
                 @endphp
 
-                <table class="table-border mt-3">
+                {{-- <table class="table-border mt-3">
                     <tr>
                         <td>Pendapatan Unit dalam setahun</td>
                         <td><span class="ms-4">Rp</span></td>
@@ -358,10 +358,10 @@
                         </td>
                         <td>Tahun</td>
                     </tr>
-                </table>
+                </table> --}}
 
 
-                <p class="mt-3">Rincian lainya:</p>
+                {{-- <p class="mt-3">Rincian lainya:</p> --}}
                 <input id="aspek_keuangan" type="hidden" name="aspek_keuangan[0][rincian]"
                     value="{{ old('aspek_keuangan.0.rincian', $data_keuangan['rincian'] ?? '') }}">
                 <trix-editor input="aspek_keuangan" class="@error('aspek_keuangan') is-invalid @enderror"></trix-editor>
@@ -428,24 +428,82 @@
                 <th scope="col">Item</th>
                 <th scope="col">Jenis Biaya<br>(Investasi/Operasional)</th>
                 <th scope="col">Nilai</th>
+                <th scope="col">Aksi</th> <!-- Tambahan -->
             </tr>
         </thead>
         <tbody>
-            @php
-                $i = 1;
-            @endphp
-            <!-- Contoh Data -->
+            @php $i = 1; @endphp
             @foreach ($alokasis as $alokasi)
                 <tr>
                     <td>{{ $i++ }}</td>
                     <td>{{ $alokasi->item }}</td>
                     <td>{{ $alokasi->jenis_biaya }}</td>
-                    <td>{{ $alokasi->nilai }}</td>
+                    <td>{{ number_format($alokasi->nilai, 0, ',', '.') }}</td>
+                    <td>
+                        <!-- Tombol Edit -->
+                        <a class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                            data-bs-target="#editAlokasiModal{{ $alokasi->id }}">Edit</a>
+
+                        <!-- Tombol Delete -->
+                        <form action="{{ route('alokasi.destroy', $alokasi->id) }}" method="POST" class="d-inline"
+                            onsubmit="return confirm('Yakin ingin menghapus?')">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-sm btn-danger">Hapus</button>
+                        </form>
+                    </td>
                 </tr>
             @endforeach
-
         </tbody>
     </table>
+
+    <!-- Letakkan semua modal di bawah tabel -->
+    @foreach ($alokasis as $alokasi)
+        <div class="modal fade" id="editAlokasiModal{{ $alokasi->id }}" tabindex="-1"
+            aria-labelledby="editAlokasiModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form action="{{ route('alokasi.update', $alokasi->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Alokasi</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="item" class="form-label">Item</label>
+                                <input type="text" class="form-control" name="item" value="{{ $alokasi->item }}"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="jenis_biaya" class="form-label">Jenis Biaya</label>
+                                <select name="jenis_biaya" class="form-control" required>
+                                    <option value="Investasi"
+                                        {{ $alokasi->jenis_biaya == 'Investasi' ? 'selected' : '' }}>Investasi
+                                    </option>
+                                    <option value="Operasional"
+                                        {{ $alokasi->jenis_biaya == 'Operasional' ? 'selected' : '' }}>Operasional
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nilai" class="form-label">Nilai</label>
+                                <input type="number" class="form-control" name="nilai" value="{{ $alokasi->nilai }}"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endforeach
+
+
 
     <label class="mt-3" for="teknis">
         10. Bagaimana analisa aspek teknis pada pengembangan usaha tersebut
