@@ -188,8 +188,7 @@
                                                     BUMDesa
                                                 </option>
                                                 <option value="0" {{ old('referral') == '0' ? 'selected' : '' }}>
-                                                    BUMDesa
-                                                    Bersama
+                                                    Koperasi
                                                 </option>
 
                                             </select>
