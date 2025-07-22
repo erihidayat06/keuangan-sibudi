@@ -98,24 +98,45 @@
     </tr>
     <tr>
         <td>
-            <p>Pengawas BUMDesa</p>
+            <p>Pengawas
+                @can('referral')
+                    Koperasi
+                @else
+                    BUMDesa
+                @endcan
+            </p>
             <p>{{ unitUsaha()['nm_pengawas'] }}</p>
         </td>
         <td class="text-center">(..............................)</td>
         <td>
-            <p>Bendahara BUMDesa</p>
+            <p>Bendahara @can('referral')
+                    Koperasi
+                @else
+                    BUMDesa
+                @endcan
+            </p>
             <p>{{ unitUsaha()['nm_bendahara'] }}</p>
         </td>
         <td class="text-center">(..............................)</td>
     </tr>
     <tr>
         <td>
-            <p>Penasehat BUMDesa</p>
+            <p>Penasehat @can('referral')
+                    Koperasi
+                @else
+                    BUMDesa
+                @endcan
+            </p>
             <p>{{ unitUsaha()['nm_penasehat'] }}</p>
         </td>
         <td class="text-center">(..............................)</td>
         <td>
-            <p>Direktur BUMDesa</p>
+            <p>Direktur @can('referral')
+                    Koperasi
+                @else
+                    BUMDesa
+                @endcan
+            </p>
             <p>{{ unitUsaha()['nm_direktur'] }}</p>
         </td>
         <td class="text-center">(..............................)</td>

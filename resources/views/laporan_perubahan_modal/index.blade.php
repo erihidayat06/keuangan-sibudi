@@ -129,7 +129,12 @@
                             <td class="text-end red-text">{{ formatRupiah($tambah) }}</td>
                         </tr>
                         <tr>
-                            <td> <span class="ms-5">PADes</span></td>
+                            <td> <span class="ms-5"> @can('referral')
+                                        Laba dibagi
+                                    @else
+                                        PADes
+                                    @endcan
+                                </span></td>
                             <td class="text-end d-flex  justify-content-end">
                                 <div class="input-group" style="width: 50%">
                                     <input type="number" placeholder="...%" class="form-control" name="pades"
@@ -142,7 +147,12 @@
 
                         </tr>
                         <tr>
-                            <td> <span class="ms-5">Lain Lain</span></td>
+                            <td> <span class="ms-5"> @can('referral')
+                                        Dana Cadangan
+                                    @else
+                                        Lain Lain
+                                    @endcan
+                                </span></td>
                             <td class="text-end d-flex  justify-content-end">
                                 <div class="input-group" style="width: 50%">
                                     <input type="number" placeholder="...%" class="form-control" name="lainya"

@@ -117,7 +117,13 @@
                 <td class="text-end red-text">{{ formatRupiah($tambah) }}</td>
             </tr>
             <tr>
-                <td> <span class="ms">PADes</span></td>
+                <td> <span class="ms">
+                        @can('referral')
+                            Laba dibagi
+                        @else
+                            PADes
+                        @endcan
+                    </span></td>
                 <td class="text-end d-flex  justify-content-end">{{ old('pades', $ekuitas->pades) }}%
                 </td>
                 <td class="text-end red-text">{{ formatRupiah($pades) }}</td>
@@ -125,7 +131,12 @@
 
             </tr>
             <tr>
-                <td> <span class="ms">Lain Lain</span></td>
+                <td> <span class="ms"> @can('referral')
+                            Dana Cadangan
+                        @else
+                            Lain Lain
+                        @endcan
+                    </span></td>
                 <td class="text-end d-flex  justify-content-end">{{ old('lainya', $ekuitas->lainya) }}%
                 </td>
                 <td class="text-end red-text">{{ formatRupiah($lainya) }} </td>
