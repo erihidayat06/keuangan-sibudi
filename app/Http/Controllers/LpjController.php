@@ -33,8 +33,8 @@ class LpjController extends Controller
     public function update(Request $request, Lpj $lpj)
     {
         $validated = $request->validate([
-            'kegiatan_usaha' => 'required|in:Sesuai,Tidak Sesuai',
-            'penambahan_modal' => 'required|in:Ada,Tidak Ada',
+            'kegiatan_usaha' => 'nullable|in:Sesuai,Tidak Sesuai',
+            'penambahan_modal' => 'nullable|in:Ada,Tidak Ada',
             'hasil_capaian' => 'nullable|string',
             'kebijakan_strategi' => 'required|string',
             'tantangan_hambatan' => 'required|string',
