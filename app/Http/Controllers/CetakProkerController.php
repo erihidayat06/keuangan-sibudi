@@ -75,6 +75,6 @@ class CetakProkerController extends Controller
         $pdf = PDF::loadView('proker.pdf.index', $data)->setPaper([0, 0, 595.276, 935.433], 'portrait');
 
         // Stream atau unduh PDF
-        return $pdf->stream('proker.pdf.index');
+        return $pdf->stream('proker.pdf');
     }
 }
