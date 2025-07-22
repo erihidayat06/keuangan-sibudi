@@ -52,21 +52,32 @@
             <tr>
                 <td class="fw-bold">4. LAPORAN PERUBAHAN MODAL</td>
             </tr>
-            <tr>
-                <td colspan="2">Penyertaan modal desa</td>
-                <td class="text-end"></td>
-                <td class="text-end red-text">{{ formatRupiah($modal_desa) }}</td>
-            </tr>
-            <tr class="">
-                <td colspan="2">Penyertaan modal masyarakat</td>
-                <td class="text-end"></td>
-                <td class="text-end red-text">{{ formatRupiah($modal_masyarakat) }}</td>
-            </tr>
             @can('referral')
+                <tr>
+                    <td colspan="2">Simpanan Pokok</td>
+                    <td class="text-end"></td>
+                    <td class="text-end red-text">{{ formatRupiah($modal_desa) }}</td>
+                </tr>
                 <tr class="">
-                    <td colspan="2">Penyertaan modal bersama</td>
+                    <td colspan="2">Simpanan Wajib</td>
+                    <td class="text-end"></td>
+                    <td class="text-end red-text">{{ formatRupiah($modal_masyarakat) }}</td>
+                </tr>
+                <tr class="">
+                    <td colspan="2">Simpanan Sukarela</td>
                     <td class="text-end"></td>
                     <td class="text-end red-text">{{ formatRupiah($modal_bersama) }}</td>
+                </tr>
+            @else
+                <tr>
+                    <td colspan="2">Penyertaan modal desa</td>
+                    <td class="text-end"></td>
+                    <td class="text-end red-text">{{ formatRupiah($modal_desa) }}</td>
+                </tr>
+                <tr class="">
+                    <td colspan="2">Penyertaan modal masyarakat</td>
+                    <td class="text-end"></td>
+                    <td class="text-end red-text">{{ formatRupiah($modal_masyarakat) }}</td>
                 </tr>
             @endcan
 
