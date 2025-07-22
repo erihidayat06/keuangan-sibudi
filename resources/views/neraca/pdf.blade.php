@@ -92,23 +92,23 @@
                             <td></td>
                             <td></td>
                         </tr>
-                        <tr>
-                            <td><span class="ms">Saldo Pinjam</span></td>
-                            <td class="text-red">{{ formatRupiah($saldo_pinjam) }}</td>
-                            <td><span class="ms">Pernyertaan Modal Desa</span></td>
-                            <td class="text-red">{{ formatRupiah($modal_desa) }}</td>
-                        </tr>
-                        <tr>
-                            <td><span class="ms">Persediaan dagang</span></td>
-                            <td class="text-red">{{ formatRupiah($persediaan_dagang) }}</td>
-                            <td><span class="ms">Pernyertaan Modal Masyarakat</span></td>
-                            <td class="text-red">{{ formatRupiah($modal_masyarakat) }}</td>
-                        </tr>
                         @can('referral')
+                            <tr>
+                                <td><span class="ms">Saldo Pinjam</span></td>
+                                <td class="text-red">{{ formatRupiah($saldo_pinjam) }}</td>
+                                <td><span class="ms"> Simpanan Pokok</span></td>
+                                <td class="text-red">{{ formatRupiah($modal_desa) }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="ms">Persediaan dagang</span></td>
+                                <td class="text-red">{{ formatRupiah($persediaan_dagang) }}</td>
+                                <td><span class="ms">Simpanan Wajib</span></td>
+                                <td class="text-red">{{ formatRupiah($modal_masyarakat) }}</td>
+                            </tr>
                             <tr>
                                 <td> <span class="ms">Biaya Dibayar di muka</span></td>
                                 <td class="text-red">{{ formatRupiah($bayar_dimuka) }}</td>
-                                <td><span class="ms">Pernyertaan Modal BUMDesa bersama</span></td>
+                                <td><span class="ms">Simpanan Sukarela</span></td>
                                 <td class="text-red">{{ formatRupiah($modal_bersama) }}</td>
                             </tr>
                             <tr>
@@ -125,6 +125,18 @@
                                 <td class="text-red">{{ formatRupiah($laba_rugi_berjalan) }}</td>
                             </tr>
                         @else
+                            <tr>
+                                <td><span class="ms">Saldo Pinjam</span></td>
+                                <td class="text-red">{{ formatRupiah($saldo_pinjam) }}</td>
+                                <td><span class="ms">Pernyertaan Modal Desa</span></td>
+                                <td class="text-red">{{ formatRupiah($modal_desa) }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="ms">Persediaan dagang</span></td>
+                                <td class="text-red">{{ formatRupiah($persediaan_dagang) }}</td>
+                                <td><span class="ms">Pernyertaan Modal Masyarakat</span></td>
+                                <td class="text-red">{{ formatRupiah($modal_masyarakat) }}</td>
+                            </tr>
                             <tr>
                                 <td><span class="ms">Biaya Dibayar di muka</span></td>
                                 <td class="text-red">{{ formatRupiah($bayar_dimuka) }}</td>

@@ -34,7 +34,7 @@
                     <li>
                         <a href="/admin/langganan/bumdes-bersama"
                             class="{{ Request::is('admin/langganan/bumdes-bersama*') ? 'active' : '' }}">
-                            <i class="bi bi-circle"></i><span>Bumdes Bersama</span>
+                            <i class="bi bi-circle"></i><span>Koperasi</span>
                         </a>
                     </li>
 

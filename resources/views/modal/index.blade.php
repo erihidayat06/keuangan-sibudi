@@ -74,10 +74,13 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Tahun</th>
                                 <th scope="col">Sumber</th>
-                                <th scope="col">Modal Desa</th>
-                                <th scope="col">Modal Masyarakat</th>
                                 @can('referral')
-                                    <th scope="col">Modal BUMDesa Bersama</th>
+                                    <th scope="col">Simpanan Pokok</th>
+                                    <th scope="col">Simpanan Wajib</th>
+                                    <th scope="col">Simpanan Sukarela</th>
+                                @else
+                                    <th scope="col">Modal Desa</th>
+                                    <th scope="col">Modal Masyarakat</th>
                                 @endcan
                                 <th scope="col">Aksi</th>
                             </tr>
