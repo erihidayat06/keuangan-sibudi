@@ -249,6 +249,8 @@
                     <span class="badge text-bg-primary rounded-pill ms-3">{{ $interval->days }} Hari</span>
                 </a>
             </li><!-- End Dashboard Nav -->
+
+            <li class="nav-heading">Info Lebih Lanjut</li>
             <li class="nav-item list-group-item justify-content-between align-items-center">
                 <a class="nav-link {{ Request::is('kontak/admin*') ? '' : 'collapsed' }}" href="/kontak/admin">
                     <i class="bi bi-envelope"></i>
@@ -256,7 +258,22 @@
 
                 </a>
             </li><!-- End Dashboard Nav -->
+            <li class="nav-item list-group-item justify-content-between align-items-center">
+                <a class="nav-link collapsed" target="_blank" href="https://www.youtube.com/@bumdespro">
+                    <i class="bi bi-youtube"></i>
+                    <span>Tutorial</span>
+                    <span class="badge text-bg-primary rounded-pill ms-3"></span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-item list-group-item justify-content-between align-items-center">
+                <a class="nav-link collapsed" target="_blank" href="https://portalbumdes.com/">
+                    <i class="bi bi-question-circle"></i>
+                    <span>pelajari bumdes</span>
+                    <span class="badge text-bg-primary rounded-pill ms-3"></span>
+                </a>
+            </li><!-- End Dashboard Nav -->
         @endcan
+
 
 
     </ul>

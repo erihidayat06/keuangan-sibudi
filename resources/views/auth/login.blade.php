@@ -77,7 +77,7 @@
             <div class="d-flex justify-content-start">
                 <img src="/assets/img/logo.png" alt="" width="40px" height="40px">
 
-                <span class="email-kontak ms-3">Kontak Kami <br> dany.dwin@gmail.com</span>
+                <span class="email-kontak ms-3">Kontak Kami <br> erihidayat549@gmail.com</span>
 
             </div>
         </div>
@@ -154,11 +154,16 @@
                                         <div class="col-12 mt-3">
                                             <button class="btn btn-primary w-100" type="submit">Login</button>
                                         </div>
-                                        <div class="col-12 mt-3">
-                                            <p class="small mb-0">Tidak punya akun? <a href="/register">Buat akun
-                                                    baru</a></p>
-                                        </div>
                                     </form>
+                                    <div class="col-12 mt-3">
+                                        <p class="small mb-0">Tidak punya akun? <a href="/register">Buat akun
+                                                baru</a></p>
+                                    </div>
+                                    <hr>
+                                    <div class="text-center mt-3">
+                                        <a href="https://portalbumdes.com/"><i class="bi bi-question-circle"></i>
+                                            Klik disini</a> untuk pelajari bumdes
+                                    </div>
 
                                 </div>
                             </div>
