@@ -12,6 +12,7 @@ use App\Models\Profil;
 use App\Models\Langganan;
 use App\Models\Rekonsiliasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class LanggananController extends Controller
 {
@@ -110,47 +111,59 @@ class LanggananController extends Controller
 
     public function langgananSuccess(Request $request)
     {
-        $user = auth()->user();
-
-        // Ambil data dari GET (query string)
+        $user   = auth()->user();
         $orderId = $request->query('order_id');
-        $status  = $request->query('transaction_status'); // contoh: settlement
+        $status  = $request->query('transaction_status'); // contoh: settlement, pending, cancel
 
-        // Cari order di database
+        // Jika status pending → batalkan transaksi
+        if ($status === "pending") {
+            return redirect('/langganan')->with('error', 'Pembayaran dibatalkan.');
+        }
+
+        // Cari order
         $order = Order::where('order_id', $orderId)->first();
-
         if (!$order) {
-            return response()->json(['success' => false, 'message' => 'Order tidak ditemukan']);
+            return redirect('/langganan')->with('error', 'Order tidak ditemukan.');
         }
 
-        // Ambil durasi dari order
-        $duration = (int) $order->duration;
+        // Hanya proses kalau sukses (settlement)
+        if ($status === 'settlement') {
+            $duration = (int) $order->duration;
 
-        // Hitung langganan baru
-        if ($user->tgl_langganan && \Carbon\Carbon::parse($user->tgl_langganan)->isFuture()) {
-            $langganan_baru = \Carbon\Carbon::parse($user->tgl_langganan)->addMonths($duration);
-        } else {
-            $langganan_baru = \Carbon\Carbon::now()->addMonths($duration);
+            // Hitung langganan baru
+            if ($user->tgl_langganan && \Carbon\Carbon::parse($user->tgl_langganan)->isFuture()) {
+                $langganan_baru = \Carbon\Carbon::parse($user->tgl_langganan)->addMonths($duration);
+            } else {
+                $langganan_baru = \Carbon\Carbon::now()->addMonths($duration);
+            }
+
+            // Update user
+            $user->update([
+                'status'        => true,
+                'tgl_langganan' => $langganan_baru->format('Y-m-d'),
+            ]);
+
+            // Update status order
+            $order->update(['status' => 'settlement']);
+
+            // Pastikan Ekuit & Rekonsiliasi ada
+            Ekuit::firstOrCreate(['user_id' => $user->id]);
+            if (!Rekonsiliasi::where('user_id', $user->id)->exists()) {
+                Rekonsiliasi::insert([
+                    ['posisi' => 'Kas di tangan', 'user_id' => $user->id, 'created_at' => now(), 'updated_at' => now()],
+                    ['posisi' => 'Bank Jateng', 'user_id' => $user->id, 'created_at' => now(), 'updated_at' => now()],
+                ]);
+            }
+
+            return redirect('/')->with(
+                'success',
+                'Pembayaran berhasil, langganan aktif sampai ' . $langganan_baru->translatedFormat('d F Y')
+            );
         }
 
-        // Update status user
-        $user->update([
-            'status'        => $status === 'settlement', // hanya aktif kalau bayar sukses
-            'tgl_langganan' => $langganan_baru->format('Y-m-d'),
-        ]);
-
-        // Update status order
+        // Kalau status lain (expire, cancel, failure)
         $order->update(['status' => $status]);
 
-        // Pastikan Ekuit & Rekonsiliasi ada
-        Ekuit::firstOrCreate(['user_id' => $user->id]);
-        if (!Rekonsiliasi::where('user_id', $user->id)->exists()) {
-            Rekonsiliasi::insert([
-                ['posisi' => 'Kas di tangan', 'user_id' => $user->id, 'created_at' => now(), 'updated_at' => now()],
-                ['posisi' => 'Bank Jateng', 'user_id' => $user->id, 'created_at' => now(), 'updated_at' => now()],
-            ]);
-        }
-
-        return redirect('/')->with('success', 'Pembayaran berhasil, langganan aktif sampai ' . $langganan_baru->translatedFormat('d F Y'));
+        return redirect('/langganan')->with('error', 'Pembayaran gagal atau dibatalkan.');
     }
 }
