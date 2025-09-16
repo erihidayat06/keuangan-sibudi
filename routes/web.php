@@ -333,7 +333,7 @@ Route::get('/export-pdf/cetak-laporan', [CetakLaporanController::class, 'exportP
 Route::post('/set-tahun', [TahunController::class, 'setYear'])->name('setYear');
 Route::get('/langganan', [LanggananController::class, 'index'])->middleware(['auth', 'bumdes']);
 Route::post('/langganan', [LanggananController::class, 'createTransaction'])->middleware(['auth', 'bumdes']);
-Route::post('/langganan/berhasil', [LanggananController::class, 'langgananSuccess'])->middleware(['auth', 'bumdes']);
+Route::get('/langganan/berhasil', [LanggananController::class, 'langgananSuccess'])->middleware(['auth', 'bumdes']);
 
 
 // Admin

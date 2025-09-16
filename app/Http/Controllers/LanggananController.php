@@ -7,6 +7,7 @@ use Midtrans\Snap;
 use App\Models\User;
 use Midtrans\Config;
 use App\Models\Ekuit;
+use App\Models\Order;
 use App\Models\Profil;
 use App\Models\Langganan;
 use App\Models\Rekonsiliasi;
@@ -45,7 +46,10 @@ class LanggananController extends Controller
         }
 
         // Cari data langganan sesuai dengan durasi yang dipilih
-        $langganan = Langganan::where('jenis', $jenis)->where('jumlah_bulan', $duration)->first();
+        $langganan = Langganan::where('jenis', $jenis)
+            ->where('jumlah_bulan', $duration)
+            ->first();
+
         if (!isset($langganan->harga)) {
             $langganan_harga = 12900; // Harga default jika tidak ditemukan
             $nama_produk = "Langganan Default";
@@ -54,11 +58,12 @@ class LanggananController extends Controller
             $nama_produk = "Langganan " . $langganan->jumlah_bulan . " Bulan";
         }
 
+        $orderId = uniqid('order-');
 
         // Set data transaksi
         $params = [
             'transaction_details' => [
-                'order_id' => uniqid(),
+                'order_id' =>  $orderId,
                 'gross_amount' => $langganan_harga + 6500, // Total transaksi
             ],
             'item_details' => [
@@ -79,76 +84,73 @@ class LanggananController extends Controller
                 'first_name' => auth()->user()->name,
                 'last_name' => '',
                 'email' => auth()->user()->email,
-                'phone' => '', // Tambahkan nomor telepon jika tersedia
+                'phone' => '',
             ],
+            'custom_field1' => $duration,
         ];
 
-        // Dapatkan Snap Token
-        $snapToken = Snap::getSnapToken($params);
+        // Buat transaksi Snap
+        $transaction = \Midtrans\Snap::createTransaction($params);
 
-        // Kembalikan view dengan Snap Token
-        return response()->json(['snapToken' => $snapToken]);
+        Order::create([
+            'user_id'  => auth()->user()->id,
+            'order_id' => $orderId,
+            'amount'   => $langganan_harga + 6500,
+            'duration' => $duration,
+            'status'   => 'pending',
+        ]);
+
+        // Kembalikan redirect_url
+        return response()->json([
+            'redirect_url' => $transaction->redirect_url
+        ]);
     }
+
 
 
     public function langgananSuccess(Request $request)
     {
-        // Validasi input
-        $request->validate([
-            'days' => 'required|integer|min:1',
-            'transaction_id' => 'required|string', // Jika menggunakan ID transaksi
-        ]);
-
-        // Ambil user yang sedang login
         $user = auth()->user();
 
-        // Cek apakah tgl_langganan ada dan valid
-        if ($user->tgl_langganan) {
-            $langganan_user = Carbon::createFromFormat('Y-m-d', $user->tgl_langganan);
-        } else {
-            $langganan_user = Carbon::now(); // Jika belum ada, mulai dari sekarang
+        // Ambil data dari GET (query string)
+        $orderId = $request->query('order_id');
+        $status  = $request->query('transaction_status'); // contoh: settlement
+
+        // Cari order di database
+        $order = Order::where('order_id', $orderId)->first();
+
+        if (!$order) {
+            return response()->json(['success' => false, 'message' => 'Order tidak ditemukan']);
         }
 
-        // Cek jika tanggal langganan kurang dari hari ini
-        if ($langganan_user->isPast()) {
-            // Jika tgl_langganan sudah lewat, mulai dari hari ini
-            $langganan_baru = Carbon::now()->addDays($request->days * 30);
+        // Ambil durasi dari order
+        $duration = (int) $order->duration;
+
+        // Hitung langganan baru
+        if ($user->tgl_langganan && \Carbon\Carbon::parse($user->tgl_langganan)->isFuture()) {
+            $langganan_baru = \Carbon\Carbon::parse($user->tgl_langganan)->addMonths($duration);
         } else {
-            // Jika tgl_langganan masih berlaku, tambahkan jumlah hari
-            $langganan_baru = $langganan_user->addDays($request->days * 30);
+            $langganan_baru = \Carbon\Carbon::now()->addMonths($duration);
         }
 
-        // Update status dan tgl_langganan user
-        User::where('id', $user->id)->update([
-            'status' => true,
-            'tgl_langganan' => $langganan_baru->format('Y-m-d') // Simpan dalam format Y-m-d
+        // Update status user
+        $user->update([
+            'status'        => $status === 'settlement', // hanya aktif kalau bayar sukses
+            'tgl_langganan' => $langganan_baru->format('Y-m-d'),
         ]);
 
-        $userId = auth()->user()->id;
+        // Update status order
+        $order->update(['status' => $status]);
 
-        $existingEkuit = Ekuit::where('user_id', $userId)->first();
-
-        if (!$existingEkuit) {
-            Ekuit::create(['user_id' => $userId]);
-        }
-
-        $rekonsiliasi = Rekonsiliasi::where('user_id', $userId)->first();
-
-        if (!$rekonsiliasi) {
+        // Pastikan Ekuit & Rekonsiliasi ada
+        Ekuit::firstOrCreate(['user_id' => $user->id]);
+        if (!Rekonsiliasi::where('user_id', $user->id)->exists()) {
             Rekonsiliasi::insert([
-                ['posisi' => 'Kas di tangan', 'user_id' => $userId],
-                ['posisi' => 'Bank Jateng', 'user_id' => $userId]
+                ['posisi' => 'Kas di tangan', 'user_id' => $user->id, 'created_at' => now(), 'updated_at' => now()],
+                ['posisi' => 'Bank Jateng', 'user_id' => $user->id, 'created_at' => now(), 'updated_at' => now()],
             ]);
         }
 
-
-
-
-
-        // Tampilkan respons
-        return response()->json([
-            'success' => true,
-            'message' => 'Pembayaran berhasil, langganan aktif sampai ' . $langganan_baru->translatedFormat('d F Y') . '.'
-        ]);
+        return redirect('/')->with('success', 'Pembayaran berhasil, langganan aktif sampai ' . $langganan_baru->translatedFormat('d F Y'));
     }
 }

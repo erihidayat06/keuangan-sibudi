@@ -289,52 +289,53 @@
                     method: 'POST',
                     data: $(this).serialize(),
                     success: function(response) {
+                        window.location.href = response.redirect_url;
                         // Menggunakan token dari respons untuk memulai pembayaran
-                        window.snap.pay(response.snapToken, {
-                            onSuccess: function(result) {
-                                alert("Pembayaran berhasil");
+                        // window.snap.pay(response.snapToken, {
+                        //     onSuccess: function(result) {
+                        //         alert("Pembayaran berhasil");
 
-                                // Ambil durasi dari radio yang dipilih
-                                var selectedDays = $('#subscription_duration')
-                                    .val();
+                        //         // Ambil durasi dari radio yang dipilih
+                        //         var selectedDays = $('#subscription_duration')
+                        //             .val();
 
-                                console.log(selectedDays);
+                        //         console.log(selectedDays);
 
 
-                                // Kirim data pembayaran ke server setelah pembayaran berhasil
-                                $.post('/langganan/berhasil', {
-                                    _token: '{{ csrf_token() }}',
-                                    transaction_id: result.transaction_id,
-                                    days: selectedDays
-                                }).done(function(response) {
-                                    console.log("Success:",
-                                        response); // Log respons
-                                    window.location.href =
-                                        "/"; // Redirect setelah berhasil
-                                }).fail(function(jqXHR, textStatus,
-                                    errorThrown) {
-                                    console.error("Error:", textStatus,
-                                        errorThrown); // Log kesalahan
-                                    alert(
-                                        "Terjadi kesalahan saat memproses pembayaran."
-                                    );
-                                });
+                        //         // Kirim data pembayaran ke server setelah pembayaran berhasil
+                        //         $.post('/langganan/berhasil', {
+                        //             _token: '{{ csrf_token() }}',
+                        //             transaction_id: result.transaction_id,
+                        //             days: selectedDays
+                        //         }).done(function(response) {
+                        //             console.log("Success:",
+                        //                 response); // Log respons
+                        //             window.location.href =
+                        //                 "/"; // Redirect setelah berhasil
+                        //         }).fail(function(jqXHR, textStatus,
+                        //             errorThrown) {
+                        //             console.error("Error:", textStatus,
+                        //                 errorThrown); // Log kesalahan
+                        //             alert(
+                        //                 "Terjadi kesalahan saat memproses pembayaran."
+                        //             );
+                        //         });
 
-                            },
-                            onPending: function(result) {
-                                alert("Menunggu pembayaran");
-                                console.log(result);
-                            },
-                            onError: function(result) {
-                                alert("Pembayaran gagal");
-                                console.log(result);
-                            },
-                            onClose: function() {
-                                alert(
-                                    "Anda menutup pop-up tanpa menyelesaikan pembayaran"
-                                );
-                            }
-                        });
+                        //     },
+                        //     onPending: function(result) {
+                        //         alert("Menunggu pembayaran");
+                        //         console.log(result);
+                        //     },
+                        //     onError: function(result) {
+                        //         alert("Pembayaran gagal");
+                        //         console.log(result);
+                        //     },
+                        //     onClose: function() {
+                        //         alert(
+                        //             "Anda menutup pop-up tanpa menyelesaikan pembayaran"
+                        //         );
+                        //     }
+                        // });
                     },
                     error: function(xhr, status, error) {
                         alert('Terjadi kesalahan saat memproses pembayaran.');
