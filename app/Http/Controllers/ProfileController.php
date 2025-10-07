@@ -45,10 +45,13 @@ class ProfileController extends Controller
             'no_badan' => 'nullable|string|max:50',
             'no_perdes' => 'nullable|string|max:50',
             'no_sk' => 'nullable|string|max:50',
+            'no_wa' => 'nullable|string|max:50',
+            'kabupaten' => 'nullable|string|max:50',
             'unt_usaha1' => 'nullable|string|max:50',
             'visi' => 'nullable|string',
             'misi' => 'nullable|string',
         ]);
+
 
         // Find the Bumdes by its ID
         $bumdes = Profil::findOrFail($profil->id);

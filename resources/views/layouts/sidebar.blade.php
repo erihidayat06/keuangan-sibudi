@@ -9,13 +9,92 @@
                     <span>Dashboard Admin</span>
                 </a>
             </li><!-- End Dashboard Nav -->
-
             <li class="nav-item">
-                <a class="nav-link {{ Request::is('admin/data-user') ? '' : 'collapsed' }}" href="/admin/data-user">
-                    <i class="bi bi-people"></i>
-                    <span>Data User</span>
+                <a class="nav-link {{ Request::is('admin/data-user/create') ? '' : 'collapsed' }}"
+                    href="/admin/data-user/create">
+                    <i class="bi bi-person-fill"></i>
+                    <span>Tambah User</span>
                 </a>
             </li><!-- End Dashboard Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('admin/wilayah*') ? '' : 'collapsed' }}" data-bs-target="#menuWilayah"
+                    data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-geo-alt"></i><span>Wilayah</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+
+                <ul id="menuWilayah" class="nav-content {{ Request::is('admin/wilayah*') ? '' : 'collapse' }}"
+                    data-bs-parent="#sidebar-nav">
+
+                    {{-- Daftar kabupaten akan dimuat lewat JavaScript --}}
+                    <div id="kabupaten-list" class="ps-3 py-2 text-muted small">Memuat kabupaten...</div>
+                </ul>
+            </li>
+
+            {{-- Script AJAX --}}
+            <script>
+                document.addEventListener("DOMContentLoaded", async () => {
+                    const kabupatenList = document.getElementById("kabupaten-list");
+
+                    try {
+                        // 🔹 ambil kabupaten dari backend Laravel proxy
+                        const kabupatenRes = await fetch("/api/wilayah/kabupaten");
+                        const kabupatenData = await kabupatenRes.json();
+
+                        kabupatenList.innerHTML = "";
+
+                        kabupatenData.forEach(kab => {
+                            const kabItem = document.createElement("li");
+                            kabItem.innerHTML = `
+                <a class="nav-link collapsed" data-bs-target="#kab${kab.id}"
+                   data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-circle"></i>
+                    <span>${kab.name}</span>
+                    <i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="kab${kab.id}" class="nav-content collapse" data-bs-parent="#menuWilayah">
+                    <li class="text-muted small ps-3 py-1" id="loading-${kab.id}">Memuat kecamatan...</li>
+                </ul>
+            `;
+                            kabupatenList.appendChild(kabItem);
+
+                            // 🔹 klik kabupaten → load kecamatan via proxy Laravel
+                            kabItem.querySelector('a').addEventListener('click', async () => {
+                                const targetUl = document.getElementById(`kab${kab.id}`);
+                                const loading = document.getElementById(`loading-${kab.id}`);
+
+                                if (targetUl.dataset.loaded) return;
+
+                                try {
+                                    const kecRes = await fetch(`/api/wilayah/kecamatan/${kab.id}`);
+                                    const kecData = await kecRes.json();
+
+                                    targetUl.innerHTML = "";
+                                    kecData.forEach(kec => {
+                                        const kecItem = document.createElement("li");
+                                        kecItem.innerHTML = `
+                            <a href="/admin/wilayah/kecamatan/${encodeURIComponent(kec.name)}">
+                                <i class="bi bi-dash"></i><span>${kec.name}</span>
+                            </a>`;
+                                        targetUl.appendChild(kecItem);
+                                    });
+
+                                    targetUl.dataset.loaded = true;
+                                } catch (err) {
+                                    loading.textContent = "❌ Gagal memuat kecamatan";
+                                }
+                            });
+                        });
+
+                    } catch (error) {
+                        kabupatenList.innerHTML = "❌ Gagal memuat kabupaten.";
+                        console.error("Error:", error);
+                    }
+                });
+            </script>
+
+
+
 
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('admin/langganan*') ? '' : 'collapsed' }}"

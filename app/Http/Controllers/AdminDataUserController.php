@@ -12,9 +12,16 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminDataUserController extends Controller
 {
-    public function index()
+    public function index($kecamatan)
     {
-        $users = User::latest()->latest()->get();
+
+        $users = User::with('profil')
+            ->whereHas('profil', function ($query) use ($kecamatan) {
+                $query->where('kecamatan', $kecamatan);
+            })
+            ->latest()
+            ->get();
+
         $langganans = Langganan::orderBy('jumlah_bulan', 'asc')->get();
         return view('admin.data_user.index', ['users' => $users, 'langganans' => $langganans]);
     }
@@ -64,9 +71,13 @@ class AdminDataUserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|min:3|max:100',
-            'email' => 'required|email',
-            'referral' => 'required',
+            'name'       => 'required|string|min:3|max:100',
+            'email'      => 'required|email|unique:users,email',
+            'referral'   => 'required',
+            'no_wa'      => 'required',
+            'kabupaten'  => 'required',
+            'kecamatan'  => 'required',
+            'desa'       => 'required',
         ]);
 
         $validated['password'] = Hash::make($request->password);
@@ -92,10 +103,19 @@ class AdminDataUserController extends Controller
                     ['posisi' => 'Bank Jateng', 'user_id' => $userId]
                 ]);
             }
-            Profil::create(['user_id' => User::latest()->first()->id]);
+
+
+
+            Profil::create([
+                'user_id'   => User::latest()->first()->id,
+                'no_wa'     => $validated['no_wa'],
+                'kabupaten' => $validated['kabupaten'] ?? null, // hanya simpan nama
+                'kecamatan' => $validated['kecamatan'] ?? null,
+                'desa'      => $validated['desa'] ?? null,
+            ]);
         }
 
-        return redirect('/admin/data-user')->with('success', 'User Berhasil di tambah');
+        return redirect('/admin/wilayah/kecamatan/' . $validated['kecamatan'])->with('success', 'User Berhasil di tambah');
     }
 
     public function destroy(User $user)

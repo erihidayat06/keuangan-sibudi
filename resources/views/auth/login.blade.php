@@ -156,7 +156,9 @@
                                         </div>
                                     </form>
                                     <div class="col-12 mt-3">
-                                        <p class="small mb-0">Tidak punya akun? <a href="/register">Buat akun
+                                        <p class="small mb-0">Tidak punya akun? <a target="_blank"
+                                                href="https://wa.me/6282247758730?text=Pengajuan%20Pembuatan%20Akun%0ASilakan%20isi%20data%20berikut%3A%0A%0A-%20Nama%20Operator%20%3A%0A-%20Kabupaten%20%3A%0A-%20Kecamatan%20%3A%0A-%20Desa%20%3A%0A-%20No.%20WA%20%3A%0A-%20Email%20%3A">Buat
+                                                akun
                                                 baru</a></p>
                                     </div>
                                     <hr>

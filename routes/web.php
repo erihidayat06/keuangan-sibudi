@@ -42,6 +42,7 @@ use App\Http\Controllers\AnalisaKetahananPangan\PenjualanController;
 use App\Http\Controllers\LaporanLabaRugiController;
 use App\Http\Controllers\PenambahanModalController;
 use App\Http\Controllers\LaporanPerubahanModalController;
+use Illuminate\Support\Facades\Http;
 
 /*
 |--------------------------------------------------------------------------
@@ -338,7 +339,7 @@ Route::get('/langganan/berhasil', [LanggananController::class, 'langgananSuccess
 
 // Admin
 Route::get('/admin', [AdminController::class, 'index'])->middleware('auth', 'admin');
-Route::get('/admin/data-user', [AdminDataUserController::class, 'index'])->middleware('auth', 'admin');
+Route::get('/admin/wilayah/kecamatan/{kecamatan}', [AdminDataUserController::class, 'index'])->middleware('auth', 'admin');
 Route::get('/admin/data-user/create', [AdminDataUserController::class, 'create'])->middleware('auth', 'admin');
 Route::post('/admin/data-user/', [AdminDataUserController::class, 'store'])->middleware('auth', 'admin');
 Route::put('/admin/data-user/{user:id}', [AdminDataUserController::class, 'ubahPassword'])->middleware('auth', 'admin');
@@ -434,5 +435,26 @@ Route::get('/akp/pdf', [CetakAKPController::class, 'export'])->middleware('auth'
 // Undo
 Route::get('/undo', [UndoController::class, 'undoController'])->name('undo')->middleware('cache.neraca');
 
+Route::get('/wilayah/{type}/{id?}', function ($type, $id = null) {
+    $url = "https://www.emsifa.com/api-wilayah-indonesia/api/{$type}/" . ($id ? "$id.json" : "33.json");
+    return response()->json(json_decode(file_get_contents($url)));
+});
+
+Route::get('/api/wilayah/{type}/{id?}', function ($type, $id = null) {
+    $baseUrl = 'https://emsifa.github.io/api-wilayah-indonesia/api';
+
+    $endpoint = match ($type) {
+        'kabupaten' => "$baseUrl/regencies/33.json", // Jawa Tengah
+        'kecamatan' => "$baseUrl/districts/$id.json",
+        'desa' => "$baseUrl/villages/$id.json",
+        default => abort(404),
+    };
+
+    $response = Http::get($endpoint);
+
+    return $response->json();
+});
+
+
 // Auth
-Auth::routes();
+Auth::routes(['register' => false]);
