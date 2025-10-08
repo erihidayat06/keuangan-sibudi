@@ -10,7 +10,7 @@
                 <p class="text-center small">Masukkan detail pribadi Anda untuk membuat akun</p>
             </div>
 
-            <form method="POST" action="/admin/data-user/">
+            <form method="POST" action="/admin/data-user/store">
                 @csrf
                 <div class="col-12 mt-3">
                     <label for="yourName" class="form-label">Name</label>

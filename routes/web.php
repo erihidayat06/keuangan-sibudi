@@ -342,7 +342,7 @@ Route::get('/admin', [AdminController::class, 'index'])->middleware('auth', 'adm
 Route::get('/admin/wilayah/kecamatan/{kecamatan}', [AdminDataUserController::class, 'index'])->middleware('auth', 'admin');
 Route::get('/admin/data-user', [AdminDataUserController::class, 'allUser'])->middleware('auth', 'admin');
 Route::get('/admin/data-user/create', [AdminDataUserController::class, 'create'])->middleware('auth', 'admin');
-Route::post('/admin/data-user/', [AdminDataUserController::class, 'store'])->middleware('auth', 'admin');
+Route::post('/admin/data-user/store', [AdminDataUserController::class, 'store'])->middleware('auth', 'admin');
 Route::put('/admin/data-user/{user:id}', [AdminDataUserController::class, 'ubahPassword'])->middleware('auth', 'admin');
 Route::put('/admin/langganan/{user:id}', [AdminDataUserController::class, 'langganan'])->middleware('auth', 'admin');
 Route::delete('/admin/data-user/{user:id}', [AdminDataUserController::class, 'destroy'])->middleware('auth', 'admin');

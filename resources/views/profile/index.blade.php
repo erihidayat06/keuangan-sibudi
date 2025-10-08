@@ -19,35 +19,63 @@
                                     @csrf
                                     @method('PUT')
                                     <div class="modal-header">
-
-                                        <p class="modal-title" id="lokasiModalLabel"><i
-                                                class="bi bi-exclamation-triangle text-danger"></i> Demi Kemudahan
-                                            Pengelolaan Akun Mohon
-                                            Lengkapi Lokasi & Kontak</p>
+                                        <p class="modal-title" id="lokasiModalLabel">
+                                            <i class="bi bi-exclamation-triangle text-danger"></i>
+                                            Demi Kemudahan Pengelolaan Akun, Mohon Lengkapi Lokasi & Kontak
+                                        </p>
                                     </div>
 
                                     <div class="modal-body">
+                                        <small class="text-danger mb-3">Jika diluar Jawa Tengah Silahkan Klik Tombol Tulis
+                                            Untuk
+                                            Menulis Manual</small>
+                                        <hr>
+                                        <!-- Kabupaten -->
                                         <div class="mb-3">
                                             <label for="kabupaten" class="form-label">Kabupaten</label>
-                                            <select class="form-select" id="kabupaten" name="kabupaten" required>
-                                                <option value="">Pilih Kabupaten...</option>
-                                            </select>
+                                            <div class="input-group">
+                                                <select class="form-select" id="kabupatenSelect" required>
+                                                    <option value="">Pilih Kabupaten...</option>
+                                                </select>
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    id="toggleKabupatenBtn">Tulis</button>
+                                            </div>
+                                            <input type="text" class="form-control mt-2 d-none" id="kabupatenInput"
+                                                placeholder="Tulis nama kabupaten..." />
+                                            <input type="hidden" name="kabupaten" id="kabupatenHidden">
                                         </div>
 
+                                        <!-- Kecamatan -->
                                         <div class="mb-3">
                                             <label for="kecamatan" class="form-label">Kecamatan</label>
-                                            <select class="form-select" id="kecamatan" name="kecamatan" required>
-                                                <option value="">Pilih Kecamatan...</option>
-                                            </select>
+                                            <div class="input-group">
+                                                <select class="form-select" id="kecamatanSelect" required>
+                                                    <option value="">Pilih Kecamatan...</option>
+                                                </select>
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    id="toggleKecamatanBtn">Tulis</button>
+                                            </div>
+                                            <input type="text" class="form-control mt-2 d-none" id="kecamatanInput"
+                                                placeholder="Tulis nama kecamatan..." />
+                                            <input type="hidden" name="kecamatan" id="kecamatanHidden">
                                         </div>
 
+                                        <!-- Desa -->
                                         <div class="mb-3">
                                             <label for="desa" class="form-label">Desa</label>
-                                            <select class="form-select" id="desa" name="desa" required>
-                                                <option value="">Pilih Desa...</option>
-                                            </select>
+                                            <div class="input-group">
+                                                <select class="form-select" id="desaSelect" required>
+                                                    <option value="">Pilih Desa...</option>
+                                                </select>
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    id="toggleDesaBtn">Tulis</button>
+                                            </div>
+                                            <input type="text" class="form-control mt-2 d-none" id="desaInput"
+                                                placeholder="Tulis nama desa..." />
+                                            <input type="hidden" name="desa" id="desaHidden">
                                         </div>
 
+                                        <!-- Nomor WA -->
                                         <div class="mb-3">
                                             <label for="no_wa" class="form-label">Nomor WhatsApp</label>
                                             <input type="text" class="form-control" id="no_wa" name="no_wa"
@@ -65,18 +93,61 @@
 
                     <script>
                         document.addEventListener("DOMContentLoaded", function() {
-                            const kabupatenSelect = document.getElementById("kabupaten");
-                            const kecamatanSelect = document.getElementById("kecamatan");
-                            const desaSelect = document.getElementById("desa");
+                            const kabupatenSelect = document.getElementById("kabupatenSelect");
+                            const kecamatanSelect = document.getElementById("kecamatanSelect");
+                            const desaSelect = document.getElementById("desaSelect");
 
-                            // --- Ambil daftar kabupaten di Jawa Tengah (ID: 33) ---
+                            const kabupatenInput = document.getElementById("kabupatenInput");
+                            const kecamatanInput = document.getElementById("kecamatanInput");
+                            const desaInput = document.getElementById("desaInput");
+
+                            const kabupatenHidden = document.getElementById("kabupatenHidden");
+                            const kecamatanHidden = document.getElementById("kecamatanHidden");
+                            const desaHidden = document.getElementById("desaHidden");
+
+                            const toggleKabupatenBtn = document.getElementById("toggleKabupatenBtn");
+                            const toggleKecamatanBtn = document.getElementById("toggleKecamatanBtn");
+                            const toggleDesaBtn = document.getElementById("toggleDesaBtn");
+
+                            // --- toggle manual mode dengan atur atribut required ---
+                            function toggleManual(select, input, btn) {
+                                const isManual = !input.classList.contains("d-none");
+
+                                if (isManual) {
+                                    // 🔙 Balik ke mode pilih
+                                    input.classList.add("d-none");
+                                    select.classList.remove("d-none");
+                                    input.removeAttribute("required");
+                                    select.setAttribute("required", true);
+                                    btn.textContent = "Tulis";
+                                } else {
+                                    // ✍️ Ubah ke mode tulis manual
+                                    select.classList.add("d-none");
+                                    input.classList.remove("d-none");
+                                    select.removeAttribute("required");
+                                    input.setAttribute("required", true);
+                                    btn.textContent = "Pilih";
+                                }
+                            }
+
+                            toggleKabupatenBtn.addEventListener("click", () =>
+                                toggleManual(kabupatenSelect, kabupatenInput, toggleKabupatenBtn)
+                            );
+                            toggleKecamatanBtn.addEventListener("click", () =>
+                                toggleManual(kecamatanSelect, kecamatanInput, toggleKecamatanBtn)
+                            );
+                            toggleDesaBtn.addEventListener("click", () =>
+                                toggleManual(desaSelect, desaInput, toggleDesaBtn)
+                            );
+
+                            // --- Fetch Kabupaten (Jawa Tengah ID 33) ---
                             fetch("https://www.emsifa.com/api-wilayah-indonesia/api/regencies/33.json")
                                 .then(res => res.json())
                                 .then(data => {
                                     data.forEach(kab => {
                                         const opt = document.createElement("option");
-                                        opt.value = kab.name; // kirim nama ke backend
-                                        opt.dataset.id = kab.id; // simpan ID untuk fetch kecamatan
+                                        opt.value = kab.name;
+                                        opt.dataset.id = kab.id;
                                         opt.textContent = kab.name;
                                         kabupatenSelect.appendChild(opt);
                                     });
@@ -84,6 +155,7 @@
 
                             kabupatenSelect.addEventListener("change", function() {
                                 const kabupatenId = this.options[this.selectedIndex].dataset.id;
+                                kabupatenHidden.value = this.value;
                                 kecamatanSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
                                 desaSelect.innerHTML = '<option value="">-- Pilih Desa --</option>';
                                 if (!kabupatenId) return;
@@ -104,6 +176,7 @@
 
                             kecamatanSelect.addEventListener("change", function() {
                                 const kecamatanId = this.options[this.selectedIndex].dataset.id;
+                                kecamatanHidden.value = this.value;
                                 desaSelect.innerHTML = '<option value="">-- Pilih Desa --</option>';
                                 if (!kecamatanId) return;
 
@@ -120,7 +193,20 @@
                                     .catch(() => alert("❌ Gagal memuat desa."));
                             });
 
-                            // --- Tampilkan modal hanya jika data belum lengkap ---
+                            desaSelect.addEventListener("change", function() {
+                                desaHidden.value = this.value;
+                            });
+
+                            // --- sinkron input manual ke hidden value ---
+                            [kabupatenInput, kecamatanInput, desaInput].forEach(input => {
+                                input.addEventListener("input", () => {
+                                    const targetHidden = document.getElementById(input.id.replace("Input",
+                                        "Hidden"));
+                                    targetHidden.value = input.value;
+                                });
+                            });
+
+                            // --- tampilkan modal kalau data belum lengkap ---
                             @if (empty($profil->kabupaten) || empty($profil->kecamatan) || empty($profil->desa) || empty($profil->no_wa))
                                 const lokasiModal = new bootstrap.Modal(document.getElementById('lokasiModal'), {
                                     backdrop: 'static',
@@ -130,7 +216,6 @@
                             @endif
                         });
                     </script>
-
 
 
 
@@ -168,8 +253,9 @@
                                 <tr>
                                     <td><label for="kabupaten">Kabupaten</label></td>
                                     <td>
-                                        <input type="text" class="form-control @error('kabupaten') is-invalid @enderror"
-                                            id="kabupaten" name="kabupaten" value="{{ old('kabupaten', $profil) }}">
+                                        <input type="text"
+                                            class="form-control @error('kabupaten') is-invalid @enderror" id="kabupaten"
+                                            name="kabupaten" value="{{ old('kabupaten', $profil) }}">
                                         @error('kabupaten')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -179,8 +265,9 @@
                                 <tr>
                                     <td><label for="kecamatan">Kecamatan</label></td>
                                     <td>
-                                        <input type="text" class="form-control @error('kecamatan') is-invalid @enderror"
-                                            id="kecamatan" name="kecamatan" value="{{ old('kecamatan', $profil) }}">
+                                        <input type="text"
+                                            class="form-control @error('kecamatan') is-invalid @enderror" id="kecamatan"
+                                            name="kecamatan" value="{{ old('kecamatan', $profil) }}">
                                         @error('kecamatan')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -204,8 +291,9 @@
                                     <td><label for="nm_direktur">Nama Direktur</label></td>
                                     <td>
                                         <input type="text"
-                                            class="form-control @error('nm_direktur') is-invalid @enderror" id="nm_direktur"
-                                            name="nm_direktur" value="{{ old('nm_direktur', $profil) }}">
+                                            class="form-control @error('nm_direktur') is-invalid @enderror"
+                                            id="nm_direktur" name="nm_direktur"
+                                            value="{{ old('nm_direktur', $profil) }}">
                                         @error('nm_direktur')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
