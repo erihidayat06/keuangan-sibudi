@@ -25,6 +25,16 @@ class AdminDataUserController extends Controller
         $langganans = Langganan::orderBy('jumlah_bulan', 'asc')->get();
         return view('admin.data_user.index', ['users' => $users, 'langganans' => $langganans]);
     }
+    public function allUser()
+    {
+
+        $users = User::with('profil')
+            ->latest()
+            ->get();
+
+        $langganans = Langganan::orderBy('jumlah_bulan', 'asc')->get();
+        return view('admin.data_user.allUser', ['users' => $users, 'langganans' => $langganans]);
+    }
 
     public function ubahPassword(Request $request, User $user)
     {

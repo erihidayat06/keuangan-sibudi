@@ -16,6 +16,12 @@
                     <span>Tambah User</span>
                 </a>
             </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('admin/data-user') ? '' : 'collapsed' }}" href="/admin/data-user">
+                    <i class="bi bi-people-fill"></i>
+                    <span>All User</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
 
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('admin/wilayah*') ? '' : 'collapsed' }}" data-bs-target="#menuWilayah"
