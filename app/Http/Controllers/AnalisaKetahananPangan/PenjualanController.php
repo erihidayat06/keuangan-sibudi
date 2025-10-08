@@ -44,7 +44,7 @@ class PenjualanController extends Controller
             );
         }
 
-        Penjualan::where('id', $hasil)->delete();
+        Penjualan::whereIn('id', $hasil)->delete();
 
 
 

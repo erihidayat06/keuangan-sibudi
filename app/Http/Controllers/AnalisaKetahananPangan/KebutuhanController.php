@@ -45,7 +45,8 @@ class KebutuhanController extends Controller
             );
         }
 
-        Kebutuhan::where('id', $hasil)->delete();
+        Kebutuhan::whereIn('id', $hasil)->delete();
+
         return redirect()->back()->with('success', 'Data penjulan berhasil di update');
     }
 }
