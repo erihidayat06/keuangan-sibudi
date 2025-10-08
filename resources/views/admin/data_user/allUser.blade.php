@@ -29,6 +29,28 @@
                             </button>
                         </li>
                     </ul>
+                    <div class="tab-content" id="pills-tabContent">
+                        {{-- TAB AKTIF --}}
+                        <div class="tab-pane fade show active" id="pills-aktif" role="tabpanel"
+                            aria-labelledby="pills-aktif-tab">
+                            @include('admin.data_user.table', [
+                                'users' => $users->filter(function ($u) {
+                                    $target = new DateTime($u->tgl_langganan);
+                                    return $target >= new DateTime('now');
+                                }),
+                            ])
+                        </div>
+
+                        {{-- TAB NON AKTIF --}}
+                        <div class="tab-pane fade" id="pills-nonaktif" role="tabpanel" aria-labelledby="pills-nonaktif-tab">
+                            @include('admin.data_user.table', [
+                                'users' => $users->filter(function ($u) {
+                                    $target = new DateTime($u->tgl_langganan);
+                                    return $target < new DateTime('now');
+                                }),
+                            ])
+                        </div>
+                    </div>
 
                     @include('admin.data_user.table')
                 </div>
