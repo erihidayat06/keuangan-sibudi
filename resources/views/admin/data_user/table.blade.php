@@ -54,11 +54,85 @@
                         </form>
                     </td>
                 </tr>
+                <!-- Modal -->
+                <div class="modal fade" id="langganan{{ $user->id }}" tabindex="-1"
+                    aria-labelledby="langganan{{ $user->id }}Label" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="langganan{{ $user->id }}Label">Update
+                                    Langganan
+                                </h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <form action="/admin/langganan/{{ $user->id }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <div class="modal-body">
+                                    <label for="langganan">Langganan {{ $user->id }}</label>
+                                    <select class="form-select" aria-label="Default select example" name="langganan">
+                                        @php
+
+                                            if ($user->referral == true) {
+                                                $jenis = 'bumdesa';
+                                            } elseif ($user->referral == false) {
+                                                $jenis = 'bumdes-bersama';
+                                            }
+                                        @endphp
+
+                                        @foreach ($langganans->where('jenis', $jenis) as $langganan)
+                                            <option value="{{ $langganan->jumlah_bulan }}">
+                                                {{ $langganan->waktu }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save
+                                        changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal -->
+                <div class="modal fade" id="user{{ $user->id }}" tabindex="-1"
+                    aria-labelledby="user{{ $user->id }}Label" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="user{{ $user->id }}Label">Ganti
+                                    Password
+                                </h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <form action="/admin/data-user/{{ $user->id }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <div class="modal-body">
+                                    <label for="password">Password</label>
+                                    <input type="text" name="password" class="form-control">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save
+                                        changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             @endif
         @empty
             <tr>
                 <td colspan="11" class="text-center text-muted">Tidak ada data</td>
             </tr>
         @endforelse
+
+
     </tbody>
 </table>

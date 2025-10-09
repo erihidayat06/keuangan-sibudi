@@ -52,7 +52,6 @@
                         </div>
                     </div>
 
-                    @include('admin.data_user.table')
                 </div>
             </div>
         </div>
