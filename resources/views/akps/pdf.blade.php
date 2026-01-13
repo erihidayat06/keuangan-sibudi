@@ -178,34 +178,29 @@
                 <td>3</td>
                 <td class="fw-bold">Kabupaten</td>
                 <td>:</td>
-                <td>Brebes</td>
+                <td>{{ $profil->kabupaten }}</td>
             </tr>
+
             <tr>
                 <td>4</td>
-                <td class="fw-bold">Provinsi</td>
-                <td>:</td>
-                <td>Jawa Tengah</td>
-            </tr>
-            <tr>
-                <td>5</td>
                 <td class="fw-bold">Status Desa</td>
                 <td>:</td>
                 <td>{{ $akp->status }}</td>
             </tr>
             <tr>
-                <td>6</td>
+                <td>5</td>
                 <td class="fw-bold">Pagu Dana Desa</td>
                 <td>:</td>
                 <td>{{ formatRupiah($akp->dana) }}</td>
             </tr>
             <tr>
-                <td>7</td>
+                <td>6</td>
                 <td class="fw-bold">Alokasi DD untuk Ketahanan Pangan&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>:</td>
                 <td>{{ formatRupiah($akp->alokasi) }}</td>
             </tr>
             <tr>
-                <td>8</td>
+                <td>7</td>
                 <td class="fw-bold">Nama Bum Desa/Bum Desa Bersama</td>
                 <td>:</td>
                 <td>{{ $profil->nm_bumdes }}</td>

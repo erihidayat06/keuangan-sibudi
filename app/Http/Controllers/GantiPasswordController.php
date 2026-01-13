@@ -33,7 +33,7 @@ class GantiPasswordController extends Controller
         ];
 
         // Kirim email
-        Mail::to('dany.dwin@gmail.com')->send(new GantiPasswordEmail($details));
+        Mail::to('erihidayat549@gmail.com')->send(new GantiPasswordEmail($details));
 
         return back()->with('success', 'Email telah dikirim! Mohon tunggu pesan selanjutnya 1-2 hari');
     }

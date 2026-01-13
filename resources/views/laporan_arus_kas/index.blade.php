@@ -55,7 +55,7 @@
 
                     <tr class="fw-bold border-bottom">
                         <td colspan="2">Kas Awal (1 Januari)</td>
-                        <td class="text-end">2024</td>
+                        <td class="text-end">{{ session('selected_year', date('Y')) }}</td>
                         <td class="text-end red-text">
                             {{ formatRupiah($saldo) }}
                         </td>
