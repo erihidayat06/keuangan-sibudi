@@ -156,10 +156,7 @@
                                         </div>
                                     </form>
                                     <div class="col-12 mt-3">
-                                        <p class="small mb-0">Tidak punya akun? <a target="_blank"
-                                                href="https://wa.me/6282247758730?text=Pengajuan%20Pembuatan%20Akun%0ASilakan%20isi%20data%20berikut%3A%0A%0A-%20Nama%20Operator%20%3A%0A-%20Kabupaten%20%3A%0A-%20Kecamatan%20%3A%0A-%20Desa%20%3A%0A-%20No.%20WA%20%3A%0A-%20Email%20%3A">Buat
-                                                akun
-                                                baru</a></p>
+                                        <p class="small mb-0">Tidak punya akun? <a href="{{ url('/admin/data-user/create') }}">Buat akun baru</a></p>
                                     </div>
                                     <hr>
                                     <div class="text-center mt-3">
@@ -196,6 +193,33 @@
 
     <!-- Template Main JS File -->
     <script src="/assets/js/main.js"></script>
+        <!-- somewhere in the <head> or before closing </body> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- di bagian bawah body (atau di section scripts) -->
+    @if(session('success') || session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: {!! json_encode(session('success')) !!},
+                    confirmButtonText: 'Oke'
+                });
+            @endif
+
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: {!! json_encode(session('error')) !!},
+                    confirmButtonText: 'Tutup'
+                });
+            @endif
+        });
+    </script>
+    @endif
 
 </body>
 

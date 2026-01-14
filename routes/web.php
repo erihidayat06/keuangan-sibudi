@@ -348,6 +348,11 @@ Route::put('/admin/langganan/{user:id}', [AdminDataUserController::class, 'langg
 Route::delete('/admin/data-user/{user:id}', [AdminDataUserController::class, 'destroy'])->middleware('auth', 'admin');
 // Route::resource('/admin/langganan', AdminLanggananController::class)->middleware('auth', 'admin');
 
+// menampilkan halaman create
+Route::get('/admin/data-user/create', [AdminDataUserController::class, 'create'])->name('admin.data_user.create');
+
+// menyimpan user baru (POST)
+Route::post('/admin/data-user/store', [AdminDataUserController::class, 'store'])->name('admin.data_user.store');
 
 // Langganan Bumdes
 Route::get('/admin/langganan/bumdesa', [AdminLanggananController::class, 'index'])->middleware(

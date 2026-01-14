@@ -78,7 +78,7 @@ class AdminDataUserController extends Controller
         return view('admin.data_user.create');
     }
 
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $validated = $request->validate([
             'name'       => 'required|string|min:3|max:100',
@@ -88,44 +88,46 @@ class AdminDataUserController extends Controller
             'kabupaten'  => 'required',
             'kecamatan'  => 'required',
             'desa'       => 'required',
+            'password'   => 'required|min:6|confirmed' // pastikan ada konfirmasi password di form
         ]);
 
+        // hash password
         $validated['password'] = Hash::make($request->password);
-        $validated['tgl_langganan'] = date('Y-m-d', strtotime('+' . $request->langganan . ' months'));
-        $validated['status'] = true;
+        // tanggal langganan (jika langganan = 0 => akun baru, tetap set tgl sesuai kebutuhan)
+        $validated['tgl_langganan'] = date('Y-m-d', strtotime('+' . intval($request->langganan) . ' months'));
+        $validated['status'] = false;
 
+        // Buat user dan simpan relasi dengan lebih aman
+        $user = User::create($validated);
 
+        if ($user) {
+            // Ekuit (jika belum ada)
+            Ekuit::firstOrCreate(['user_id' => $user->id]);
 
-        if (User::create($validated)) {
-            $userId = User::latest()->first()->id;
-
-            $existingEkuit = Ekuit::where('user_id', $userId)->first();
-
-            if (!$existingEkuit) {
-                Ekuit::create(['user_id' => $userId]);
-            }
-
-            $rekonsiliasi = Rekonsiliasi::where('user_id', $userId)->first();
-
-            if (!$rekonsiliasi) {
+            // Rekonsiliasi awal
+            if (!Rekonsiliasi::where('user_id', $user->id)->exists()) {
                 Rekonsiliasi::insert([
-                    ['posisi' => 'Kas di tangan', 'user_id' => $userId],
-                    ['posisi' => 'Bank Jateng', 'user_id' => $userId]
+                    ['posisi' => 'Kas di tangan', 'user_id' => $user->id],
+                    ['posisi' => 'Bank Jateng', 'user_id' => $user->id]
                 ]);
             }
 
-
-
+            // Profil
             Profil::create([
-                'user_id'   => User::latest()->first()->id,
+                'user_id'   => $user->id,
                 'no_wa'     => $validated['no_wa'],
-                'kabupaten' => $validated['kabupaten'] ?? null, // hanya simpan nama
+                'kabupaten' => $validated['kabupaten'] ?? null,
                 'kecamatan' => $validated['kecamatan'] ?? null,
                 'desa'      => $validated['desa'] ?? null,
             ]);
+
+            // Redirect ke halaman login dan sertakan flash message success
+            return redirect('/login')->with('success', 'User berhasil ditambahkan. Silakan login.');
+            // Alternatif: return redirect()->route('login')->with('success', '...');
         }
 
-        return redirect('/admin/wilayah/kecamatan/' . $validated['kecamatan'])->with('success', 'User Berhasil di tambah');
+        // Jika gagal membuat user
+        return back()->withInput()->with('error', 'Gagal membuat user. Silakan coba lagi.');
     }
 
     public function destroy(User $user)

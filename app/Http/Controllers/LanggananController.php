@@ -60,7 +60,12 @@ class LanggananController extends Controller
         }
 
         $orderId = uniqid('order-');
-
+        
+        // set domain
+        $baseUrl = url('/');
+        $finishUrl = $baseUrl . '/langganan/berhasil';
+        $unfinishUrl = $baseUrl . '/langganan';
+        $errorUrl = $baseUrl . '/langganan';
         // Set data transaksi
         $params = [
             'transaction_details' => [
@@ -88,6 +93,11 @@ class LanggananController extends Controller
                 'phone' => '',
             ],
             'custom_field1' => $duration,
+            'callbacks' => [
+                'finish' => $finishUrl,
+                'unfinish' => $unfinishUrl,
+                'error' => $errorUrl,
+            ],
         ];
 
         // Buat transaksi Snap
@@ -159,6 +169,7 @@ class LanggananController extends Controller
                 'success',
                 'Pembayaran berhasil, langganan aktif sampai ' . $langganan_baru->translatedFormat('d F Y')
             );
+
         }
 
         // Kalau status lain (expire, cancel, failure)
