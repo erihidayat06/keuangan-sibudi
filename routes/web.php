@@ -43,6 +43,9 @@ use App\Http\Controllers\LaporanLabaRugiController;
 use App\Http\Controllers\PenambahanModalController;
 use App\Http\Controllers\LaporanPerubahanModalController;
 use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\TemplateController;
+use App\Http\Controllers\AdminTemplateController;
+use App\Http\Controllers\TemplatesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -336,6 +339,13 @@ Route::get('/langganan', [LanggananController::class, 'index'])->middleware(['au
 Route::post('/langganan', [LanggananController::class, 'createTransaction'])->middleware(['auth', 'bumdes']);
 Route::get('/langganan/berhasil', [LanggananController::class, 'langgananSuccess'])->middleware(['auth', 'bumdes']);
 
+// spj digital
+Route::group(['prefix' => 'admin', 'middleware' => ['auth','admin']], function () {
+    Route::get('/produk_digital', [AdminTemplateController::class, 'index'])->name('admin.produk_digital.index');
+    Route::post('/produk_digital', [AdminTemplateController::class, 'store'])->name('admin.produk_digital.store');
+    Route::put('/produk_digital/{id}', [AdminTemplateController::class, 'update'])->name('admin.produk_digital.update');
+    Route::delete('/produk_digital/{id}', [AdminTemplateController::class, 'destroy'])->name('admin.produk_digital.destroy');
+});
 
 // Admin
 Route::get('/admin', [AdminController::class, 'index'])->middleware('auth', 'admin');
@@ -464,3 +474,11 @@ Route::get('/api/wilayah/{type}/{id?}', function ($type, $id = null) {
 
 // Auth
 Auth::routes(['register' => false]);
+
+Route::get('/login', [TemplateController::class, 'index'])
+    ->middleware('guest')
+    ->name('login');
+
+
+Route::get('/templates', [TemplatesController::class, 'index'])->name('templates.index');
+

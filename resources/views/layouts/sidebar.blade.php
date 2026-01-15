@@ -122,10 +122,19 @@
                             <i class="bi bi-circle"></i><span>Koperasi</span>
                         </a>
                     </li>
+                    
 
 
                 </ul>
+                
             </li><!-- End Charts Nav -->
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('admin/produk_digital*') ? '' : 'collapsed' }}"
+                    href="/admin/produk_digital">
+                    <i class="bi bi-cloud-download"></i>
+                    <span>Produk Digital</span>
+                </a>
+            </li>
         @endcan
         @can('bumdes')
             <li class="nav-item">
