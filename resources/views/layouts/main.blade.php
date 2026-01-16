@@ -83,14 +83,14 @@
         }
 
         // // Hapus format titik sebelum form disubmit
-        // $('form').on('submit', function() {
-        //     // Cari semua input di dalam form ini yang memiliki type="text"
-        //     $(this).find('input[type="text"]').each(function() {
-        //         var inputVal = $(this).val();
-        //         // Hapus titik pemisah ribuan
-        //         $(this).val(inputVal.replace(/\./g, ''));
-        //     });
-        // });
+        $('form').on('submit', function() {
+            // Cari semua input di dalam form ini yang memiliki type="text"
+            $(this).find('input[type="text"]').each(function() {
+                var inputVal = $(this).val();
+                // Hapus titik pemisah ribuan
+                $(this).val(inputVal.replace(/\./g, ''));
+            });
+        });
     </script>
 
 
