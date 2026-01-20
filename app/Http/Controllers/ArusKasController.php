@@ -54,7 +54,6 @@ class ArusKasController extends Controller
 
     public function exportPdf()
     {
-        $selectedYear = session('selected_year', date('Y')); // Tahun yang dipilih
         $transaksis_lalu = Buk::user()->whereYear('tanggal', '<', session('selected_year', date('Y')))->get();
         $debit_lalu = $transaksis_lalu->where('jenis', 'debit')->sum('nilai');
         $kredit_lalu = $transaksis_lalu->where('jenis', 'kredit')->sum('nilai');
@@ -65,8 +64,9 @@ class ArusKasController extends Controller
         $kredit = $transaksis->where('jenis', 'kredit')->sum('nilai');
         $saldo = $debit - $kredit;
         $saldo = $saldo + $saldo_lalu;
+
         // Ambil data buku umum hanya untuk tahun yang dipilih
-        $bukuUmum = Buk::user()->whereYear('tanggal', $selectedYear)->get();
+        $bukuUmum = Buk::user()->whereYear('tanggal', session('selected_year', date('Y')))->get();
 
         // Hitung transaksi tahun yang dipilih
         $debit = $bukuUmum->where('jenis', 'debit')->sum('nilai');

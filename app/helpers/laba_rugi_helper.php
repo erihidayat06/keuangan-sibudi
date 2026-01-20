@@ -84,6 +84,8 @@ if (!function_exists('labaRugi')) {
             }
         }
 
+        // dd($pendapatan);
+
 
         // Array untuk menyimpan hasil per bulan dan per jenis lr
         $pendapatanBulan = [
