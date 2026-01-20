@@ -14,7 +14,7 @@ class CetakLaporanController extends Controller
 {
     public function exportPdf()
     {
-        $selectedYear = session('selected_year', date('Y'));
+
         $transaksis_lalu = Buk::user()->whereYear('tanggal', '<', session('selected_year', date('Y')))->get();
         $debit_lalu = $transaksis_lalu->where('jenis', 'debit')->sum('nilai');
         $kredit_lalu = $transaksis_lalu->where('jenis', 'kredit')->sum('nilai');
@@ -26,13 +26,17 @@ class CetakLaporanController extends Controller
         $saldo = $debit - $kredit;
         $saldo = $saldo + $saldo_lalu;
 
+        // Ambil data buku umum hanya untuk tahun yang dipilih
+        $bukuUmum = Buk::user()->whereYear('tanggal', session('selected_year', date('Y')))->get();
+
         // Hitung transaksi tahun yang dipilih
-        $bukuUmum = Buk::user()->whereYear('tanggal', $selectedYear)->get();
         $debit = $bukuUmum->where('jenis', 'debit')->sum('nilai');
         $kredit = $bukuUmum->where('jenis', 'kredit')->sum('nilai');
-        $saldo = $saldo_lalu + ($debit - $kredit);
 
-        // Hitung kas masuk, keluar, dan perubahan kas
+        // Saldo tahun ini berdasarkan transaksi tahun ini + saldo sebelumnya
+        $saldo_tahun_ini = $saldo_lalu + ($debit - $kredit);
+
+        // Perhitungan kas masuk, kas keluar, dan kas akhir
         $masuk = $bukuUmum->where('jenis', 'debit');
         $keluar = $bukuUmum->where('jenis', 'kredit');
         $perubahan_kas = $masuk->sum('nilai') - $keluar->sum('nilai');
@@ -40,7 +44,7 @@ class CetakLaporanController extends Controller
 
         // Data neraca dan laporan laba rugi
         $neraca = neraca();
-        $labaRugi = labaRugi($selectedYear);
+        $labaRugi = labaRugi(session('selected_year', date('Y')));
 
         // Modal dan ekuitas
         $modalDesa = Modal::user()->sum('mdl_desa');
@@ -55,7 +59,7 @@ class CetakLaporanController extends Controller
             $data_neraca = json_decode($tutup->data, true);
             $data_neraca['tutup'] = true;
             $data = [
-                'tahun' => $selectedYear,
+                'tahun' => session('selected_year', date('Y')),
                 'saldo_lalu' => $saldo_lalu,
                 'saldo' => $saldo_lalu,
                 'kas_akhir' => $saldo,
@@ -96,7 +100,7 @@ class CetakLaporanController extends Controller
         } else {
             // Data yang akan dikirim ke view PDF
             $data = [
-                'tahun' => $selectedYear,
+                'tahun' => session('selected_year', date('Y')),
                 'saldo_lalu' => $saldo_lalu,
                 'saldo' => $saldo_lalu,
                 'kas_akhir' => $kas_akhir,

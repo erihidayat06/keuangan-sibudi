@@ -54,7 +54,7 @@
 
             <tr class="fw-bold border-bottom">
                 <td colspan="2">Kas Awal (1 Januari)</td>
-                <td class="text-end">2024</td>
+                <td class="text-end">{{ session('selected_year', date('Y')) }}</td>
                 <td class="text-end red-text red-text">
                     {{ formatRupiah($saldo) }}
                 </td>
@@ -73,7 +73,7 @@
                 <td><span class="ms">Kas masuk investasi</span></td>
                 <td class="text-end"></td>
                 <td class="text-end red-text">
-                    {{ formatRupiah($masuk->where('jenis_dana', 'investasi')->sum('nilai')) }}
+                    {{ formatRupiah($masuk->where('jenis_dana', 'iventasi')->sum('nilai')) }}
                 </td>
 
             </tr>
@@ -103,7 +103,7 @@
                 <td><span class="ms">Kas keluar investasi</span></td>
                 <td class="text-end"></td>
                 <td class="text-end red-text">
-                    {{ formatRupiah($keluar->where('jenis_dana', 'investasi')->sum('nilai')) }}
+                    {{ formatRupiah($keluar->where('jenis_dana', 'iventasi')->sum('nilai')) }}
                 </td>
 
             </tr>
