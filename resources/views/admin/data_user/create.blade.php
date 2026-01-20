@@ -146,19 +146,6 @@
                         </select>
                     </div>
 
-                    <div class="col-12 mt-3">
-                        <label for="langganan" class="form-label">Pilih Langganan</label>
-                        <select class="form-select @error('langganan') is-invalid @enderror" id="langganan" name="langganan">
-                            <option value="0" {{ old('langganan') == 0 ? 'selected' : '' }}>
-                                Akun Baru
-                            </option>
-                            <?php for ($i = 1; $i <= 50; $i++): ?>
-                            <option value="{{ $i }}" {{ old('langganan') == $i ? 'selected' : '' }}>
-                                {{ $i }} Bulan
-                            </option>
-                            <?php endfor; ?>
-                        </select>
-                    </div>
                     <div class="col-12 text-end">
                         <a href="{{ url('/') }}" class="btn btn-light">Batal</a>
                         <button type="submit" class="btn btn-primary">Buat Akun</button>

@@ -88,16 +88,19 @@ class AdminDataUserController extends Controller
             'kabupaten'  => 'required',
             'kecamatan'  => 'required',
             'desa'       => 'required',
-            'password'   => 'required|min:6|confirmed' // pastikan ada konfirmasi password di form
+            'password'   => 'required|min:6|confirmed'
         ]);
 
-        // hash password
+        // Hash password
         $validated['password'] = Hash::make($request->password);
-        // tanggal langganan (jika langganan = 0 => akun baru, tetap set tgl sesuai kebutuhan)
-        $validated['tgl_langganan'] = date('Y-m-d', strtotime('+' . intval($request->langganan) . ' months'));
+
+        // Set tanggal langganan ke hari ini (tanggal dibuat)
+        $validated['tgl_langganan'] = date('Y-m-d');
+
+        // status default (sesuai kode sebelumnya)
         $validated['status'] = false;
 
-        // Buat user dan simpan relasi dengan lebih aman
+        // Buat user
         $user = User::create($validated);
 
         if ($user) {
@@ -121,12 +124,9 @@ class AdminDataUserController extends Controller
                 'desa'      => $validated['desa'] ?? null,
             ]);
 
-            // Redirect ke halaman login dan sertakan flash message success
             return redirect('/login')->with('success', 'User berhasil ditambahkan. Silakan login.');
-            // Alternatif: return redirect()->route('login')->with('success', '...');
         }
 
-        // Jika gagal membuat user
         return back()->withInput()->with('error', 'Gagal membuat user. Silakan coba lagi.');
     }
 
