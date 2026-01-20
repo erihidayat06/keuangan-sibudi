@@ -108,7 +108,7 @@
 
                     <!-- Wilayah (sama seperti template Anda) -->
                     <div class="col-12">
-                        <label class="form-label">Kabupaten (Jawa Tengah)</label>
+                        <label class="form-label">Kabupaten</label>
                         <div class="input-group">
                             <select id="kabupatenSelect" class="form-select"></select>
                             <button type="button" class="btn btn-outline-secondary" id="toggleKabupatenBtn">Tulis</button>
