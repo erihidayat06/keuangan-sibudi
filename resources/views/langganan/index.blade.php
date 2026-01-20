@@ -75,7 +75,7 @@
                             <ul>
                                 <li>Buat akun dan pilih paket langganan yang tersedia, Batalkan kapan saja</li>
                                 <li> Nikmati semua fitur yang tersedia di aplikasi ini dengan biaya langganan server
-                                    {{ formatRupiah($mulai) }}/bulan
+                                    Rp10.000/bulan
                                 </li>
                                 <li> Langganan berakhir hanya menutup fitur yang tersedia dan data akan tetap tersimpan.
                                 </li>
