@@ -87,6 +87,7 @@
             // Cari semua input di dalam form ini yang memiliki type="text"
             $(this).find('input[type="text"]').each(function() {
                 var inputVal = $(this).val();
+                if ($(this).data('ignore-dot')) return;
                 // Hapus titik pemisah ribuan
                 $(this).val(inputVal.replace(/\./g, ''));
             });

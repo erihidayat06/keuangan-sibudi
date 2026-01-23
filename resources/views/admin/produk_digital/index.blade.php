@@ -88,7 +88,7 @@
 
             <div class="mb-3">
                 <label class="form-label">Link Download</label>
-                <input type="text" name="link" class="form-control"  />
+                <input type="text" name="link" class="form-control" data-ignore-dot="1" />
             </div>
 
             <div class="mb-3">
