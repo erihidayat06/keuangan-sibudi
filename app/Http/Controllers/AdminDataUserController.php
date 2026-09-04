@@ -7,6 +7,7 @@ use App\Models\Ekuit;
 use App\Models\Profil;
 use App\Models\Langganan;
 use App\Models\Rekonsiliasi;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -25,17 +26,43 @@ class AdminDataUserController extends Controller
         $langganans = Langganan::orderBy('jumlah_bulan', 'asc')->get();
         return view('admin.data_user.index', ['users' => $users, 'langganans' => $langganans]);
     }
-    public function allUser()
+    public function allUser(Request $request)
     {
+        $status = $request->query('status', 'aktif');
+        $search = $request->query('search');
+        $today = Carbon::today()->toDateString();
 
-        $users = User::with('profil')
+        $users = User::where('role', '!=', 'admin')
+            ->with('profil')
+            // Filter Berdasarkan Tab Status
+            ->when($status === 'aktif', function ($query) use ($today) {
+                return $query->whereDate('tgl_langganan', '>=', $today);
+            })
+            ->when($status === 'nonaktif', function ($query) use ($today) {
+                return $query->whereDate('tgl_langganan', '<', $today);
+            })
+            // Filter Berdasarkan Pencarian (Search)
+            ->when($search, function ($query) use ($search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhereHas('profil', function ($p) use ($search) {
+                            $p->where('no_wa', 'like', "%{$search}%")
+                                ->orWhere('kabupaten', 'like', "%{$search}%")
+                                ->orWhere('kecamatan', 'like', "%{$search}%")
+                                ->orWhere('desa', 'like', "%{$search}%");
+                        });
+                });
+            })
             ->latest()
-            ->get();
+            ->paginate(10)
+            // Mempertahankan parameter ?status=...&search=... di tombol pagination
+            ->withQueryString();
 
         $langganans = Langganan::orderBy('jumlah_bulan', 'asc')->get();
-        return view('admin.data_user.allUser', ['users' => $users, 'langganans' => $langganans]);
-    }
 
+        return view('admin.data_user.allUser', compact('users', 'langganans', 'status', 'search'));
+    }
     public function ubahPassword(Request $request, User $user)
     {
         $validated = $request->validate([
@@ -78,7 +105,7 @@ class AdminDataUserController extends Controller
         return view('admin.data_user.create');
     }
 
-   public function store(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'name'       => 'required|string|min:3|max:100',

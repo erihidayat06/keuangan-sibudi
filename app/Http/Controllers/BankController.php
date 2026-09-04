@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Rekonsiliasi;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
 class BankController extends Controller
 {
@@ -88,32 +89,66 @@ class BankController extends Controller
      */
     public function bayar(Request $request, Rekonsiliasi $rekonsiliasi)
     {
+        // 1. Validasi Input Request
+        $validated = $request->validate([
+            'jumlah' => ['required', 'string'],
+            'aksi'   => ['required', 'in:+,-'],
+        ], [
+            'jumlah.required' => 'Jumlah nominal wajib diisi.',
+            'aksi.required'   => 'Aksi transaksi wajib dipilih.',
+            'aksi.in'         => 'Aksi transaksi tidak valid.',
+        ]);
 
-        $input_realisasi = str_replace('.', '', $request->jumlah);
+        // Format input jumlah (membersihkan format ribuan)
+        $input_realisasi = (float) str_replace('.', '', $validated['jumlah']);
 
-        if ($request->aksi == '+') {
-            $jumlah = $rekonsiliasi->jumlah +  $input_realisasi;
-            $jenis = 'kredit';
-            $akun = 'Setor';
-        } elseif ($request->aksi == '-') {
-            $jumlah = $rekonsiliasi->jumlah -  $input_realisasi;
-            $akun = 'Tarik';
-            $jenis = 'debit';
+        // Validasi nominal harus lebih besar dari 0
+        if ($input_realisasi <= 0) {
+            return back()->withErrors(['jumlah' => 'Nominal harus lebih dari 0.'])->withInput();
         }
 
-        $year = session('selected_year', date('Y'));
-        $tanggal = date('Y-m-d', strtotime($year . date('-m-d')));
+        // 2. Tentukan Jenis & Akun Transaksi
+        if ($validated['aksi'] === '+') {
+            $jumlah = $rekonsiliasi->jumlah + $input_realisasi;
+            $jenis  = 'kredit';
+            $akun   = 'Setor';
+        } else {
+            // Validasi agar saldo/jumlah tidak menjadi minus saat penarikan (-)
+            if ($rekonsiliasi->jumlah < $input_realisasi) {
+                return back()->withErrors(['jumlah' => 'Saldo/Jumlah tidak mencukupi untuk penarikan.'])->withInput();
+            }
 
-        $id = rendem();
-        if (Rekonsiliasi::where('id', $rekonsiliasi->id)->update(['jumlah' => $jumlah])) {
-            $buk =  bukuUmum($akun, $jenis, 'kas', '', $input_realisasi, null, null, $tanggal);
-            histori($id, 'rekonsiliasis', $rekonsiliasi->toArray(), 'update', $rekonsiliasi->id);
-            histori($id, 'buks', ['nilai' => $rekonsiliasi->nilai], 'create', $buk->id);
-        };
-        // Redirect with success message
-        return back()->with('success', 'piutang berhasil ditambahkan.');
+            $jumlah = $rekonsiliasi->jumlah - $input_realisasi;
+            $jenis  = 'debit';
+            $akun   = 'Tarik';
+        }
+
+        // 3. Penanganan Tanggal berdasarkan Sesi Tahun
+        $selectedYear = session('selected_year', date('Y'));
+        $tanggal = sprintf('%s-%s', $selectedYear, date('m-d'));
+
+        // 4. Proses Transaksi dengan Database Transaction
+        DB::transaction(function () use ($rekonsiliasi, $jumlah, $akun, $jenis, $input_realisasi, $tanggal) {
+            $idHistori = rendem();
+
+            // Update saldo Rekonsiliasi
+            $rekonsiliasi->update(['jumlah' => $jumlah]);
+
+            // Catat ke Buku Umum
+            $buk = bukuUmum($akun, $jenis, 'kas', 'tidak_dihitung', $input_realisasi, null, null, $tanggal);
+
+            // Catat Histori
+            histori($idHistori, 'rekonsiliasis', $rekonsiliasi->toArray(), 'update', $rekonsiliasi->id);
+            histori($idHistori, 'buks', ['nilai' => $rekonsiliasi->nilai], 'create', $buk->id);
+        });
+
+        // 5. Response / Redirect
+        $pesan = $validated['aksi'] === '+'
+            ? 'Setor rekonsiliasi berhasil ditambahkan.'
+            : 'Penarikan rekonsiliasi berhasil diproses.';
+
+        return back()->with('success', $pesan);
     }
-
     /**
      * Display the specified resource.
      */

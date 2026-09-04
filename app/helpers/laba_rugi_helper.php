@@ -1,126 +1,104 @@
 <?php
 
-use App\Models\Buk;
 use App\Models\Unit;
 use App\Models\Bdmuk;
 use App\Models\Bangunan;
 use App\Models\Investasi;
 use App\Models\Aktivalain;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 if (!function_exists('labaRugi')) {
     function labaRugi($tahun_sekarang)
     {
-
+        $userId = auth()->id();
         $unit_usaha = Unit::user()->get();
-        $array_pendapatan = [];
-        $array_pendapatan_tahun = [];
+
+        // 1. Inisialisasi struktur prefix
         $jenis_lr_pu = [];
+        $jenis_lr_hpp = [];
         $jenis_lr_bo = [];
         $jenis_lr_bno = [];
 
-        // Loop untuk setiap unit usaha
+        $pendapatan = [];
+        $totalPendapatanTahun = [];
+
+        // Dynamic keys berdasarkan Unit Usaha
         foreach ($unit_usaha as $unit) {
-            $array_pendapatan['pu' . strtolower($unit->kode)] = [];
-            $array_pendapatan_tahun['pu' . strtolower($unit->kode)] = 0;
-            $jenis_lr_pu[] =  'pu' . strtolower($unit->kode);
-        }
-        // Loop untuk setiap unit usaha
-        foreach ($unit_usaha as $unit) {
-            $array_pendapatan['bo' . strtolower($unit->kode)] = [];
-            $array_pendapatan_tahun['bo' . strtolower($unit->kode)] = 0;
-            $jenis_lr_bo[] =  'bo' . strtolower($unit->kode);
+            $kode = strtolower($unit->kode);
+
+            $puKey = 'pu' . $kode;
+            $hppKey = 'hpp' . $kode;
+            $boKey = 'bo' . $kode;
+
+            $jenis_lr_pu[] = $puKey;
+            $jenis_lr_hpp[] = $hppKey;
+            $jenis_lr_bo[] = $boKey;
+
+            // Inisialisasi array per bulan (1-12) & total tahunan
+            $pendapatan[$puKey] = array_fill(1, 12, 0);
+            $pendapatan[$hppKey] = array_fill(1, 12, 0);
+            $pendapatan[$boKey] = array_fill(1, 12, 0);
+
+            $totalPendapatanTahun[$puKey] = 0;
+            $totalPendapatanTahun[$hppKey] = 0;
+            $totalPendapatanTahun[$boKey] = 0;
         }
 
-        // Tambahan untuk 'bno' keys secara manual
+        // Keys manual untuk 'bno' (1 - 5)
         for ($i = 1; $i <= 5; $i++) {
-            $array_pendapatan['bno' . $i] = [];
-            $array_pendapatan_tahun['bno' . $i] = 0;
-            $jenis_lr_bno[] = 'bno' . $i;
+            $bnoKey = 'bno' . $i;
+            $jenis_lr_bno[] = $bnoKey;
+
+            $pendapatan[$bnoKey] = array_fill(1, 12, 0);
+            $totalPendapatanTahun[$bnoKey] = 0;
         }
 
-
-        // Inisialisasi array untuk setiap jenis_lr
-        $pendapatan = $array_pendapatan;
-
-
-
-        // Inisialisasi variabel untuk akumulasi tahunan
-        $totalPendapatanTahun = $array_pendapatan_tahun;
-
-
-        // Loop untuk setiap bulan (1 - 12)
-        for ($i = 1; $i <= 12; $i++) {
-            // Loop untuk setiap jenis_lr
-            foreach (array_keys($pendapatan) as $jenis_lr) {
-                // Ambil data berdasarkan bulan, tahun, dan jenis_lr
-                $buku_kas = Buk::user()->where('user_id', auth()->id()) // Filter berdasarkan user
-                    ->user()->whereYear('tanggal', $tahun_sekarang) // Filter berdasarkan tahun
-                    ->whereMonth('tanggal', $i) // Filter berdasarkan bulan
-                    ->where('jenis_lr', $jenis_lr) // Filter berdasarkan jenis_lr
-                    ->get();
-
-                // Variabel untuk menampung total nilai per bulan
-                $totalNilai = 0;
-
-                // Loop untuk setiap transaksi dalam bulan tersebut
-                foreach ($buku_kas as $transaksi) {
-                    if ($transaksi->jenis == 'debit') {
-                        // Jika debit, tambahkan nilainya
-                        $totalNilai += $transaksi->nilai;
-                    } elseif ($transaksi->jenis == 'kredit' and in_array($jenis_lr, $jenis_lr_pu)) {
-                        // Jika kredit, kurangi nilainya
-                        $totalNilai -= $transaksi->nilai;
-                    } else {
-                        $totalNilai += $transaksi->nilai;
-                    }
-                }
-
-                // Simpan total pendapatan per bulan untuk jenis_lr tertentu
-                $pendapatan[$jenis_lr][$i] = $totalNilai;
-
-                // Akumulasi total tahunan untuk jenis_lr tersebut
-                $totalPendapatanTahun[$jenis_lr] += $totalNilai;
-            }
-        }
-
-        // dd($pendapatan);
-
-
-        // Array untuk menyimpan hasil per bulan dan per jenis lr
+        // Struktur rekapitulasi bulanan
         $pendapatanBulan = [
-            'pu' => array_fill(1, 12, 0),
-            'bo' => array_fill(1, 12, 0),
-            'bno' => array_fill(1, 12, 0),
+            'pu'   => array_fill(1, 12, 0),
+            'hpp'  => array_fill(1, 12, 0),
+            'bo'   => array_fill(1, 12, 0),
+            'bno'  => array_fill(1, 12, 0),
         ];
 
-        // Total pendapatanBulan tahunan
         $tahun = [
-            'pu' => 0,
-            'bo' => 0,
-            'bno' => 0,
+            'pu'   => 0,
+            'hpp'  => 0,
+            'bo'   => 0,
+            'bno'  => 0,
         ];
 
-        // Mengambil semua transaksi dalam tahun yang dipilih
-        $transaksis = Buk::user()->whereYear('tanggal', $tahun_sekarang)->get();
+        // 2. Ambil SEMUA transaksi kas/buku sekaligus dalam 1 QUERY
+        $transaksis = DB::table('buks')
+            ->where('user_id', $userId)
+            ->whereYear('tanggal', $tahun_sekarang)
+            ->get();
 
-
+        // 3. Olah data transaksi di memori (PHP)
         foreach ($transaksis as $transaksi) {
-            // Mengonversi 'tanggal' menjadi objek Carbon jika diperlukan
-            $tanggal = \Carbon\Carbon::parse($transaksi->tanggal); // Konversi ke Carbon jika belum berbentuk tanggal
-            $month = $tanggal->month; // Mendapatkan bulan dari kolom tanggal
-            $jenis_lr = strtolower($transaksi->jenis_lr); // Mengkonversi ke lowercase untuk kemudahan
-            $nilai = $transaksi->nilai;
+            $month = Carbon::parse($transaksi->tanggal)->month;
+            $jenis_lr = strtolower($transaksi->jenis_lr);
+            $nilai = (float) $transaksi->nilai;
 
-            // Jika jenis_lr adalah kredit, nilai akan negatif
+            // Jika Kredit pada PU, mengurangi pendapatan
             if ($transaksi->jenis == 'kredit' && in_array($jenis_lr, $jenis_lr_pu)) {
                 $nilai = -$nilai;
             }
 
-            // Menambah nilai transaksi ke bulan dan jenis_lr yang sesuai
+            // Simpan ke detail akun ($pendapatan)
+            if (isset($pendapatan[$jenis_lr])) {
+                $pendapatan[$jenis_lr][$month] += $nilai;
+                $totalPendapatanTahun[$jenis_lr] += $nilai;
+            }
+
+            // Simpan ke grup besar ($pendapatanBulan)
             if (in_array($jenis_lr, $jenis_lr_pu)) {
                 $pendapatanBulan['pu'][$month] += $nilai;
                 $tahun['pu'] += $nilai;
+            } elseif (in_array($jenis_lr, $jenis_lr_hpp)) {
+                $pendapatanBulan['hpp'][$month] += $nilai;
+                $tahun['hpp'] += $nilai;
             } elseif (in_array($jenis_lr, $jenis_lr_bo)) {
                 $pendapatanBulan['bo'][$month] += $nilai;
                 $tahun['bo'] += $nilai;
@@ -130,191 +108,146 @@ if (!function_exists('labaRugi')) {
             }
         }
 
-
-
-
-        $akumulasi = 0;
-
-        $iventaris = Investasi::user()->get();
-        $iventari = akumulasiPenyusutanIventasi($iventaris)['akumu'];
-
-
-        $bangunans = Bangunan::user()->get();
-        $bangunan = akumulasiPenyusutan($bangunans)['akumu'];
-
-        $bdmuks = Bdmuk::user()->get();
-        $bdmuk = akumulasiPenyusutan($bdmuks)['akumu'];
-
+        // 4. Hitung Penyusutan Aset
+        $iventaris   = Investasi::user()->get();
+        $bangunans   = Bangunan::user()->get();
+        $bdmuks      = Bdmuk::user()->get();
         $aktiva_lain = Aktivalain::user()->get();
-        $aktiva = akumulasiPenyusutan($aktiva_lain)['akumu'];
 
-        $akumulasi = $iventari + $bangunan + $bdmuk + $aktiva;
+        $iventari = akumulasiPenyusutanIventasi($iventaris)['akumu'] ?? 0;
+        $bangunan = akumulasiPenyusutan($bangunans)['akumu'] ?? 0;
+        $bdmuk    = akumulasiPenyusutan($bdmuks)['akumu'] ?? 0;
+        $aktiva   = akumulasiPenyusutan($aktiva_lain)['akumu'] ?? 0;
 
-        // dd('iventari = ' . $iventari  . ' Bangunan = ' . $bangunan . ' Bdmuk = ' . $bdmuk . ' aktiva = ' . $aktiva);
+        $akumulasiPenyusutan = $iventari + $bangunan + $bdmuk + $aktiva;
 
+        // 5. Kalkulasi Laba Kotor, Total Biaya, dan Laba/Rugi Bersih
+        $labaKotor = [];
         $totalBiaya = [];
         $labaRugi = [];
 
+        for ($m = 1; $m <= 12; $m++) {
+            $pu  = $pendapatanBulan['pu'][$m];
+            $hpp = $pendapatanBulan['hpp'][$m];
+            $bo  = $pendapatanBulan['bo'][$m];
+            $bno = $pendapatanBulan['bno'][$m];
 
-        foreach ($pendapatanBulan['bo'] as $key => $value) {
-            $totalBiaya[] = $pendapatanBulan['bno'][$key] + $value;
-            $labaRugi[] = $pendapatanBulan['pu'][$key] - ($pendapatanBulan['bno'][$key] + $value);
+            $labaKotor[$m] = $pu - $hpp;
+            $totalBiaya[$m] = $bo + $bno;
+            $labaRugi[$m] = $labaKotor[$m] - $totalBiaya[$m];
         }
 
-        $akumulasitotalBiaya = array_sum($pendapatanBulan['bo']) + array_sum($pendapatanBulan['bno']);
-        $akumulasilabaRugi = array_sum($pendapatanBulan['pu']) - (array_sum($pendapatanBulan['bo']) + array_sum($pendapatanBulan['bno']) + $akumulasi);
+        // Total Akumulasi Tahunan
+        $akumulasiHpp = array_sum($pendapatanBulan['hpp']);
+        $akumulasiLabaKotor = $tahun['pu'] - $akumulasiHpp;
 
+        $akumulasiBiayaOperasional = array_sum($pendapatanBulan['bo']) + array_sum($pendapatanBulan['bno']);
+        $totalBiayaPlusPenyusutan = $akumulasiBiayaOperasional + $akumulasiPenyusutan;
 
-        $akumulasiBiaya = $akumulasitotalBiaya + $akumulasi;
-        $totalLabaRugi = $akumulasilabaRugi;
+        $totalLabaRugi = $akumulasiLabaKotor - $totalBiayaPlusPenyusutan;
 
-
-        // dd([
-        //     'pendapatan' => $pendapatan,
-        //     'pendapatanBulan' => $pendapatanBulan,
-        //     'pendapatanTahun' => $tahun,
-        //     'tahun' => $totalPendapatanTahun,
-        //     'totalBiaya' => $totalBiaya,
-        //     'akumulasiBiaya' => $akumulasiBiaya,
-        //     'labaRugi' => $labaRugi,
-        //     'totalLabaRugi' => $totalLabaRugi,
-        //     'akumulasi_penyusutan' => $akumulasi
-        // ]);
-        return ([
-            'pendapatan' => $pendapatan,
-            'pendapatanBulan' => $pendapatanBulan,
-            'pendapatanTahun' => $tahun,
-            'tahun' => $totalPendapatanTahun,
-            'totalBiaya' => $totalBiaya,
-            'akumulasiBiaya' => $akumulasiBiaya,
-            'labaRugi' => $labaRugi,
-            'totalLabaRugi' => $totalLabaRugi,
-            'akumulasi_penyusutan' => $akumulasi
-        ]);
+        return [
+            'pendapatan'           => $pendapatan,
+            'pendapatanBulan'      => $pendapatanBulan,
+            'pendapatanTahun'      => $tahun,
+            'tahun'                => $totalPendapatanTahun,
+            'labaKotor'            => $labaKotor,
+            'totalBiaya'           => $totalBiaya,
+            'akumulasiHpp'         => $akumulasiHpp,
+            'akumulasiLabaKotor'   => $akumulasiLabaKotor,
+            'akumulasiBiaya'       => $totalBiayaPlusPenyusutan,
+            'labaRugi'             => $labaRugi,
+            'totalLabaRugi'        => $totalLabaRugi,
+            'akumulasi_penyusutan' => $akumulasiPenyusutan
+        ];
     }
 }
 
 if (!function_exists('labaRugiTahun')) {
     function labaRugiTahun($tahun_sekarang)
     {
-
         $tahun_sekarang = strval($tahun_sekarang);
+        $userId = auth()->id();
+        $unit_usaha = DB::table('units')->where('user_id', $userId)->get();
 
-
-        $unit_usaha = Unit::user()->get();
-        $array_pendapatan = [];
-        $array_pendapatan_tahun = [];
+        // 1. Inisialisasi struktur prefix
         $jenis_lr_pu = [];
+        $jenis_lr_hpp = [];
         $jenis_lr_bo = [];
         $jenis_lr_bno = [];
 
-        // Loop untuk setiap unit usaha
+        $pendapatan = [];
+        $totalPendapatanTahun = [];
+
         foreach ($unit_usaha as $unit) {
-            $array_pendapatan['pu' . strtolower($unit->kode)] = [];
-            $array_pendapatan_tahun['pu' . strtolower($unit->kode)] = 0;
-            $jenis_lr_pu[] =  'pu' . strtolower($unit->kode);
-        }
-        // Loop untuk setiap unit usaha
-        foreach ($unit_usaha as $unit) {
-            $array_pendapatan['bo' . strtolower($unit->kode)] = [];
-            $array_pendapatan_tahun['bo' . strtolower($unit->kode)] = 0;
-            $jenis_lr_bo[] =  'bo' . strtolower($unit->kode);
+            $kode = strtolower($unit->kode);
+
+            $puKey = 'pu' . $kode;
+            $hppKey = 'hpp' . $kode;
+            $boKey = 'bo' . $kode;
+
+            $jenis_lr_pu[] = $puKey;
+            $jenis_lr_hpp[] = $hppKey;
+            $jenis_lr_bo[] = $boKey;
+
+            $pendapatan[$puKey] = array_fill(1, 12, 0);
+            $pendapatan[$hppKey] = array_fill(1, 12, 0);
+            $pendapatan[$boKey] = array_fill(1, 12, 0);
+
+            $totalPendapatanTahun[$puKey] = 0;
+            $totalPendapatanTahun[$hppKey] = 0;
+            $totalPendapatanTahun[$boKey] = 0;
         }
 
-        // Tambahan untuk 'bno' keys secara manual
         for ($i = 1; $i <= 5; $i++) {
-            $array_pendapatan['bno' . $i] = [];
-            $array_pendapatan_tahun['bno' . $i] = 0;
-            $jenis_lr_bno[] = 'bno' . $i;
+            $bnoKey = 'bno' . $i;
+            $jenis_lr_bno[] = $bnoKey;
+
+            $pendapatan[$bnoKey] = array_fill(1, 12, 0);
+            $totalPendapatanTahun[$bnoKey] = 0;
         }
 
-
-        // Inisialisasi array untuk setiap jenis_lr
-        $pendapatan = $array_pendapatan;
-
-
-
-        // Inisialisasi variabel untuk akumulasi tahunan
-        $totalPendapatanTahun = $array_pendapatan_tahun;
-
-        $userId = auth()->id(); // Mendapatkan ID user yang sedang login
-
-        // Loop untuk setiap bulan (1 - 12)
-        for ($i = 1; $i <= 12; $i++) {
-            // Loop untuk setiap jenis_lr
-            foreach (array_keys($pendapatan) as $jenis_lr) {
-                // Ambil data berdasarkan bulan, tahun, dan jenis_lr
-                $buku_kas
-                    = DB::table('buks')
-                    ->where('user_id', $userId) // Sesuaikan dengan nama kolom user_id pada tabel Anda
-                    ->whereYear('tanggal', $tahun_sekarang)
-                    ->whereMonth('tanggal', $i) // Filter berdasarkan bulan
-                    ->where('jenis_lr', $jenis_lr) // Filter berdasarkan jenis_lr
-                    ->get();
-
-                // Variabel untuk menampung total nilai per bulan
-                $totalNilai = 0;
-
-                // Loop untuk setiap transaksi dalam bulan tersebut
-                foreach ($buku_kas as $transaksi) {
-                    if ($transaksi->jenis == 'debit') {
-                        // Jika debit, tambahkan nilainya
-                        $totalNilai += $transaksi->nilai;
-                    } elseif ($transaksi->jenis == 'kredit' and in_array($jenis_lr, $jenis_lr_pu)) {
-                        // Jika kredit, kurangi nilainya
-                        $totalNilai -= $transaksi->nilai;
-                    } else {
-                        $totalNilai += $transaksi->nilai;
-                    }
-                }
-
-                // Simpan total pendapatan per bulan untuk jenis_lr tertentu
-                $pendapatan[$jenis_lr][$i] = $totalNilai;
-
-                // Akumulasi total tahunan untuk jenis_lr tersebut
-                $totalPendapatanTahun[$jenis_lr] += $totalNilai;
-            }
-        }
-
-
-        // Array untuk menyimpan hasil per bulan dan per jenis lr
         $pendapatanBulan = [
-            'pu' => array_fill(1, 12, 0),
-            'bo' => array_fill(1, 12, 0),
-            'bno' => array_fill(1, 12, 0),
+            'pu'   => array_fill(1, 12, 0),
+            'hpp'  => array_fill(1, 12, 0),
+            'bo'   => array_fill(1, 12, 0),
+            'bno'  => array_fill(1, 12, 0),
         ];
 
-        // Total pendapatanBulan tahunan
         $tahun = [
-            'pu' => 0,
-            'bo' => 0,
-            'bno' => 0,
+            'pu'   => 0,
+            'hpp'  => 0,
+            'bo'   => 0,
+            'bno'  => 0,
         ];
 
-
-
+        // 2. Query Transaksi (1 Query)
         $transaksis = DB::table('buks')
-            ->where('user_id', $userId) // Sesuaikan dengan nama kolom user_id pada tabel Anda
+            ->where('user_id', $userId)
             ->whereYear('tanggal', $tahun_sekarang)
             ->get();
 
-
+        // 3. Olah Transaksi
         foreach ($transaksis as $transaksi) {
-            // Mengonversi 'tanggal' menjadi objek Carbon jika diperlukan
-            $tanggal = \Carbon\Carbon::parse($transaksi->tanggal); // Konversi ke Carbon jika belum berbentuk tanggal
-            $month = $tanggal->month; // Mendapatkan bulan dari kolom tanggal
-            $jenis_lr = strtolower($transaksi->jenis_lr); // Mengkonversi ke lowercase untuk kemudahan
-            $nilai = $transaksi->nilai;
+            $month = Carbon::parse($transaksi->tanggal)->month;
+            $jenis_lr = strtolower($transaksi->jenis_lr);
+            $nilai = (float) $transaksi->nilai;
 
-            // Jika jenis_lr adalah kredit, nilai akan negatif
             if ($transaksi->jenis == 'kredit' && in_array($jenis_lr, $jenis_lr_pu)) {
                 $nilai = -$nilai;
             }
 
-            // Menambah nilai transaksi ke bulan dan jenis_lr yang sesuai
+            if (isset($pendapatan[$jenis_lr])) {
+                $pendapatan[$jenis_lr][$month] += $nilai;
+                $totalPendapatanTahun[$jenis_lr] += $nilai;
+            }
+
             if (in_array($jenis_lr, $jenis_lr_pu)) {
                 $pendapatanBulan['pu'][$month] += $nilai;
                 $tahun['pu'] += $nilai;
+            } elseif (in_array($jenis_lr, $jenis_lr_hpp)) {
+                $pendapatanBulan['hpp'][$month] += $nilai;
+                $tahun['hpp'] += $nilai;
             } elseif (in_array($jenis_lr, $jenis_lr_bo)) {
                 $pendapatanBulan['bo'][$month] += $nilai;
                 $tahun['bo'] += $nilai;
@@ -324,88 +257,71 @@ if (!function_exists('labaRugiTahun')) {
             }
         }
 
-
-
-
-        $akumulasi = 0;
-
-        // $tahun_sekarang = intval($tahun_sekarang); // Ensure it's an integer
-
-        // Ambil data investasi
+        // 4. Hitung Penyusutan Aset berbasis Query DB (sesuai fungsi asli labaRugiTahun)
         $iventaris = DB::table('investasis')
-            ->where('user_id', auth()->id())
+            ->where('user_id', $userId)
             ->whereYear('tgl_beli', '<=', $tahun_sekarang)
             ->get();
 
-
-        $iventari = akumulasiPenyusutanIventasiTahun($iventaris)['akumu'];
-
-
-
-        // Ambil data bangunan
         $bangunans = DB::table('bangunans')
-            ->where('user_id', auth()->id())
+            ->where('user_id', $userId)
             ->whereYear('created_at', '<=', $tahun_sekarang)
             ->get();
-        $bangunan = akumulasiPenyusutanTahun($bangunans)['akumu'];
 
-        // Ambil data BDMUK
         $bdmuks = DB::table('bdmuks')
-            ->where('user_id', auth()->id())
+            ->where('user_id', $userId)
             ->whereYear('created_at', '<=', $tahun_sekarang)
             ->get();
-        $bdmuk = akumulasiPenyusutanTahun($bdmuks)['akumu'];
 
-        // Ambil data aktiva lain
         $aktiva_lain = DB::table('aktivalains')
-            ->where('user_id', auth()->id())
+            ->where('user_id', $userId)
             ->whereYear('created_at', '<=', $tahun_sekarang)
             ->get();
-        $aktiva = akumulasiPenyusutanTahun($aktiva_lain)['akumu'];
 
-        $akumulasi = $iventari + $bangunan + $bdmuk + $aktiva;
+        $iventari = akumulasiPenyusutanIventasiTahun($iventaris)['akumu'] ?? 0;
+        $bangunan = akumulasiPenyusutanTahun($bangunans)['akumu'] ?? 0;
+        $bdmuk    = akumulasiPenyusutanTahun($bdmuks)['akumu'] ?? 0;
+        $aktiva   = akumulasiPenyusutanTahun($aktiva_lain)['akumu'] ?? 0;
 
-        // dd('iventari = ' . $iventari  . ' Bangunan = ' . $bangunan . ' Bdmuk = ' . $bdmuk . ' aktiva = ' . $aktiva);
+        $akumulasiPenyusutan = $iventari + $bangunan + $bdmuk + $aktiva;
 
-
+        // 5. Kalkulasi Akhir
+        $labaKotor = [];
         $totalBiaya = [];
         $labaRugi = [];
 
+        for ($m = 1; $m <= 12; $m++) {
+            $pu  = $pendapatanBulan['pu'][$m];
+            $hpp = $pendapatanBulan['hpp'][$m];
+            $bo  = $pendapatanBulan['bo'][$m];
+            $bno = $pendapatanBulan['bno'][$m];
 
-        foreach ($pendapatanBulan['bo'] as $key => $value) {
-            $totalBiaya[] = $pendapatanBulan['bno'][$key] + $value;
-            $labaRugi[] = $pendapatanBulan['pu'][$key] - ($pendapatanBulan['bno'][$key] + $value);
+            $labaKotor[$m] = $pu - $hpp;
+            $totalBiaya[$m] = $bo + $bno;
+            $labaRugi[$m] = $labaKotor[$m] - $totalBiaya[$m];
         }
 
-        $akumulasitotalBiaya = array_sum($pendapatanBulan['bo']) + array_sum($pendapatanBulan['bno']);
-        $akumulasilabaRugi = array_sum($pendapatanBulan['pu']) - (array_sum($pendapatanBulan['bo']) + array_sum($pendapatanBulan['bno']) + $akumulasi);
+        $akumulasiHpp = array_sum($pendapatanBulan['hpp']);
+        $akumulasiLabaKotor = $tahun['pu'] - $akumulasiHpp;
 
+        $akumulasiBiayaOperasional = array_sum($pendapatanBulan['bo']) + array_sum($pendapatanBulan['bno']);
+        $totalBiayaPlusPenyusutan = $akumulasiBiayaOperasional + $akumulasiPenyusutan;
 
-        $akumulasiBiaya = $akumulasitotalBiaya + $akumulasi;
-        $totalLabaRugi = $akumulasilabaRugi;
+        $totalLabaRugi = $akumulasiLabaKotor - $totalBiayaPlusPenyusutan;
 
-        // dd([
-        //     'pendapatan' => $pendapatan,
-        //     'pendapatanBulan' => $pendapatanBulan,
-        //     'pendapatanTahun' => $tahun,
-        //     'tahun' => $totalPendapatanTahun,
-        //     'totalBiaya' => $totalBiaya,
-        //     'akumulasiBiaya' => $akumulasiBiaya,
-        //     'labaRugi' => $labaRugi,
-        //     'totalLabaRugi' => $totalLabaRugi,
-        //     'akumulasi_penyusutan' => $akumulasi
-        // ]);
-
-        return ([
-            'pendapatan' => $pendapatan,
-            'pendapatanBulan' => $pendapatanBulan,
-            'pendapatanTahun' => $tahun,
-            'tahun' => $totalPendapatanTahun,
-            'totalBiaya' => $totalBiaya,
-            'akumulasiBiaya' => $akumulasiBiaya,
-            'labaRugi' => $labaRugi,
-            'totalLabaRugi' => $totalLabaRugi,
-            'akumulasi_penyusutan' => $akumulasi
-        ]);
+        return [
+            'pendapatan'           => $pendapatan,
+            'pendapatanBulan'      => $pendapatanBulan,
+            'pendapatanTahun'      => $tahun,
+            'tahun'                => $totalPendapatanTahun,
+            'labaKotor'            => $labaKotor,
+            'totalBiaya'           => $totalBiaya,
+            'akumulasiHpp'         => $akumulasiHpp,
+            'akumulasiLabaKotor'   => $akumulasiLabaKotor,
+            'akumulasiBiaya'       => $totalBiayaPlusPenyusutan,
+            'labaRugi'             => $labaRugi,
+            'totalLabaRugi'        => $totalLabaRugi,
+            'akumulasi_penyusutan' => $akumulasiPenyusutan
+        ];
     }
 }
