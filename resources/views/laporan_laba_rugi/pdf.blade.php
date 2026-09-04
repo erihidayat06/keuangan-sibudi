@@ -86,7 +86,7 @@
             </tr>
 
             <!-- 2. HARGA POKOK PENJUALAN (HPP) SECTION -->
-            <tr>
+            {{-- <tr>
                 <th colspan="4" class="pt-2">2. HARGA POKOK PENJUALAN (HPP)</th>
             </tr>
             @foreach ($units as $unit)
@@ -100,10 +100,10 @@
                     </td>
                     <td></td>
                 </tr>
-            @endforeach
+            @endforeach --}}
 
-            <tr class="fw-bold border-bottom">
-                <td colspan="2">Total Harga Pokok Penjualan (HPP)</td>
+            <tr class="fw-bold">
+                <th colspan="2" class="pt-2">2. HARGA POKOK PENJUALAN (HPP)</th>
                 <td class="text-end"></td>
                 <td class="text-end red-text">{{ formatRupiah($akumulasiHpp ?? 0) }}</td>
             </tr>
