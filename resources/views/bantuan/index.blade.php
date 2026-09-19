@@ -24,14 +24,14 @@
                         <div class="info-box card">
                             <i class="bi bi-telephone"></i>
                             <h3>Call Us</h3>
-                            <p>0821-3772-1941</p>
+                            <p>0822-4775-8730</p>
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="info-box card">
                             <i class="bi bi-envelope"></i>
                             <h3>Email Us</h3>
-                            <p>erihidayat549@gmail.com</p>
+                            <p>bumdespro@gmail.com</p>
                         </div>
                     </div>
                 </div>
