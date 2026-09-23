@@ -16,8 +16,8 @@ if (!function_exists('labaRugi')) {
 
         // 1. Inisialisasi struktur prefix
         $jenis_lr_pu = [];
-        $jenis_lr_hpp = [];
         $jenis_lr_bo = [];
+        $jenis_lr_hpp = [];
         $jenis_lr_bno = [];
 
         $pendapatan = [];
@@ -25,24 +25,24 @@ if (!function_exists('labaRugi')) {
 
         // Dynamic keys berdasarkan Unit Usaha
         foreach ($unit_usaha as $unit) {
-            $kode = strtolower($unit->kode);
+            $kode = str_replace(' ', '', strtolower($unit->kode));
 
-            $puKey = 'pu' . $kode;
+            $puKey  = 'pu' . $kode;
+            $boKey  = 'bo' . $kode;
             $hppKey = 'hpp' . $kode;
-            $boKey = 'bo' . $kode;
 
-            $jenis_lr_pu[] = $puKey;
+            $jenis_lr_pu[]  = $puKey;
+            $jenis_lr_bo[]  = $boKey;
             $jenis_lr_hpp[] = $hppKey;
-            $jenis_lr_bo[] = $boKey;
 
             // Inisialisasi array per bulan (1-12) & total tahunan
-            $pendapatan[$puKey] = array_fill(1, 12, 0);
+            $pendapatan[$puKey]  = array_fill(1, 12, 0);
+            $pendapatan[$boKey]  = array_fill(1, 12, 0);
             $pendapatan[$hppKey] = array_fill(1, 12, 0);
-            $pendapatan[$boKey] = array_fill(1, 12, 0);
 
-            $totalPendapatanTahun[$puKey] = 0;
+            $totalPendapatanTahun[$puKey]  = 0;
+            $totalPendapatanTahun[$boKey]  = 0;
             $totalPendapatanTahun[$hppKey] = 0;
-            $totalPendapatanTahun[$boKey] = 0;
         }
 
         // Keys manual untuk 'bno' (1 - 5)
@@ -78,11 +78,19 @@ if (!function_exists('labaRugi')) {
         // 3. Olah data transaksi di memori (PHP)
         foreach ($transaksis as $transaksi) {
             $month = Carbon::parse($transaksi->tanggal)->month;
-            $jenis_lr = strtolower($transaksi->jenis_lr);
+            $jenis_lr = str_replace(' ', '', strtolower($transaksi->jenis_lr));
             $nilai = (float) $transaksi->nilai;
 
+            // Kategori BO: Jika mengandung angka, alihkan ke HPP
+            if (str_starts_with($jenis_lr, 'bo')) {
+                if (preg_match('/\d/', $jenis_lr)) {
+                    // Berangka -> Masuk HPP (Contoh: bo1, bopd1, bo2pd)
+                    $jenis_lr = 'hpp' . preg_replace('/^bo/', '', $jenis_lr);
+                }
+            }
+
             // Jika Kredit pada PU, mengurangi pendapatan
-            if ($transaksi->jenis == 'kredit' && in_array($jenis_lr, $jenis_lr_pu)) {
+            if ($transaksi->jenis == 'kredit' && str_starts_with($jenis_lr, 'pu')) {
                 $nilai = -$nilai;
             }
 
@@ -92,21 +100,23 @@ if (!function_exists('labaRugi')) {
                 $totalPendapatanTahun[$jenis_lr] += $nilai;
             }
 
-            // Simpan ke grup besar ($pendapatanBulan)
-            if (in_array($jenis_lr, $jenis_lr_pu)) {
+            // Simpan ke grup besar ($pendapatanBulan & $tahun)
+            if (str_starts_with($jenis_lr, 'pu')) {
                 $pendapatanBulan['pu'][$month] += $nilai;
                 $tahun['pu'] += $nilai;
-            } elseif (in_array($jenis_lr, $jenis_lr_hpp)) {
+            } elseif (str_starts_with($jenis_lr, 'hpp')) {
                 $pendapatanBulan['hpp'][$month] += $nilai;
                 $tahun['hpp'] += $nilai;
-            } elseif (in_array($jenis_lr, $jenis_lr_bo)) {
+            } elseif (str_starts_with($jenis_lr, 'bo')) {
                 $pendapatanBulan['bo'][$month] += $nilai;
                 $tahun['bo'] += $nilai;
-            } elseif (in_array($jenis_lr, $jenis_lr_bno)) {
+            } elseif (str_starts_with($jenis_lr, 'bno')) {
                 $pendapatanBulan['bno'][$month] += $nilai;
                 $tahun['bno'] += $nilai;
             }
         }
+
+
 
         // 4. Hitung Penyusutan Aset
         $iventaris   = Investasi::user()->get();
@@ -132,17 +142,17 @@ if (!function_exists('labaRugi')) {
             $bo  = $pendapatanBulan['bo'][$m];
             $bno = $pendapatanBulan['bno'][$m];
 
-            $labaKotor[$m] = $pu - $hpp;
+            $labaKotor[$m]  = $pu - $hpp;
             $totalBiaya[$m] = $bo + $bno;
-            $labaRugi[$m] = $labaKotor[$m] - $totalBiaya[$m];
+            $labaRugi[$m]   = $labaKotor[$m] - $totalBiaya[$m];
         }
 
         // Total Akumulasi Tahunan
-        $akumulasiHpp = array_sum($pendapatanBulan['hpp']);
+        $akumulasiHpp       = $tahun['hpp'];
         $akumulasiLabaKotor = $tahun['pu'] - $akumulasiHpp;
 
-        $akumulasiBiayaOperasional = array_sum($pendapatanBulan['bo']) + array_sum($pendapatanBulan['bno']);
-        $totalBiayaPlusPenyusutan = $akumulasiBiayaOperasional + $akumulasiPenyusutan;
+        $akumulasiBiayaOperasional = $tahun['bo'] + $tahun['bno'];
+        $totalBiayaPlusPenyusutan  = $akumulasiBiayaOperasional + $akumulasiPenyusutan;
 
         $totalLabaRugi = $akumulasiLabaKotor - $totalBiayaPlusPenyusutan;
 
@@ -180,7 +190,8 @@ if (!function_exists('labaRugiTahun')) {
         $totalPendapatanTahun = [];
 
         foreach ($unit_usaha as $unit) {
-            $kode = strtolower($unit->kode);
+            // Hilangkan spasi agar konsisten dengan panggilan di Blade
+            $kode = str_replace(' ', '', strtolower($unit->kode));
 
             $puKey = 'pu' . $kode;
             $hppKey = 'hpp' . $kode;
@@ -221,7 +232,7 @@ if (!function_exists('labaRugiTahun')) {
             'bno'  => 0,
         ];
 
-        // 2. Query Transaksi (1 Query)
+        // 2. Query Transaksi Buku Kas
         $transaksis = DB::table('buks')
             ->where('user_id', $userId)
             ->whereYear('tanggal', $tahun_sekarang)
@@ -230,10 +241,11 @@ if (!function_exists('labaRugiTahun')) {
         // 3. Olah Transaksi
         foreach ($transaksis as $transaksi) {
             $month = Carbon::parse($transaksi->tanggal)->month;
-            $jenis_lr = strtolower($transaksi->jenis_lr);
+            $jenis_lr = str_replace(' ', '', strtolower($transaksi->jenis_lr));
             $nilai = (float) $transaksi->nilai;
 
-            if ($transaksi->jenis == 'kredit' && in_array($jenis_lr, $jenis_lr_pu)) {
+            // Transaksi Kredit mengurangi nilai (retur/potongan/pengembalian)
+            if ($transaksi->jenis == 'kredit') {
                 $nilai = -$nilai;
             }
 
@@ -257,7 +269,7 @@ if (!function_exists('labaRugiTahun')) {
             }
         }
 
-        // 4. Hitung Penyusutan Aset berbasis Query DB (sesuai fungsi asli labaRugiTahun)
+        // 4. Hitung Penyusutan Aset
         $iventaris = DB::table('investasis')
             ->where('user_id', $userId)
             ->whereYear('tgl_beli', '<=', $tahun_sekarang)
@@ -284,6 +296,7 @@ if (!function_exists('labaRugiTahun')) {
         $aktiva   = akumulasiPenyusutanTahun($aktiva_lain)['akumu'] ?? 0;
 
         $akumulasiPenyusutan = $iventari + $bangunan + $bdmuk + $aktiva;
+        $penyusutanBulan = $akumulasiPenyusutan / 12;
 
         // 5. Kalkulasi Akhir
         $labaKotor = [];
@@ -297,7 +310,7 @@ if (!function_exists('labaRugiTahun')) {
             $bno = $pendapatanBulan['bno'][$m];
 
             $labaKotor[$m] = $pu - $hpp;
-            $totalBiaya[$m] = $bo + $bno;
+            $totalBiaya[$m] = $bo + $bno + $penyusutanBulan;
             $labaRugi[$m] = $labaKotor[$m] - $totalBiaya[$m];
         }
 

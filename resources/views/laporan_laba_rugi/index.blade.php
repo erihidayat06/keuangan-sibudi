@@ -61,11 +61,14 @@
                         <th colspan="4">1. PENDAPATAN UNIT USAHA</th>
                     </tr>
                     @foreach ($units as $unit)
+                        @php
+                            $kodeClean = str_replace(' ', '', strtolower($unit->kode));
+                        @endphp
                         <tr>
                             <td>{{ $unit->nm_unit }}</td>
                             <td class="text-end"></td>
                             <td class="text-end red-text">
-                                {{ formatRupiah(array_sum($pendapatan['pu' . strtolower($unit->kode)] ?? [])) }}
+                                {{ formatRupiah(array_sum($pendapatan['pu' . $kodeClean] ?? [])) }}
                             </td>
                             <td></td>
                         </tr>
@@ -78,41 +81,28 @@
                     </tr>
 
                     <!-- 2. HARGA POKOK PENJUALAN (HPP) SECTION -->
-
-                    {{-- @foreach ($units as $unit)
-                        <tr>
-                            <td>HPP {{ $unit->nm_unit }}</td>
-                            <td class="text-end"></td>
-                            <td class="text-end red-text">
-                                {{ formatRupiah(array_sum($pendapatan['hpp' . strtolower($unit->kode)] ?? [])) }}
-                            </td>
-                            <td></td>
-                        </tr>
-                    @endforeach --}}
-
-                    <tr class="fw-bold">
-                        <th colspan="2" class="pt-3">2. HARGA POKOK PENJUALAN (HPP)</th>
-                        <td class="text-end"></td>
-                        <td class="text-end red-text">{{ formatRupiah($akumulasiHpp ?? 0) }}</td>
+                    <tr class="fw-bold border-bottom">
+                        <th colspan="3" class="pt-3">2. HARGA POKOK PENJUALAN (HPP)</th>
+                        <td class="text-end red-text fw-bold pt-3">
+                            {{ formatRupiah($pendapatanTahun['hpp'] ?? 0) }}
+                        </td>
                     </tr>
 
-                    <!-- 3. LABA KOTOR (GROSS PROFIT) -->
-                    <tr class="fw-bold border-bottom" style="background-color: #f8f9fa;">
-                        <td colspan="2" class="green-text">LABA KOTOR (Pendapatan - HPP)</td>
-                        <td class="text-end"></td>
-                        <td class="text-end green-text">{{ formatRupiah($akumulasiLabaKotor ?? 0) }}</td>
-                    </tr>
+
 
                     <!-- 4. BIAYA OPERASIONAL & NON OPERASIONAL -->
                     <tr>
                         <th colspan="4" class="pt-3">3. BIAYA-BIAYA OPERASIONAL</th>
                     </tr>
                     @foreach ($units as $unit)
+                        @php
+                            $kodeClean = str_replace(' ', '', strtolower($unit->kode));
+                        @endphp
                         <tr>
                             <td>Biaya Ops {{ $unit->nm_unit }}</td>
                             <td class="text-end"></td>
                             <td class="text-end red-text">
-                                {{ formatRupiah(array_sum($pendapatan['bo' . strtolower($unit->kode)] ?? [])) }}
+                                {{ formatRupiah(array_sum($pendapatan['bo' . $kodeClean] ?? [])) }}
                             </td>
                             <td></td>
                         </tr>

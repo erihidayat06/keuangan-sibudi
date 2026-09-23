@@ -1,65 +1,68 @@
-<style>
-    body {
-        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    }
+<!DOCTYPE html>
+<html lang="id">
 
-    .table-report {
-        width: 100%;
-        border-collapse: collapse;
-    }
+<head>
+    <meta charset="UTF-8">
+    <title>Laporan Laba Rugi</title>
+    <style>
+        body {
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        }
 
-    .table-report th,
-    .table-report td {
-        font-size: 16px;
-        padding: 4px 8px;
-    }
+        .table-report {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-    .table-report th {
-        text-align: left;
-    }
+        .table-report th,
+        .table-report td {
+            font-size: 14px;
+            padding: 4px 8px;
+        }
 
-    .red-text {
-        color: red;
-    }
+        .table-report th {
+            text-align: left;
+        }
 
-    .green-text {
-        color: rgb(5, 192, 67);
-    }
+        .red-text {
+            color: red;
+        }
 
-    .yellow-text {
-        color: rgb(175, 173, 19);
-    }
+        .green-text {
+            color: rgb(5, 192, 67);
+        }
 
-    .text-end {
-        text-align: end;
-    }
+        .yellow-text {
+            color: rgb(175, 173, 19);
+        }
 
-    .text-start {
-        text-align: start;
-    }
+        .text-end {
+            text-align: right;
+        }
 
-    .fw-bold {
-        font-weight: bold;
-    }
+        .fw-bold {
+            font-weight: bold;
+        }
 
-    .border-bottom {
-        border-bottom: 1px solid black;
-    }
+        .border-bottom {
+            border-bottom: 1px solid black;
+        }
 
-    .ms {
-        margin-left: 20px;
-    }
+        .ms {
+            margin-left: 15px;
+        }
 
-    .pt-2 {
-        padding-top: 10px;
-    }
-</style>
+        .pt-2 {
+            padding-top: 8px;
+        }
+    </style>
+</head>
 
 <body>
     <div class="card">
         <table class="table-report">
             <tr>
-                <th colspan="4">2. LAPORAN LABA RUGI</th>
+                <th colspan="4" style="font-size: 16px; padding-bottom: 10px;">2. LAPORAN LABA RUGI</th>
             </tr>
 
             <!-- 1. PENDAPATAN SECTION -->
@@ -67,13 +70,16 @@
                 <th colspan="4" class="pt-2">1. PENDAPATAN UNIT USAHA</th>
             </tr>
             @foreach ($units as $unit)
+                @php
+                    $kodeClean = str_replace(' ', '', strtolower($unit->kode));
+                @endphp
                 <tr>
                     <td>
                         <span class="ms">{{ $unit->nm_unit }}</span>
                     </td>
                     <td class="text-end"></td>
                     <td class="text-end red-text">
-                        {{ formatRupiah(array_sum($pendapatan['pu' . strtolower($unit->kode)] ?? [])) }}
+                        {{ formatRupiah(array_sum($pendapatan['pu' . $kodeClean] ?? [])) }}
                     </td>
                     <td></td>
                 </tr>
@@ -86,45 +92,29 @@
             </tr>
 
             <!-- 2. HARGA POKOK PENJUALAN (HPP) SECTION -->
-            {{-- <tr>
-                <th colspan="4" class="pt-2">2. HARGA POKOK PENJUALAN (HPP)</th>
-            </tr>
-            @foreach ($units as $unit)
-                <tr>
-                    <td>
-                        <span class="ms">HPP {{ $unit->nm_unit }}</span>
-                    </td>
-                    <td class="text-end"></td>
-                    <td class="text-end red-text">
-                        {{ formatRupiah(array_sum($pendapatan['hpp' . strtolower($unit->kode)] ?? [])) }}
-                    </td>
-                    <td></td>
-                </tr>
-            @endforeach --}}
-
-            <tr class="fw-bold">
+            <tr class="fw-bold border-bottom">
                 <th colspan="2" class="pt-2">2. HARGA POKOK PENJUALAN (HPP)</th>
                 <td class="text-end"></td>
-                <td class="text-end red-text">{{ formatRupiah($akumulasiHpp ?? 0) }}</td>
+                <td class="text-end red-text">
+                    {{ formatRupiah($pendapatanTahun['hpp'] ?? 0) }}
+                </td>
             </tr>
 
-            <!-- 3. LABA KOTOR -->
-            <tr class="fw-bold border-bottom">
-                <td colspan="2" class="green-text">LABA KOTOR (Pendapatan - HPP)</td>
-                <td class="text-end"></td>
-                <td class="text-end green-text">{{ formatRupiah($akumulasiLabaKotor ?? 0) }}</td>
-            </tr>
+
 
             <!-- 4. BIAYA OPERASIONAL & NON OPERASIONAL -->
             <tr>
                 <th colspan="4" class="pt-2">3. BIAYA OPERASIONAL</th>
             </tr>
             @foreach ($units as $unit)
+                @php
+                    $kodeClean = str_replace(' ', '', strtolower($unit->kode));
+                @endphp
                 <tr>
                     <td><span class="ms">Biaya Ops {{ $unit->nm_unit }}</span></td>
                     <td class="text-end"></td>
                     <td class="text-end red-text">
-                        {{ formatRupiah(array_sum($pendapatan['bo' . strtolower($unit->kode)] ?? [])) }}
+                        {{ formatRupiah(array_sum($pendapatan['bo' . $kodeClean] ?? [])) }}
                     </td>
                     <td></td>
                 </tr>
@@ -200,3 +190,5 @@
         </table>
     </div>
 </body>
+
+</html>
