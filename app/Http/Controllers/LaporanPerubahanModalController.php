@@ -32,7 +32,7 @@ class LaporanPerubahanModalController extends Controller
             'modal_bersama' => $modal_bersama,
             'ekuitas' => $ekuitas,
             'ditahan' => $neraca['ditahan'],
-            'laba_berjalan' => labaRugiTahun($tahun)['totalLabaRugi']
+            'laba_berjalan' => labaRugi($tahun)['totalLabaRugi']
         ]);
     }
 
