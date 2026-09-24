@@ -79,18 +79,16 @@ if (!function_exists('labaRugi')) {
         foreach ($transaksis as $transaksi) {
             $month = Carbon::parse($transaksi->tanggal)->month;
             $jenis_lr = str_replace(' ', '', strtolower($transaksi->jenis_lr));
+            $jenis = strtolower(trim($transaksi->jenis)); // Ambil kolom 'jenis' (debit/kredit/tetap)
             $nilai = (float) $transaksi->nilai;
 
-            // Kategori BO: Jika mengandung angka, alihkan ke HPP
-            if (str_starts_with($jenis_lr, 'bo')) {
-                if (preg_match('/\d/', $jenis_lr)) {
-                    // Berangka -> Masuk HPP (Contoh: bo1, bopd1, bo2pd)
-                    $jenis_lr = 'hpp' . preg_replace('/^bo/', '', $jenis_lr);
-                }
+            // KONDISI KHUSUS: Jika jenis_lr diawali 'bo' DAN kolom jenis 'tetap' -> Alihkan ke HPP
+            if (str_starts_with($jenis_lr, 'bo') && $jenis == 'tetap') {
+                $jenis_lr = 'hpp' . substr($jenis_lr, 2); // Mengubah bopd9876 -> hpppd9876
             }
 
             // Jika Kredit pada PU, mengurangi pendapatan
-            if ($transaksi->jenis == 'kredit' && str_starts_with($jenis_lr, 'pu')) {
+            if ($jenis == 'kredit' && str_starts_with($jenis_lr, 'pu')) {
                 $nilai = -$nilai;
             }
 
