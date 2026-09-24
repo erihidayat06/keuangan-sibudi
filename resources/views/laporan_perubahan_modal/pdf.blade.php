@@ -3,7 +3,6 @@
         font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     }
 
-
     .report-section {
         margin-top: 20px;
     }
@@ -16,7 +15,7 @@
     .table-report th,
     .table-report td {
         padding: 5px 10px;
-        font-size: 16px
+        font-size: 16px;
     }
 
     .table-report th {
@@ -28,11 +27,11 @@
     }
 
     .text-end {
-        text-align: end;
+        text-align: right;
     }
 
     .text-start {
-        text-align: start;
+        text-align: left;
     }
 
     .fw-bold {
@@ -40,30 +39,29 @@
     }
 
     .ms {
-        margin-left: 20px
+        padding-left: 20px;
     }
 </style>
 
 <body>
     <div class="card">
-
-
         <table class="table-report">
             <tr>
-                <td class="fw-bold">4. LAPORAN PERUBAHAN MODAL</td>
+                <td colspan="4" class="fw-bold">4. LAPORAN PERUBAHAN MODAL</td>
             </tr>
+
             @can('referral')
                 <tr>
                     <td colspan="2">Simpanan Pokok</td>
                     <td class="text-end"></td>
                     <td class="text-end red-text">{{ formatRupiah($modal_desa) }}</td>
                 </tr>
-                <tr class="">
+                <tr>
                     <td colspan="2">Simpanan Wajib</td>
                     <td class="text-end"></td>
                     <td class="text-end red-text">{{ formatRupiah($modal_masyarakat) }}</td>
                 </tr>
-                <tr class="">
+                <tr>
                     <td colspan="2">Simpanan Sukarela</td>
                     <td class="text-end"></td>
                     <td class="text-end red-text">{{ formatRupiah($modal_bersama) }}</td>
@@ -74,7 +72,7 @@
                     <td class="text-end"></td>
                     <td class="text-end red-text">{{ formatRupiah($modal_desa) }}</td>
                 </tr>
-                <tr class="">
+                <tr>
                     <td colspan="2">Penyertaan modal masyarakat</td>
                     <td class="text-end"></td>
                     <td class="text-end red-text">{{ formatRupiah($modal_masyarakat) }}</td>
@@ -82,76 +80,73 @@
             @endcan
 
             <tr>
-                <td colspan="2">{{ $ditahan < 0 ? 'Rugi' : 'Laba' }} ditahan </td>
+                <td colspan="2">{{ $ditahan < 0 ? 'Rugi' : 'Laba' }} ditahan</td>
                 <td class="text-end"></td>
                 <td class="text-end red-text">{{ formatRupiah($ditahan) }}</td>
-
-
             </tr>
 
             <tr>
                 <td>Laba Berjalan</td>
-                <td class="text-end d-flex  justify-content-end">{{ old('tahun', $ekuitas) }}</td>
+                <td class="text-end">{{ session('selected_year', date('Y')) ?? old('tahun', $ekuitas) }}</td>
                 <td class="text-end red-text">{{ formatRupiah($laba_berjalan) }}</td>
-
+                <td class="text-end"></td>
             </tr>
+
             @php
                 $tambah = 0;
                 $pades = 0;
                 $lainya = 0;
-                if (isset($ekuitas->akumulasi) and isset($ekuitas->pades) and isset($ekuitas->lainya)) {
+                if (isset($ekuitas->akumulasi) && isset($ekuitas->pades) && isset($ekuitas->lainya)) {
                     $tambah = $laba_berjalan * ($ekuitas->akumulasi / 100);
                     $pades = $laba_berjalan * ($ekuitas->pades / 100);
                     $lainya = $laba_berjalan * ($ekuitas->lainya / 100);
                 }
                 $modal_akhir = $ditahan + $tambah + $modal_desa + $modal_masyarakat + $modal_bersama;
             @endphp
-            <tr class="">
 
-                <td>
-                    <span class="ms"> Tambah Modal</span>
-                </td>
-                <td class="text-end d-flex  justify-content-end">{{ old('akumulasi', $ekuitas->akumulasi) }}%
-                </td>
+            <tr>
+                <td><span class="ms">Tambah Modal</span></td>
+                <td class="text-end">{{ old('akumulasi', $ekuitas->akumulasi) }}%</td>
                 <td class="text-end"></td>
                 <td class="text-end red-text">{{ formatRupiah($tambah) }}</td>
             </tr>
+
             <tr>
-                <td> <span class="ms">
+                <td>
+                    <span class="ms">
                         @can('referral')
                             Laba dibagi
                         @else
                             PADes
                         @endcan
-                    </span></td>
-                <td class="text-end d-flex  justify-content-end">{{ old('pades', $ekuitas->pades) }}%
+                    </span>
                 </td>
+                <td class="text-end">{{ old('pades', $ekuitas->pades) }}%</td>
                 <td class="text-end red-text">{{ formatRupiah($pades) }}</td>
                 <td class="text-end"></td>
-
             </tr>
+
             <tr>
-                <td> <span class="ms"> @can('referral')
+                <td>
+                    <span class="ms">
+                        @can('referral')
                             Dana Cadangan
                         @else
                             Lain Lain
                         @endcan
-                    </span></td>
-                <td class="text-end d-flex  justify-content-end">{{ old('lainya', $ekuitas->lainya) }}%
+                    </span>
                 </td>
-                <td class="text-end red-text">{{ formatRupiah($lainya) }} </td>
+                <td class="text-end">{{ old('lainya', $ekuitas->lainya) }}%</td>
+                <td class="text-end red-text">{{ formatRupiah($lainya) }}</td>
                 <td class="text-end"></td>
-
             </tr>
+
             <tr>
                 <td>Modal Akhir 1 Januari</td>
-                <td class=""> {{ $ekuitas->tahun + 1 }}</td>
+                <td>{{ (session('selected_year', date('Y')) ?? old('tahun', $ekuitas)) - 1 }}</td>
                 <td class="text-end"></td>
                 <td class="text-end red-text">{{ formatRupiah($modal_akhir) }}</td>
             </tr>
-
         </table>
-
     </div>
-
 </body>
