@@ -50,9 +50,26 @@ class DemoSandboxService
      */
     public function authenticateByToken(string $token): ?User
     {
-        // 0. Pastikan migrasi kolom is_demo telah dijalankan
+        // 0. Pastikan migrasi kolom is_demo telah tersedia (auto-heal jika belum di-migrate di production)
         if (!Schema::hasColumn('users', 'is_demo')) {
-            throw new \Exception("Kolom 'is_demo' belum ada di tabel users. Harap jalankan migrasi: php artisan migrate --path=database/migrations/2026_09_14_000002_add_demo_fields_to_users_table.php");
+            try {
+                Schema::table('users', function (\Illuminate\Database\Schema\Blueprint $table) {
+                    if (!Schema::hasColumn('users', 'is_demo')) {
+                        $table->boolean('is_demo')->default(false)->after('role');
+                    }
+                    if (!Schema::hasColumn('users', 'demo_token')) {
+                        $table->string('demo_token', 100)->nullable()->index()->after('is_demo');
+                    }
+                    if (!Schema::hasColumn('users', 'demo_expires_at')) {
+                        $table->timestamp('demo_expires_at')->nullable()->after('demo_token');
+                    }
+                    if (!Schema::hasColumn('users', 'portal_user_id')) {
+                        $table->unsignedBigInteger('portal_user_id')->nullable()->index()->after('demo_expires_at');
+                    }
+                });
+            } catch (\Throwable $e) {
+                Log::warning('Gagal auto-add kolom demo ke tabel users: ' . $e->getMessage());
+            }
         }
 
         // 1. Cari user di database portal
@@ -194,13 +211,15 @@ class DemoSandboxService
     }
 
     /**
-     * Mencari user dari database portal, mendukung koneksi sekunder dan auto-discovery prefix cPanel.
-     * Mencoba beberapa kemungkinan nama kolom token untuk kompatibilitas.
+     * Mencari user dari database portal dengan multi-strategi:
+     * 1. Koneksi sekunder 'portal' bawaan Laravel
+     * 2. Direct PDO ke database portal (mencakup Hostinger cPanel dan local)
+     * 3. Auto-discovery schema di instance MySQL yang sama
      */
     public function findPortalUser(string $token)
     {
-        // Kemungkinan nama kolom token di database portal
-        $tokenColumns = ['bumdespro2_token', 'bumdespro_token', 'keuangan_token', 'token', 'api_token'];
+        // Utamakan bumdespro_token dan bumdespro2_token
+        $tokenColumns = ['bumdespro_token', 'bumdespro2_token', 'keuangan_token', 'token', 'api_token'];
 
         // 1. Coba koneksi sekunder 'portal' yang didefinisikan di config/database.php
         try {
@@ -215,32 +234,82 @@ class DemoSandboxService
                         Log::info("[PortalBUMDes SSO] User ditemukan via koneksi 'portal', kolom: {$column}");
                         return $portalUser;
                     }
-                } catch (\Throwable $e2) {
-                    // Kolom tidak ada, coba kolom berikutnya
+                } catch (\Throwable $eCol) {
                     continue;
                 }
             }
         } catch (\Throwable $e) {
-            Log::info('Koneksi portal eksplisit gagal, mencoba auto-discovery database: ' . $e->getMessage());
+            Log::info('[PortalBUMDes SSO] Koneksi portal Laravel gagal dicoba: ' . $e->getMessage());
         }
 
-        // 2. Auto-discovery schema di server MySQL yang sama (misal u110981049_portal_...)
+        // 2. Direct PDO kandidat: menangani kasus Hostinger hPanel/cPanel dan local
+        $portalDbCandidates = [
+            [
+                'host'     => env('PORTAL_DB_HOST', 'localhost'),
+                'database' => env('PORTAL_DB_DATABASE', 'u110981049_portal_bumbdes'),
+                'username' => env('PORTAL_DB_USERNAME', 'u110981049_portal_bumbdes'),
+                'password' => env('PORTAL_DB_PASSWORD', 'Portal2026!'),
+            ],
+            [
+                'host'     => '127.0.0.1',
+                'database' => 'u110981049_portal_bumbdes',
+                'username' => 'u110981049_portal_bumbdes',
+                'password' => 'Portal2026!',
+            ],
+            [
+                'host'     => 'localhost',
+                'database' => 'u110981049_portal_bumbdes',
+                'username' => 'u110981049_portal_bumbdes',
+                'password' => 'Portal2026!',
+            ],
+            [
+                'host'     => env('PORTAL_DB_HOST', 'localhost'),
+                'database' => 'portal_bumbdes',
+                'username' => env('PORTAL_DB_USERNAME', env('DB_USERNAME', 'root')),
+                'password' => env('PORTAL_DB_PASSWORD', env('DB_PASSWORD', 'root')),
+            ],
+            [
+                'host'     => '127.0.0.1',
+                'database' => 'portal_bumbdes',
+                'username' => 'root',
+                'password' => 'root',
+            ],
+        ];
+
+        foreach ($portalDbCandidates as $cand) {
+            try {
+                $dsn = "mysql:host={$cand['host']};port=3306;dbname={$cand['database']};charset=utf8mb4";
+                $pdo = new \PDO($dsn, $cand['username'], $cand['password'], [
+                    \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
+                    \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_OBJ,
+                    \PDO::ATTR_TIMEOUT            => 2,
+                ]);
+
+                foreach ($tokenColumns as $col) {
+                    try {
+                        $stmt = $pdo->prepare("SELECT * FROM users WHERE `{$col}` = ? LIMIT 1");
+                        $stmt->execute([$token]);
+                        $user = $stmt->fetch();
+                        if ($user) {
+                            Log::info("[PortalBUMDes SSO] User ditemukan via direct PDO ({$cand['database']} @ {$cand['host']}, kolom: {$col})");
+                            return $user;
+                        }
+                    } catch (\Throwable $eCol) {
+                        continue;
+                    }
+                }
+            } catch (\Throwable $ePdo) {
+                continue;
+            }
+        }
+
+        // 3. Auto-discovery schema di server MySQL yang sama (misal u110981049_portal_...)
         try {
             $databases = DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME LIKE '%portal%'");
             foreach ($databases as $db) {
                 $schemaName = $db->SCHEMA_NAME;
                 foreach ($tokenColumns as $column) {
                     try {
-                        // Cek apakah kolom ada sebelum query
-                        $columnExists = DB::select(
-                            "SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'users' AND COLUMN_NAME = ? LIMIT 1",
-                            [$schemaName, $column]
-                        );
-
-                        if (empty($columnExists)) {
-                            continue;
-                        }
-
                         $portalUser = DB::table("{$schemaName}.users")
                             ->where($column, $token)
                             ->first();
@@ -255,7 +324,7 @@ class DemoSandboxService
                 }
             }
         } catch (\Throwable $e) {
-            Log::warning('Gagal auto-discovery schema portal: ' . $e->getMessage());
+            Log::warning('[PortalBUMDes SSO] Gagal auto-discovery schema: ' . $e->getMessage());
         }
 
         Log::warning('[PortalBUMDes SSO] Token tidak ditemukan di semua database portal yang dicoba.');
