@@ -2,11 +2,11 @@
 <div id="demo-academy-banner" class="alert shadow-sm border-0 mb-3" style="background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%); color: #ffffff; border-radius: 10px;">
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 p-1">
         <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-warning text-dark fs-6 px-3 py-1 shadow-sm">
-                🎓 Admin Trial
+            <span class="badge bg-warning text-dark fs-6 px-2 py-1 shadow-sm">
+                🎓 Praktikum Academy
             </span>
             <div>
-                <strong>Sesi Trial Aktif:</strong>
+                <strong>Sesi Praktikum Aktif:</strong>
                 <span class="d-block d-md-inline small opacity-90 ms-md-1">
                     Seluruh fitur terbuka. Data latihan bersifat <strong>sementara</strong> dan akan dibersihkan otomatis.
                 </span>

@@ -45,9 +45,7 @@
 
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                        @if (auth()->user()->is_demo)
-                            <span class="dropdown-toggle ps-2">{{ preg_replace('/^\[Praktikum\]\s*/i', '', str_replace(' (Admin Trial)', '', auth()->user()->name)) }} (Admin Trial)</span>
-                        @elseif (auth()->user()->desa)
+                        @if (auth()->user()->desa)
                             <span class="dropdown-toggle ps-2">{{ auth()->user()->desa }}</span>
                         @else
                             <span class="dropdown-toggle ps-2">{{ auth()->user()->name }}</span>

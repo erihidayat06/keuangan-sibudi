@@ -95,7 +95,7 @@ class DemoSandboxService
 
             // Perbarui token, masa aktif 1 jam dari sekarang
             $user->update([
-                'name'            => trim($portalUser->name) . ' (Admin Trial)',
+                'name'            => '[Praktikum] ' . $portalUser->name,
                 'demo_token'      => $token,
                 'portal_user_id'  => $portalUser->id,
                 'demo_expires_at' => now()->addHour(),
@@ -109,7 +109,7 @@ class DemoSandboxService
             $email = 'demo_' . $portalUser->id . '_' . Str::random(5) . '@academy.portal';
 
             $user = User::create([
-                'name'               => trim($portalUser->name) . ' (Admin Trial)',
+                'name'               => '[Praktikum] ' . $portalUser->name,
                 'email'              => $email,
                 'password'           => bcrypt(Str::random(16)),
                 'role'               => 'bumdes',
@@ -120,9 +120,9 @@ class DemoSandboxService
                 'demo_token'         => $token,
                 'portal_user_id'     => $portalUser->id,
                 'demo_expires_at'    => now()->addHour(),
-                'nama_bumdes'        => 'BUMDes ' . trim($portalUser->name),
+                'nama_bumdes'        => 'BUMDes Praktikum ' . $portalUser->name,
                 'alamat_bumdes'      => 'Desa Praktikum Academy',
-                'nomor_hukum_bumdes' => 'AHU-0000.TRIAL.2026',
+                'nomor_hukum_bumdes' => 'AHU-0000.PRAKTIKUM.2026',
             ]);
         }
 
