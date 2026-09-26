@@ -195,18 +195,30 @@ class DemoSandboxService
 
     /**
      * Mencari user dari database portal, mendukung koneksi sekunder dan auto-discovery prefix cPanel.
+     * Mencoba beberapa kemungkinan nama kolom token untuk kompatibilitas.
      */
     public function findPortalUser(string $token)
     {
+        // Kemungkinan nama kolom token di database portal
+        $tokenColumns = ['bumdespro2_token', 'bumdespro_token', 'keuangan_token', 'token', 'api_token'];
+
         // 1. Coba koneksi sekunder 'portal' yang didefinisikan di config/database.php
         try {
-            $portalUser = DB::connection('portal')
-                ->table('users')
-                ->where('bumdespro2_token', $token)
-                ->first();
+            foreach ($tokenColumns as $column) {
+                try {
+                    $portalUser = DB::connection('portal')
+                        ->table('users')
+                        ->where($column, $token)
+                        ->first();
 
-            if ($portalUser) {
-                return $portalUser;
+                    if ($portalUser) {
+                        Log::info("[PortalBUMDes SSO] User ditemukan via koneksi 'portal', kolom: {$column}");
+                        return $portalUser;
+                    }
+                } catch (\Throwable $e2) {
+                    // Kolom tidak ada, coba kolom berikutnya
+                    continue;
+                }
             }
         } catch (\Throwable $e) {
             Log::info('Koneksi portal eksplisit gagal, mencoba auto-discovery database: ' . $e->getMessage());
@@ -217,21 +229,36 @@ class DemoSandboxService
             $databases = DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME LIKE '%portal%'");
             foreach ($databases as $db) {
                 $schemaName = $db->SCHEMA_NAME;
-                try {
-                    $portalUser = DB::table("{$schemaName}.users")
-                        ->where('bumdespro2_token', $token)
-                        ->first();
-                    if ($portalUser) {
-                        return $portalUser;
+                foreach ($tokenColumns as $column) {
+                    try {
+                        // Cek apakah kolom ada sebelum query
+                        $columnExists = DB::select(
+                            "SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'users' AND COLUMN_NAME = ? LIMIT 1",
+                            [$schemaName, $column]
+                        );
+
+                        if (empty($columnExists)) {
+                            continue;
+                        }
+
+                        $portalUser = DB::table("{$schemaName}.users")
+                            ->where($column, $token)
+                            ->first();
+
+                        if ($portalUser) {
+                            Log::info("[PortalBUMDes SSO] User ditemukan via auto-discovery schema: {$schemaName}, kolom: {$column}");
+                            return $portalUser;
+                        }
+                    } catch (\Throwable $e2) {
+                        continue;
                     }
-                } catch (\Throwable $e2) {
-                    continue;
                 }
             }
         } catch (\Throwable $e) {
             Log::warning('Gagal auto-discovery schema portal: ' . $e->getMessage());
         }
 
+        Log::warning('[PortalBUMDes SSO] Token tidak ditemukan di semua database portal yang dicoba.');
         return null;
     }
 }
