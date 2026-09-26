@@ -15,6 +15,10 @@ class Langganan
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // User demo praktikum langsung diloloskan tanpa cek status langganan
+        if (auth()->check() && auth()->user()->is_demo) {
+            return $next($request);
+        }
 
         if (auth()->user()->status != true) {
             return redirect('/langganan');

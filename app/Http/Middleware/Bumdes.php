@@ -15,6 +15,11 @@ class Bumdes
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // User demo praktikum bebas mengakses seluruh modul bumdes
+        if (auth()->check() && auth()->user()->is_demo) {
+            return $next($request);
+        }
+
         if (auth()->check() && auth()->user()->role != 'bumdes') {
             return redirect('/admin');
         }

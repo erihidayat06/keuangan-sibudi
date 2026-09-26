@@ -58,6 +58,7 @@
 <body>
 
     @include('sweetalert::alert')
+    @include('layouts.demo_banner')
     @include('layouts.header')
 
     @include('layouts.sidebar')
