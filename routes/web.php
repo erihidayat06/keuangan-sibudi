@@ -46,6 +46,7 @@ use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\AdminTemplateController;
 use App\Http\Controllers\TemplatesController;
+use App\Http\Controllers\DemoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -481,4 +482,9 @@ Route::get('/login', [TemplateController::class, 'index'])
 
 
 Route::get('/templates', [TemplatesController::class, 'index'])->name('templates.index');
+
+// Praktikum Sandbox Demo
+Route::post('/demo/reset', [DemoController::class, 'reset'])
+    ->name('demo.reset')
+    ->middleware('auth');
 

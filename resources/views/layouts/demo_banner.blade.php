@@ -1,4 +1,4 @@
-﻿@if(auth()->check() && auth()->user()->is_demo)
+@if(auth()->check() && auth()->user()->is_demo)
 <div id="demo-academy-banner" class="alert shadow-sm border-0 mb-3" style="background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%); color: #ffffff; border-radius: 10px;">
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 p-1">
         <div class="d-flex align-items-center gap-2">
@@ -17,7 +17,7 @@
                 <i class="bi bi-clock-history"></i> Sisa Waktu:
                 <span id="demo-countdown" class="text-danger">Memuat...</span>
             </div>
-            <form action="{{ route('demo.reset') }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin mereset seluruh data praktikum? Semua data latihan yang Anda masukkan akan dihapus dan kembali ke kondisi awal.');">
+            <form action="{{ Route::has('demo.reset') ? route('demo.reset') : url('/demo/reset') }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin mereset seluruh data praktikum? Semua data latihan yang Anda masukkan akan dihapus dan kembali ke kondisi awal.');">
                 @csrf
                 <button type="submit" class="btn btn-sm btn-light text-danger fw-semibold px-2 py-1 rounded-pill shadow-sm">
                     <i class="bi bi-arrow-counterclockwise"></i> Reset Data
