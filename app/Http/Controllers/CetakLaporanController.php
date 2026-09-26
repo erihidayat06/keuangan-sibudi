@@ -45,7 +45,6 @@ class CetakLaporanController extends Controller
         // Data neraca dan laporan laba rugi
         $neraca = neraca();
         $labaRugi = labaRugi(session('selected_year', date('Y')));
-
         // Modal dan ekuitas
         $modalDesa = Modal::user()->sum('mdl_desa');
         $modalMasyarakat = Modal::user()->sum('mdl_masyarakat');
@@ -66,8 +65,9 @@ class CetakLaporanController extends Controller
                 'perubahan_kas' => $perubahan_kas,
                 'pendapatan' => $labaRugi['pendapatan'],
                 'pendapatanBulan' => $labaRugi['pendapatanBulan'],
-                'pendapatanTahun' => $labaRugi['pendapatanTahun'],
+                'pendapatanTahun'      => $labaRugi['pendapatanTahun'],
                 'totalBiaya' => $labaRugi['totalBiaya'],
+                'akumulasiHpp'         => $labaRugi['akumulasiHpp'],
                 'akumulasiBiaya' => $labaRugi['akumulasiBiaya'],
                 'labaRugi' => $labaRugi['labaRugi'],
                 'totalLabaRugi' => $labaRugi['totalLabaRugi'],

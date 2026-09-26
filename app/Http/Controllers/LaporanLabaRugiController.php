@@ -12,6 +12,8 @@ class LaporanLabaRugiController extends Controller
         $units = Unit::user()->get();
         $labaRugi = labaRugi(session('selected_year', date('Y')));
 
+
+
         return view('laporan_laba_rugi.index', [
             'pendapatan'           => $labaRugi['pendapatan'],
             'pendapatanBulan'      => $labaRugi['pendapatanBulan'],

@@ -32,7 +32,7 @@ class LaporanPerubahanModalController extends Controller
             'modal_bersama' => $modal_bersama,
             'ekuitas' => $ekuitas,
             'ditahan' => $neraca['ditahan'],
-            'laba_berjalan' => labaRugiTahun($tahun)['totalLabaRugi']
+            'laba_berjalan' => labaRugi($tahun)['totalLabaRugi']
         ]);
     }
 
@@ -40,12 +40,12 @@ class LaporanPerubahanModalController extends Controller
     {
 
         $ekuitas = Ekuit::user()->get()->first();
-
         $neraca =  neraca();
         $modal_desa = Modal::user()->get()->sum('mdl_desa');
-        $modal_bersama = Modal::user()->get()->sum('mdl_bersama');
         $modal_masyarakat = Modal::user()->get()->sum('mdl_masyarakat');
-        $tahun = $ekuitas->tahun ?? session('selected_year') ?? date('Y');
+        $modal_bersama = Modal::user()->get()->sum('mdl_bersama');
+        $tahun = $ekuitas->tahun ?? session('selected_year');
+
 
 
 
