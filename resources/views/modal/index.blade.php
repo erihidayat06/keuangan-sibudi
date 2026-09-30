@@ -5,62 +5,110 @@
         <div class="col-lg-12">
 
             <div class="pagetitle">
-                <h1>Rincian Pernyertaan Modal</h1>
+                @can('referral')
+                    <h1>Rincian Simpanan Koperasi</h1>
+                @else
+                    <h1>Rincian Pernyertaan Modal</h1>
+                @endcan
             </div>
 
-
-
             <div class="row">
-                <!-- Modal Desa Card -->
-                <div class="col-xxl-4 col-md-6">
-                    <div class="card info-card sales-card">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Modal <span>| Desa</span></h5>
-
-                            <div class="d-flex align-items-center">
-                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-bank"></i>
-                                </div>
-                                <div class="ps-3">
-                                    <h6>{{ formatRupiah($modals->sum('mdl_desa')) }}</h6>
-
-
+                @can('referral')
+                    <!-- Simpanan Pokok Card -->
+                    <div class="col-xxl-4 col-md-4">
+                        <div class="card info-card sales-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Simpanan <span>| Pokok</span></h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-wallet2"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>{{ formatRupiah($modals->sum('mdl_desa')) }}</h6>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div><!-- End Simpanan Pokok Card -->
 
-                    </div>
-                </div><!-- End Modal Desa Card -->
-
-                <!-- Modal MasyarakatCard -->
-                <div class="col-xxl-4 col-md-6">
-                    <div class="card info-card sales-card">
-
-                        <div class="card-body">
-                            <h5 class="card-title">Modal <span>| Masyarakat</span></h5>
-
-                            <div class="d-flex align-items-center">
-                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-people"></i>
-                                </div>
-                                <div class="ps-3">
-                                    <h6>{{ formatRupiah($modals->sum('mdl_masyarakat')) }}</h6>
-
+                    <!-- Simpanan Wajib Card -->
+                    <div class="col-xxl-4 col-md-4">
+                        <div class="card info-card sales-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Simpanan <span>| Wajib</span></h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-cash-stack"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>{{ formatRupiah($modals->sum('mdl_masyarakat')) }}</h6>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div><!-- End Simpanan Wajib Card -->
 
-                    </div>
-                </div><!-- End Modal MasyarakatCard -->
+                    <!-- Simpanan Sukarela Card -->
+                    <div class="col-xxl-4 col-md-4">
+                        <div class="card info-card sales-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Simpanan <span>| Sukarela</span></h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-piggy-bank"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>{{ formatRupiah($modals->sum('mdl_bersama')) }}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- End Simpanan Sukarela Card -->
+                @else
+                    <!-- Modal Desa Card -->
+                    <div class="col-xxl-4 col-md-6">
+                        <div class="card info-card sales-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Modal <span>| Desa</span></h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-bank"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>{{ formatRupiah($modals->sum('mdl_desa')) }}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- End Modal Desa Card -->
+
+                    <!-- Modal Masyarakat Card -->
+                    <div class="col-xxl-4 col-md-6">
+                        <div class="card info-card sales-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Modal <span>| Masyarakat</span></h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-people"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>{{ formatRupiah($modals->sum('mdl_masyarakat')) }}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- End Modal Masyarakat Card -->
+                @endcan
             </div>
             <div class="card overflow-auto">
                 <div class="card-body">
 
-                    <h5 class="card-title">Data Modal</h5>
+                    <h5 class="card-title">@can('referral') Data Simpanan @else Data Modal @endcan</h5>
                     <div class="row cols-2 cols-lg-2">
                         <div class="col">
-                            <a href="/modal/create" class="btn btn-sm btn-primary"> Tambah Modal</a>
+                            <a href="/modal/create" class="btn btn-sm btn-primary">
+                                @can('referral') Tambah Simpanan @else Tambah Modal @endcan
+                            </a>
                         </div>
                         <div class="col text-end">
                             <a href="/export-pdf/modal" class="btn btn-danger"><i class="bi bi-filetype-pdf"></i> PDF</a>

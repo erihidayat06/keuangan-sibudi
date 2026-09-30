@@ -74,7 +74,7 @@ class DemoSandboxService
      * Authenticate or create a demo user using the portal token.
      * Mendukung referral: 1 = BUMDesa, 0 = Koperasi.
      */
-    public function authenticateByToken(string $token, $referral = null): ?User
+    public function authenticateByToken(string $token, $referral = null, ?string $customName = null): ?User
     {
         // 0. Pastikan migrasi kolom is_demo telah tersedia (auto-heal jika belum di-migrate di production)
         if (!Schema::hasColumn('users', 'is_demo')) {
@@ -108,9 +108,14 @@ class DemoSandboxService
         if (!$portalUser) {
             $cleanToken = preg_replace('/[^a-zA-Z0-9_\-]/', '', $token);
             $tokenSuffix = substr(strtoupper(md5($token)), 0, 4);
-            $displayName = (!empty($cleanToken) && strlen($cleanToken) <= 20 && !is_numeric($cleanToken))
-                ? ucfirst($cleanToken)
-                : 'Peserta ' . $tokenSuffix;
+
+            if (!empty($customName)) {
+                $displayName = trim($customName);
+            } elseif (!empty($cleanToken) && strlen($cleanToken) <= 20 && !is_numeric($cleanToken)) {
+                $displayName = ucfirst($cleanToken);
+            } else {
+                $displayName = 'Peserta ' . $tokenSuffix;
+            }
 
             $portalUser = (object) [
                 'id'       => abs(crc32($token)),
@@ -130,24 +135,26 @@ class DemoSandboxService
         $alamatBumdes = $isKoperasi ? 'Koperasi Praktikum Academy' : 'Desa Praktikum Academy';
         $nomorHukum = $isKoperasi ? 'AHU-0000.KOPERASI.2026' : 'AHU-0000.PRAKTIKUM.2026';
 
-        // 2. Cek apakah user demo sudah ada untuk token / portal_user_id ini
+        // 2. Cek apakah user demo sudah ada untuk token / portal_user_id DAN jenis referral ini
         $user = User::where('is_demo', true)
+            ->where('referral', $referralVal)
             ->where(function ($query) use ($token, $portalUser) {
-                $query->where('demo_token', $token)
-                      ->orWhere('portal_user_id', $portalUser->id);
+                $query->where('demo_token', $token);
+                if (!empty($portalUser->id)) {
+                    $query->orWhere('portal_user_id', $portalUser->id);
+                }
             })
             ->first();
 
         if ($user) {
             $isExpired = $user->demo_expires_at && now()->greaterThan($user->demo_expires_at);
-            $referralChanged = ($user->referral !== null && (int) $user->referral !== $referralVal);
 
-            // Bersihkan data transaksi jika sesi habis atau berganti tipe entitas (misal BUMDes ke Koperasi)
-            if ($isExpired || $referralChanged) {
+            // Bersihkan data transaksi jika sesi habis (> 1 jam)
+            if ($isExpired) {
                 $this->purgeUserData($user->id);
             }
 
-            // Perbarui token, masa aktif 1 jam dari sekarang, dan simpan referral yang diminta
+            // Perbarui token dan perpanjang masa aktif 1 jam
             $user->update([
                 'name'               => "[Praktikum {$entityType}] " . $portalUser->name,
                 'demo_token'         => $token,
@@ -163,8 +170,8 @@ class DemoSandboxService
                 'nomor_hukum_bumdes' => $nomorHukum,
             ]);
         } else {
-            // 3. Buat user demo baru terisolasi untuk peserta ini
-            $email = 'demo_' . $portalUser->id . '_' . Str::random(5) . '@academy.portal';
+            // 3. Buat user demo baru terisolasi khusus untuk jenis referral ini
+            $email = 'demo_' . $portalUser->id . '_' . ($referralVal ? 'bumdes' : 'koperasi') . '_' . Str::random(4) . '@academy.portal';
 
             $user = User::create([
                 'name'               => "[Praktikum {$entityType}] " . $portalUser->name,

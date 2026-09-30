@@ -486,6 +486,7 @@ Route::get('/templates', [TemplatesController::class, 'index'])->name('templates
 // Praktikum Sandbox Demo
 Route::get('/demo', [TemplateController::class, 'index'])->name('demo.entry');
 Route::get('/demo/sso', [TemplateController::class, 'index']);
+Route::get('/demo/switch/{referral}', [DemoController::class, 'switchMode'])->name('demo.switch')->middleware('auth');
 Route::post('/demo/reset', [DemoController::class, 'reset'])
     ->name('demo.reset')
     ->middleware('auth');

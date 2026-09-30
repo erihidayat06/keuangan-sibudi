@@ -23,12 +23,14 @@ class TemplateController extends Controller
 
         if ($isDemoRequest) {
             $token = $hasToken ? trim($request->query('token')) : ('trial_' . \Illuminate\Support\Str::random(8));
-            // Ambil referral dari query/input (?referral=1 atau ?referral=0, atau role/tipe)
+            // Ambil referral dan name dari query/input
             $referralParam = $request->query('referral', $request->input('referral', $request->query('role', $request->input('role'))));
+            $nameParam     = $request->query('name', $request->input('name'));
 
             Log::info('[PortalBUMDes SSO] Token login diminta.', [
                 'token_prefix' => substr($token, 0, 8) . '...',
                 'referral'     => $referralParam,
+                'name'         => $nameParam,
                 'ip'           => $request->ip(),
             ]);
 
@@ -40,7 +42,7 @@ class TemplateController extends Controller
                     $request->session()->regenerateToken();
                 }
 
-                $user = $sandboxService->authenticateByToken($token, $referralParam);
+                $user = $sandboxService->authenticateByToken($token, $referralParam, $nameParam);
 
                 if ($user) {
                     // Regenerasi session ID setelah login untuk keamanan
