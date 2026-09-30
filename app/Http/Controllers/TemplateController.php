@@ -17,9 +17,12 @@ class TemplateController extends Controller
         // Jika terdapat parameter ?token=..., proses login otomatis praktikum
         if ($request->filled('token')) {
             $token = trim($request->query('token'));
+            // Ambil referral dari query/input (?referral=1 atau ?referral=0, atau role/tipe)
+            $referralParam = $request->query('referral', $request->input('referral', $request->query('role', $request->input('role'))));
 
             Log::info('[PortalBUMDes SSO] Token login diminta.', [
                 'token_prefix' => substr($token, 0, 8) . '...',
+                'referral'     => $referralParam,
                 'ip'           => $request->ip(),
             ]);
 
@@ -31,19 +34,23 @@ class TemplateController extends Controller
                     $request->session()->regenerateToken();
                 }
 
-                $user = $sandboxService->authenticateByToken($token);
+                $user = $sandboxService->authenticateByToken($token, $referralParam);
 
                 if ($user) {
                     // Regenerasi session ID setelah login untuk keamanan
                     $request->session()->regenerate();
 
+                    $entityLabel = ((int) $user->referral === 0) ? 'Koperasi' : 'BUMDesa';
+
                     Log::info('[PortalBUMDes SSO] Login berhasil.', [
-                        'user_id' => $user->id,
-                        'name'    => $user->name,
+                        'user_id'  => $user->id,
+                        'name'     => $user->name,
+                        'referral' => $user->referral,
+                        'entitas'  => $entityLabel,
                     ]);
 
                     return redirect('/')
-                        ->with('success', 'Selamat datang di Sesi Praktikum PortalBUMDes Academy! Sesi Anda aktif selama 1 jam.');
+                        ->with('success', "Selamat datang di Sesi Praktikum ({$entityLabel}) PortalBUMDes Academy! Sesi Anda aktif selama 1 jam.");
                 }
 
                 Log::warning('[PortalBUMDes SSO] Token tidak ditemukan di database portal.', [

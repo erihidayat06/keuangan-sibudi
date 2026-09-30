@@ -1,14 +1,17 @@
 @if(auth()->check() && auth()->user()->is_demo)
+@php
+    $demoEntityType = ((int) auth()->user()->referral === 0) ? 'Koperasi' : 'BUMDesa';
+@endphp
 <div id="demo-academy-banner" class="alert shadow-sm border-0 mb-3" style="background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%); color: #ffffff; border-radius: 10px;">
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 p-1">
         <div class="d-flex align-items-center gap-2">
             <span class="badge bg-warning text-dark fs-6 px-2 py-1 shadow-sm">
-                🎓 Praktikum Academy
+                🎓 Praktikum {{ $demoEntityType }}
             </span>
             <div>
-                <strong>Sesi Praktikum Aktif:</strong>
+                <strong>Sesi Praktikum {{ $demoEntityType }} Aktif:</strong>
                 <span class="d-block d-md-inline small opacity-90 ms-md-1">
-                    Seluruh fitur terbuka. Data latihan bersifat <strong>sementara</strong> dan akan dibersihkan otomatis.
+                    Seluruh fitur mode {{ $demoEntityType }} terbuka penuh. Data latihan bersifat <strong>sementara</strong> dan akan dibersihkan otomatis.
                 </span>
             </div>
         </div>

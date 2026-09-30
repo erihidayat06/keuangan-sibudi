@@ -45,10 +45,36 @@ class DemoSandboxService
     ];
 
     /**
-     * Authenticate or create a demo user using the portal token.
-     * Untuk bumdespro: user_roles_id = 2 (bumdes)
+     * Normalisasi nilai referral:
+     * 1 = BUMDesa
+     * 0 = Koperasi (BUMDes Bersama)
      */
-    public function authenticateByToken(string $token): ?User
+    public function normalizeReferral($referral = null, $portalUser = null): int
+    {
+        if ($referral !== null && $referral !== '') {
+            $str = strtolower(trim((string) $referral));
+            if (in_array($str, ['1', 'true', 'bumdes', 'bumdesa', 'bumdes_desa'], true)) {
+                return 1;
+            }
+            if (in_array($str, ['0', 'false', 'koperasi', 'bumdes-bersama', 'bumdes_bersama', 'bersama'], true)) {
+                return 0;
+            }
+            return ((int) $referral === 1) ? 1 : 0;
+        }
+
+        if ($portalUser && isset($portalUser->referral)) {
+            return ((int) $portalUser->referral === 1) ? 1 : 0;
+        }
+
+        // Default sesuai sistem praktikum saat ini (0 = Koperasi)
+        return 0;
+    }
+
+    /**
+     * Authenticate or create a demo user using the portal token.
+     * Mendukung referral: 1 = BUMDesa, 0 = Koperasi.
+     */
+    public function authenticateByToken(string $token, $referral = null): ?User
     {
         // 0. Pastikan migrasi kolom is_demo telah tersedia (auto-heal jika belum di-migrate di production)
         if (!Schema::hasColumn('users', 'is_demo')) {
@@ -79,6 +105,14 @@ class DemoSandboxService
             return null;
         }
 
+        // Tentukan nilai referral: 1 = BUMDesa, 0 = Koperasi
+        $referralVal = $this->normalizeReferral($referral, $portalUser);
+        $isKoperasi = ($referralVal === 0);
+        $entityType = $isKoperasi ? 'Koperasi' : 'BUMDesa';
+        $entityName = ($isKoperasi ? 'Koperasi Praktikum ' : 'BUMDes Praktikum ') . $portalUser->name;
+        $alamatBumdes = $isKoperasi ? 'Koperasi Praktikum Academy' : 'Desa Praktikum Academy';
+        $nomorHukum = $isKoperasi ? 'AHU-0000.KOPERASI.2026' : 'AHU-0000.PRAKTIKUM.2026';
+
         // 2. Cek apakah user demo sudah ada untuk token / portal_user_id ini
         $user = User::where('is_demo', true)
             ->where(function ($query) use ($token, $portalUser) {
@@ -88,31 +122,39 @@ class DemoSandboxService
             ->first();
 
         if ($user) {
-            // Cek apakah sesi sebelumnya sudah habis (> 1 jam), bersihkan data lama
-            if ($user->demo_expires_at && now()->greaterThan($user->demo_expires_at)) {
+            $isExpired = $user->demo_expires_at && now()->greaterThan($user->demo_expires_at);
+            $referralChanged = ($user->referral !== null && (int) $user->referral !== $referralVal);
+
+            // Bersihkan data transaksi jika sesi habis atau berganti tipe entitas (misal BUMDes ke Koperasi)
+            if ($isExpired || $referralChanged) {
                 $this->purgeUserData($user->id);
             }
 
-            // Perbarui token, masa aktif 1 jam dari sekarang
+            // Perbarui token, masa aktif 1 jam dari sekarang, dan simpan referral yang diminta
             $user->update([
-                'name'            => '[Praktikum] ' . $portalUser->name,
-                'demo_token'      => $token,
-                'portal_user_id'  => $portalUser->id,
-                'demo_expires_at' => now()->addHour(),
-                'status'          => 1,
-                'tgl_langganan'   => now()->addDays(30),
-                'role'            => 'bumdes',
-                'user_roles_id'   => $user->user_roles_id ?: 2,
+                'name'               => "[Praktikum {$entityType}] " . $portalUser->name,
+                'demo_token'         => $token,
+                'portal_user_id'     => $portalUser->id,
+                'demo_expires_at'    => now()->addHour(),
+                'status'             => 1,
+                'tgl_langganan'      => now()->addDays(30),
+                'role'               => 'bumdes',
+                'referral'           => $referralVal,
+                'user_roles_id'      => $user->user_roles_id ?: 2,
+                'nama_bumdes'        => $entityName,
+                'alamat_bumdes'      => $alamatBumdes,
+                'nomor_hukum_bumdes' => $nomorHukum,
             ]);
         } else {
             // 3. Buat user demo baru terisolasi untuk peserta ini
             $email = 'demo_' . $portalUser->id . '_' . Str::random(5) . '@academy.portal';
 
             $user = User::create([
-                'name'               => '[Praktikum] ' . $portalUser->name,
+                'name'               => "[Praktikum {$entityType}] " . $portalUser->name,
                 'email'              => $email,
                 'password'           => bcrypt(Str::random(16)),
                 'role'               => 'bumdes',
+                'referral'           => $referralVal,
                 'status'             => 1,
                 'tgl_langganan'      => now()->addDays(30),
                 'user_roles_id'      => 2,
@@ -120,9 +162,9 @@ class DemoSandboxService
                 'demo_token'         => $token,
                 'portal_user_id'     => $portalUser->id,
                 'demo_expires_at'    => now()->addHour(),
-                'nama_bumdes'        => 'BUMDes Praktikum ' . $portalUser->name,
-                'alamat_bumdes'      => 'Desa Praktikum Academy',
-                'nomor_hukum_bumdes' => 'AHU-0000.PRAKTIKUM.2026',
+                'nama_bumdes'        => $entityName,
+                'alamat_bumdes'      => $alamatBumdes,
+                'nomor_hukum_bumdes' => $nomorHukum,
             ]);
         }
 
@@ -141,14 +183,33 @@ class DemoSandboxService
     public function initializeBasicData(User $user): void
     {
         $userId = $user->id;
+        $isKoperasi = ((int) $user->referral === 0);
+        $entityName = $user->nama_bumdes ?: ($isKoperasi ? 'Koperasi Praktikum' : 'BUMDes Praktikum');
+        $nomorHukum = $user->nomor_hukum_bumdes ?: ($isKoperasi ? 'AHU-0000.KOPERASI.2026' : 'AHU-0000.PRAKTIKUM.2026');
+
+        if (class_exists(\App\Models\Ekuit::class)) {
+            \App\Models\Ekuit::firstOrCreate(['user_id' => $userId]);
+        }
 
         if (class_exists(\App\Models\Profil::class)) {
-            if (!\App\Models\Profil::where('user_id', $userId)->exists()) {
+            $profil = \App\Models\Profil::where('user_id', $userId)->first();
+            if (!$profil) {
                 \App\Models\Profil::create([
-                    'user_id'            => $userId,
-                    'nama_bumdes'        => $user->nama_bumdes ?: 'BUMDes Praktikum',
-                    'alamat_bumdes'      => $user->alamat_bumdes ?: 'Desa Praktikum Academy',
-                    'nomor_hukum_bumdes' => $user->nomor_hukum_bumdes ?: 'AHU-0000.PRAKTIKUM',
+                    'user_id'       => $userId,
+                    'nm_bumdes'     => $entityName,
+                    'desa'          => 'Desa Praktikum',
+                    'kecamatan'     => 'Kecamatan Academy',
+                    'kabupaten'     => 'Kabupaten Praktikum',
+                    'no_badan'      => $nomorHukum,
+                    'nm_direktur'   => 'Direktur ' . ($isKoperasi ? 'Koperasi' : 'BUMDes'),
+                    'nm_bendahara'  => 'Bendahara ' . ($isKoperasi ? 'Koperasi' : 'BUMDes'),
+                    'nm_pengawas'   => 'Pengawas ' . ($isKoperasi ? 'Koperasi' : 'BUMDes'),
+                    'nm_penasehat'  => 'Penasehat ' . ($isKoperasi ? 'Koperasi' : 'BUMDes'),
+                ]);
+            } else {
+                $profil->update([
+                    'nm_bumdes'     => $entityName,
+                    'no_badan'      => $nomorHukum,
                 ]);
             }
         }

@@ -484,6 +484,8 @@ Route::get('/login', [TemplateController::class, 'index'])
 Route::get('/templates', [TemplatesController::class, 'index'])->name('templates.index');
 
 // Praktikum Sandbox Demo
+Route::get('/demo', [TemplateController::class, 'index'])->name('demo.entry');
+Route::get('/demo/sso', [TemplateController::class, 'index']);
 Route::post('/demo/reset', [DemoController::class, 'reset'])
     ->name('demo.reset')
     ->middleware('auth');
