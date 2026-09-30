@@ -101,8 +101,25 @@ class DemoSandboxService
         // 1. Cari user di database portal
         $portalUser = $this->findPortalUser($token);
 
+        // BEST PRACTICE FALLBACK:
+        // Jika token tidak ditemukan di database portal (misal user baru belum generate token di portal,
+        // atau sedang uji coba/trial langsung via URL dengan token custom/bebas):
+        // Jangan gagal/error! Buatkan Virtual Portal User on-the-fly agar praktikum TETAP BISA BERJALAN.
         if (!$portalUser) {
-            return null;
+            $cleanToken = preg_replace('/[^a-zA-Z0-9_\-]/', '', $token);
+            $tokenSuffix = substr(strtoupper(md5($token)), 0, 4);
+            $displayName = (!empty($cleanToken) && strlen($cleanToken) <= 20 && !is_numeric($cleanToken))
+                ? ucfirst($cleanToken)
+                : 'Peserta ' . $tokenSuffix;
+
+            $portalUser = (object) [
+                'id'       => abs(crc32($token)),
+                'name'     => $displayName,
+                'email'    => 'demo_' . strtolower($tokenSuffix) . '@academy.portal',
+                'referral' => $referral,
+            ];
+
+            Log::info("[PortalBUMDes SSO] Token '{$token}' tidak ada di portal DB. Dibuatkan Virtual User '{$displayName}' on-the-fly.");
         }
 
         // Tentukan nilai referral: 1 = BUMDesa, 0 = Koperasi

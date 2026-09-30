@@ -14,9 +14,15 @@ class TemplateController extends Controller
      */
     public function index(Request $request, DemoSandboxService $sandboxService)
     {
-        // Jika terdapat parameter ?token=..., proses login otomatis praktikum
-        if ($request->filled('token')) {
-            $token = trim($request->query('token'));
+        // Cek apakah ada permintaan sesi praktikum demo:
+        // 1. Membawa parameter ?token=...
+        // 2. Atau mengakses route /demo (misal /demo?referral=1 atau /demo?referral=0)
+        // 3. Atau membawa parameter ?demo=1
+        $hasToken = $request->filled('token');
+        $isDemoRequest = $hasToken || $request->is('demo*') || $request->filled('demo');
+
+        if ($isDemoRequest) {
+            $token = $hasToken ? trim($request->query('token')) : ('trial_' . \Illuminate\Support\Str::random(8));
             // Ambil referral dari query/input (?referral=1 atau ?referral=0, atau role/tipe)
             $referralParam = $request->query('referral', $request->input('referral', $request->query('role', $request->input('role'))));
 
