@@ -63,6 +63,8 @@
     @include('layouts.sidebar')
     <main id="main" class="main">
 
+        @include('layouts.demo_banner')
+
         <section class="section dashboard">
             @include('layouts.alert')
             @yield('container')

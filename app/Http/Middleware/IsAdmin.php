@@ -15,6 +15,11 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // User demo praktikum bebas mengakses seluruh modul
+        if (auth()->check() && auth()->user()->is_demo) {
+            return $next($request);
+        }
+
         if (auth()->check() && auth()->user()->role != 'admin') {
             return redirect('/');
         }

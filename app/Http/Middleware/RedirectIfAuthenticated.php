@@ -19,6 +19,11 @@ class RedirectIfAuthenticated
     {
         $guards = empty($guards) ? [null] : $guards;
 
+        // Jika sedang membawa token praktikum atau mengakses endpoint demo/referral, biarkan lanjut agar diproses login/switch mode baru
+        if ($request->filled('token') || $request->is('demo*') || $request->has('referral') || $request->filled('demo')) {
+            return $next($request);
+        }
+
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
                 return redirect(RouteServiceProvider::HOME);
