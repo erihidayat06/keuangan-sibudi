@@ -23,7 +23,7 @@ class LaporanPerubahanModalController extends Controller
 
         // dd($tahun);
 
-        // dd(labaRugiTahun($tahun)['totalLabaRugi']);
+        // dd(labaRugi($tahun)['totalLabaRugi']);
 
 
         return view('laporan_perubahan_modal.index', [
@@ -48,14 +48,13 @@ class LaporanPerubahanModalController extends Controller
 
 
 
-
         $data = [
             'modal_desa' => $modal_desa,
             'modal_masyarakat' => $modal_masyarakat,
             'modal_bersama' => $modal_bersama,
             'ekuitas' => $ekuitas,
             'ditahan' => $neraca['ditahan'],
-            'laba_berjalan' => labaRugiTahun($tahun)['totalLabaRugi']
+            'laba_berjalan' => labaRugi($tahun)['totalLabaRugi']
         ];
 
         // Gunakan facade PDF
@@ -103,8 +102,8 @@ class LaporanPerubahanModalController extends Controller
     {
 
         $id = rendem();
-        $hasil = labaRugiTahun($ekuit->tahun)['totalLabaRugi'] > 0 ? 'Untung' : 'Rugi';
-        $labaRugi =   labaRugiTahun($ekuit->tahun)['totalLabaRugi'];
+        $hasil = labaRugi($ekuit->tahun)['totalLabaRugi'] > 0 ? 'Untung' : 'Rugi';
+        $labaRugi =   labaRugi($ekuit->tahun)['totalLabaRugi'];
 
 
         $dataDitahan = [
