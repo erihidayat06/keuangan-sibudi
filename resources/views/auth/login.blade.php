@@ -28,17 +28,43 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <style>
-    .margin-top {
-      margin-top: 100px !important;
+    /* Login Grid Layout (Responsive Desktop & Mobile) */
+    .login-grid-wrapper {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      grid-template-areas: 
+        "welcome login"
+        "portals login";
+      column-gap: 40px;
+      row-gap: 16px;
+      align-items: start;
+      max-width: 1080px;
+      margin: 100px auto 40px auto;
     }
 
-    @media only screen and (max-width: 768px) {
-      .margin-top {
-        margin-top: 80px !important;
-      }
+    .welcome-header-section {
+      grid-area: welcome;
+    }
 
-      .welcome-wrapper {
-        margin-top: 30px !important;
+    .portals-section {
+      grid-area: portals;
+    }
+
+    .login-card-section {
+      grid-area: login;
+    }
+
+    @media only screen and (max-width: 991.98px) {
+      .login-grid-wrapper {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+          "welcome"
+          "login"
+          "portals";
+        row-gap: 20px;
+        margin: 80px auto 30px auto;
+        max-width: 480px;
+        padding: 0 12px;
       }
 
       .kontak {
@@ -615,84 +641,22 @@
     <div class="container">
       <section class="">
         <div class="container">
-          <div class="row align-items-center justify-content-center">
+          <div class="login-grid-wrapper">
 
-            <!-- LEFT on desktop (order-lg-1), BOTTOM on mobile (order-2): Welcome & Portals -->
-            <div class="col-lg-7 col-xl-8 d-flex align-items-center justify-content-center welcome-wrapper order-2 order-lg-1" style="margin:auto; margin-top: 100px;">
-              <div class="welcome-col text-center">
-
-                <div class="welcome-header">
-                  <div class="welcome-text text-center text-lg-start">
-                    <h2 class="fw-bold">Selamat Datang</h2>
-                    <h2 class="fw-bold">di BUMDES PRO</h2>
-                  </div>
-
-                  <img src="/assets/img/akuntansi.png" alt="akuntansi" class="welcome-img">
+            <!-- 1. WELCOME HEADER (Top on Mobile, Top-Left on Desktop) -->
+            <div class="welcome-header-section text-center">
+              <div class="welcome-header justify-content-center">
+                <div class="welcome-text text-center">
+                  <h2 class="fw-bold">Selamat Datang</h2>
+                  <h2 class="fw-bold">di BUMDES PRO</h2>
                 </div>
-
-                <!-- Portal & Praktikum Group -->
-                <div class="portal-group">
-
-                  <!-- 1. Mode Praktikum (BUMDesa & Koperasi) -->
-                  <div class="praktikum-card-box text-start">
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                      <span class="badge bg-primary-subtle text-primary fw-bold px-2 py-1 rounded-pill" style="font-size: 11px;">
-                        <i class="fa-solid fa-flask me-1"></i> Mode Praktikum Gratis
-                      </span>
-                      <small class="text-muted fw-semibold" style="font-size: 11px;">Akses Demo 1 Jam</small>
-                    </div>
-                    <p class="text-muted small mb-3" style="font-size: 12px; line-height: 1.45;">
-                      Coba langsung simulasi input pembukuan dan laporan keuangan tanpa perlu registrasi:
-                    </p>
-                    <div class="d-flex flex-column flex-sm-row gap-2">
-                      <a href="{{ $bumdesproBumdesaUrl ?? ($bumdesproUrl ?? 'https://bumdespro.my.id/login?token=0g8fICqkVABCIgboebqLkuJnDcrdjXz833lg9uyo&referral=1') }}" target="_blank" class="btn-praktikum-action btn-praktikum-bumdes flex-fill">
-                        <i class="fa-solid fa-rocket"></i> Coba Gratis BUMDesa
-                      </a>
-                      <a href="{{ $bumdesproKoperasiUrl ?? 'https://bumdespro.my.id/login?token=0g8fICqkVABCIgboebqLkuJnDcrdjXz833lg9uyo&referral=0' }}" target="_blank" class="btn-praktikum-action btn-praktikum-koperasi flex-fill">
-                        <i class="fa-solid fa-rocket"></i> Coba Gratis Koperasi
-                      </a>
-                    </div>
-                  </div>
-
-                  <!-- 2. BUMDes Academy -->
-                  <a href="https://portalbumdes.com/academy" target="_blank" class="portal-action-btn">
-                    <div class="d-flex align-items-center">
-                      <div class="btn-icon-box" style="background: #ecfdf5; color: #059669;">
-                        <i class="fa-solid fa-graduation-cap"></i>
-                      </div>
-                      <div class="text-start">
-                        <div class="fw-bold" style="font-size: 14px; color: #0f172a;">BUMDes Academy</div>
-                        <div class="text-muted" style="font-size: 11px;">Lihat tutorial dan coba gratis</div>
-                      </div>
-                    </div>
-                    <div class="btn-arrow-box">
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </div>
-                  </a>
-
-                  <!-- 3. Halaman Tentang Aplikasi Keuangan BUMDes -->
-                  <a href="https://bumdespro.com" target="_blank" class="portal-action-btn">
-                    <div class="d-flex align-items-center">
-                      <div class="btn-icon-box" style="background: #eff6ff; color: #2563eb;">
-                        <i class="fa-solid fa-globe"></i>
-                      </div>
-                      <div class="text-start">
-                        <div class="fw-bold" style="font-size: 14px; color: #0f172a;">Tentang Aplikasi BUMDES PRO</div>
-                        <div class="text-muted" style="font-size: 11px;">Profil Fitur, Portofolio & Informasi bumdespro.com</div>
-                      </div>
-                    </div>
-                    <div class="btn-arrow-box">
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </div>
-                  </a>
-
-                </div>
+                <img src="/assets/img/akuntansi.png" alt="akuntansi" class="welcome-img">
               </div>
             </div>
 
-            <!-- RIGHT on desktop (order-lg-2), TOP on mobile (order-1): Login Card -->
-            <div class="col-lg-5 col-xl-4 mt-3 margin-top order-1 order-lg-2">
-              <div class="card mb-3">
+            <!-- 2. LOGIN CARD (Middle on Mobile, Right Column on Desktop) -->
+            <div class="login-card-section">
+              <div class="card mb-0 shadow-sm" style="border-radius: 16px; border: 1.5px solid #e2e8f0;">
                 <div class="card-body">
                   <div class="pt-4 pb-2">
                     <h5 class="card-title text-center pb-0 fs-6">Aplikasi Pembukuan dan Pelaporan Keuangan BUMDesa, Silahkan Login Akun Anda</h5>
@@ -771,7 +735,67 @@
               </div>
             </div>
 
-          </div> <!-- End Login & Welcome Row -->
+            <!-- 3. PORTAL & PRAKTIKUM GROUP (Bottom on Mobile, Bottom-Left on Desktop) -->
+            <div class="portals-section">
+              <div class="portal-group mx-auto">
+
+                <!-- 1. Mode Praktikum (BUMDesa & Koperasi) -->
+                <div class="praktikum-card-box text-start">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="badge bg-primary-subtle text-primary fw-bold px-2 py-1 rounded-pill" style="font-size: 11px;">
+                      <i class="fa-solid fa-flask me-1"></i> Mode Praktikum Gratis
+                    </span>
+                    <small class="text-muted fw-semibold" style="font-size: 11px;">Akses Demo 1 Jam</small>
+                  </div>
+                  <p class="text-muted small mb-3" style="font-size: 12px; line-height: 1.45;">
+                    Coba langsung simulasi input pembukuan dan laporan keuangan tanpa perlu registrasi:
+                  </p>
+                  <div class="d-flex flex-column flex-sm-row gap-2">
+                    <a href="{{ $bumdesproBumdesaUrl ?? ($bumdesproUrl ?? 'https://bumdespro.my.id/login?token=0g8fICqkVABCIgboebqLkuJnDcrdjXz833lg9uyo&referral=1') }}" target="_blank" class="btn-praktikum-action btn-praktikum-bumdes flex-fill">
+                      <i class="fa-solid fa-rocket"></i> Coba Gratis BUMDesa
+                    </a>
+                    <a href="{{ $bumdesproKoperasiUrl ?? 'https://bumdespro.my.id/login?token=0g8fICqkVABCIgboebqLkuJnDcrdjXz833lg9uyo&referral=0' }}" target="_blank" class="btn-praktikum-action btn-praktikum-koperasi flex-fill">
+                      <i class="fa-solid fa-rocket"></i> Coba Gratis Koperasi
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 2. BUMDes Academy -->
+                <a href="https://portalbumdes.com/academy" target="_blank" class="portal-action-btn">
+                  <div class="d-flex align-items-center">
+                    <div class="btn-icon-box" style="background: #ecfdf5; color: #059669;">
+                      <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div class="text-start">
+                      <div class="fw-bold" style="font-size: 14px; color: #0f172a;">BUMDes Academy</div>
+                      <div class="text-muted" style="font-size: 11px;">Lihat tutorial dan coba gratis</div>
+                    </div>
+                  </div>
+                  <div class="btn-arrow-box">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </div>
+                </a>
+
+                <!-- 3. Halaman Tentang Aplikasi Keuangan BUMDes -->
+                <a href="https://bumdespro.com" target="_blank" class="portal-action-btn">
+                  <div class="d-flex align-items-center">
+                    <div class="btn-icon-box" style="background: #eff6ff; color: #2563eb;">
+                      <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <div class="text-start">
+                      <div class="fw-bold" style="font-size: 14px; color: #0f172a;">Tentang Aplikasi BUMDES PRO</div>
+                      <div class="text-muted" style="font-size: 11px;">Profil Fitur, Portofolio & Informasi bumdespro.com</div>
+                    </div>
+                  </div>
+                  <div class="btn-arrow-box">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </div>
+                </a>
+
+              </div>
+            </div>
+
+          </div> <!-- End Login Grid Wrapper -->
 
           <!-- BAGIAN BAWAH: 4 CARD EKOSISTEM APLIKASI & PRODUK DIGITAL -->
           <div class="ecosystem-section">
