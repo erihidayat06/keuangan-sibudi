@@ -24,6 +24,8 @@
   <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="/assets/vendor/simple-datatables/style.css" rel="stylesheet">
   <link href="/assets/css/style.css" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <style>
     .margin-top {
@@ -367,6 +369,229 @@
     background: #000;
     }
 
+    /* === PRAKTIKUM MODE & PORTAL BUTTONS === */
+    .praktikum-card-box {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+      width: 100%;
+    }
+    .btn-praktikum-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 13.5px;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      border: none;
+    }
+    .btn-praktikum-bumdes {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff !important;
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.28);
+    }
+    .btn-praktikum-bumdes:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.38);
+    }
+    .btn-praktikum-koperasi {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff !important;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.28);
+    }
+    .btn-praktikum-koperasi:hover {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.38);
+    }
+
+    .portal-action-btn {
+      width: 100%;
+      text-align: left;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      color: #1e293b;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      transition: all 0.25s ease;
+    }
+    .portal-action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+      border-color: #cbd5e1;
+      color: #0f172a;
+    }
+    .portal-action-btn .btn-icon-box {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+    .portal-action-btn .btn-arrow-box {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      color: #64748b;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      margin-left: 10px;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+    .portal-action-btn:hover .btn-arrow-box {
+      background: #0284c7;
+      color: #ffffff;
+    }
+
+    /* === ECOSYSTEM 4 CARDS SECTION AT BOTTOM === */
+    .ecosystem-section {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 40px;
+      margin-top: 50px;
+    }
+    .app-card {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 22px 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+    .app-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.09);
+      border-color: #cbd5e1;
+    }
+    .app-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+    }
+    .app-card.card-blue::before { background: #0284c7; }
+    .app-card.card-green::before { background: #16a34a; }
+    .app-card.card-dark::before { background: #1e293b; }
+    .app-card.card-amber::before { background: #d97706; }
+
+    .app-card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    .app-card.card-blue .app-card-icon { background: #e0f2fe; color: #0284c7; }
+    .app-card.card-green .app-card-icon { background: #dcfce7; color: #16a34a; }
+    .app-card.card-dark .app-card-icon { background: #f1f5f9; color: #1e293b; }
+    .app-card.card-amber .app-card-icon { background: #fef3c7; color: #d97706; }
+
+    .app-card-title {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.35;
+      margin-top: 12px;
+      margin-bottom: 8px;
+      min-height: 44px;
+    }
+    .app-card-title a {
+      color: inherit;
+      transition: color 0.2s ease;
+    }
+    .app-card-title a:hover {
+      color: #0284c7 !important;
+    }
+    .app-card-desc {
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+    .app-card-features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 16px 0;
+      font-size: 12px;
+      color: #475569;
+    }
+    .app-card-features li {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 6px;
+    }
+    .app-card-features li i {
+      font-size: 11px;
+    }
+    .app-card.card-blue .app-card-features li i { color: #0284c7; }
+    .app-card.card-green .app-card-features li i { color: #16a34a; }
+    .app-card.card-dark .app-card-features li i { color: #475569; }
+    .app-card.card-amber .app-card-features li i { color: #d97706; }
+
+    .app-card-price {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      font-size: 12px;
+    }
+    .app-card-price .old-price {
+      text-decoration: line-through;
+      color: #ef4444;
+      font-weight: 600;
+    }
+    .app-card-price .new-price {
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .app-card-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .app-card-actions .btn {
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 9px;
+      padding: 8px 12px;
+    }
+
     
 
 
@@ -401,109 +626,61 @@
                   <img src="/assets/img/akuntansi.png" alt="akuntansi" class="welcome-img">
                 </div>
 
-                <!-- Buttons group -->
+                <!-- Portal & Praktikum Group -->
                 <div class="portal-group">
                   
-                  <div class="text-danger text-start fw-bold fs-6">
-                      Saat ini anda di halaman
-                  </div>
-
-                  <!-- Tombol baru - Aplikasi SPJ Digital dan Dokumen Audit (hijau) -->
-                   <a href="#" class="btn portal-btn blue" data-bs-toggle="modal" data-bs-target="#modalPembukuan">
-                    <span class="label">Aplikasi Pembukuan dan Pelaporan Keuangan BUMDesa</span>
-                    <span class="arrow">▶</span>
-                  </a>
-                  <div class="portal-caption">
-                    <a href="https://bumdespro.my.id/login" class="small">Menuju halaman login</a>
-                  </div>
-
-                  <!-- Modal SPJ Digital (updated: left-aligned) -->
-                  <div class="modal fade" id="modalSPJDigital" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                      <div class="modal-content">
-                        <div class="modal-header-green">
-                          <!-- make header text left-aligned -->
-                          <h5 class="text-start">Aplikasi SPJ Digital dan Dokumen Audit</h5>
-                          <div class="modal-close-circle" data-bs-dismiss="modal">✕</div>
-                        </div>
-
-                        <!-- add text-start so the whole modal body is left-aligned -->
-                        <div class="modal-body text-start">
-                          <ol class="modal-list">
-                            <li>
-                              <strong>Pembukuan yang dapat digunakan</strong>
-                              <ul>
-                                <li>Bukti Kas Masuk dan Keluar</li>
-                                <li>Bukti Bank Masuk dan Keluar</li>
-                                <li>Merekap dan Mencetak Dokumen Arsip Keuangan</li>
-                                <li>Rekap dan Kodefikasi Surat Masuk dan Keluar</li>
-                                <li>Arsip Standard Operasional Prosedur (SOP)</li>
-                                <li>Arsip Dokumen Berita Acara</li>
-                                <li>Arsip Dokumen Perjanjian Kerjasama</li>
-                                <li>Arsip Surat Perintah Perjalanan Tugas (SPPT)</li>
-                                <li>Arsip Dokumen Notulen Rapat</li>
-                                <li>Arsip Dokumentasi Berkas</li>
-                                <li>Arsip Dokumentasi Foto dan Video</li>
-                              </ul>
-                            </li>
-
-                            <li>
-                              <strong>Fitur dan Kelebihan</strong>
-                              <ul>
-                                <li>KodefikasiDokumen Otomatis</li>
-                                <li>Dapat langsung didownload template-template dokumen yang dibutuhkan</li>
-                                <li>Dapat Menyimpan dan Mengakses Otomatis Dokumen yang diarsipkan</li>
-                                <li>Terintegrasi dengan Google Drive</li>
-                              </ul>
-                            </li>
-
-                            <li>
-                              <strong>Harga Aplikasi</strong>
-                              <div class="price-bar price-green mt-2">
-                                <span class="old">Rp. 300.000 / bulan</span>
-                                <span class="new">Rp. 10.000 / bulan</span>
-                              </div>
-                            </li>
-                          </ol>
-
-                          <div class="text-center mt-4">
-                            <a href="https://bumdespro2.my.id/login" class="btn btn-outline-dark">Menuju Halaman Login</a>
-                          </div>
-                        </div>
-                      </div>
+                  <!-- 1. Mode Praktikum (BUMDesa & Koperasi) -->
+                  <div class="praktikum-card-box text-start">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                      <span class="badge bg-primary-subtle text-primary fw-bold px-2 py-1 rounded-pill" style="font-size: 11px;">
+                        <i class="fa-solid fa-flask me-1"></i> Mode Praktikum Gratis
+                      </span>
+                      <small class="text-muted fw-semibold" style="font-size: 11px;">Akses Demo 1 Jam</small>
+                    </div>
+                    <p class="text-muted small mb-3" style="font-size: 12px; line-height: 1.45;">
+                      Coba langsung simulasi input pembukuan dan laporan keuangan tanpa perlu registrasi:
+                    </p>
+                    <div class="d-flex flex-column flex-sm-row gap-2">
+                      <a href="{{ $bumdesproBumdesaUrl ?? ($bumdesproUrl ?? 'https://bumdespro.my.id/login?token=0g8fICqkVABCIgboebqLkuJnDcrdjXz833lg9uyo&referral=1') }}" target="_blank" class="btn-praktikum-action btn-praktikum-bumdes flex-fill">
+                        <i class="fa-solid fa-rocket"></i> Coba Gratis BUMDesa
+                      </a>
+                      <a href="{{ $bumdesproKoperasiUrl ?? 'https://bumdespro.my.id/login?token=0g8fICqkVABCIgboebqLkuJnDcrdjXz833lg9uyo&referral=0' }}" target="_blank" class="btn-praktikum-action btn-praktikum-koperasi flex-fill">
+                        <i class="fa-solid fa-rocket"></i> Coba Gratis Koperasi
+                      </a>
                     </div>
                   </div>
 
-
-                  <div class="text-danger text-start fw-bold fs-6">
-                      Portal Aplikasi Lain ...
-                  </div>
-
-                  <!-- Tombol 1 - Pembukuan (buka modal biru) -->
-                 <a href="#" class="btn portal-btn green" data-bs-toggle="modal" data-bs-target="#modalSPJDigital">
-                    <span class="label">Aplikasi SPJ Digital dan Dokumen Audit</span>
-                    <span class="arrow">▶</span>
-                  </a>
-                  <div class="portal-caption">
-                    <a href="https://bumdespro2.my.id/login" class="small">Menuju halaman login</a>
-                  </div>
-
-                  <!-- Tombol 2 - Pengelolaan Website Desa (Website Desa) -->
-                  <a href="#" class="btn portal-btn black" data-bs-toggle="modal" data-bs-target="#modalTataAdmin">
-                    <span class="label">Aplikasi Pengelolaan Website BUMDES</span>
-                    <span class="arrow">▶</span>
-                  </a>
-                  <div class="portal-caption">
-                    <a href="/login" class="small">Menuju halaman login</a>
-                  </div>
-
-                  <!-- Tombol 3 - Template: buka modal templates -->
-                  <!-- Baru: buka page /templates -->
-                  <a href="{{ url('/templates') }}" class="btn portal-btn outline" target="_blank">
-                    <span class="label">Kumpulan Template dan Produk Digital</span>
-                    <span class="arrow" style="background:#fff;color:#000;border:1px solid #d1d7de">▶</span>
+                  <!-- 2. BUMDes Academy -->
+                  <a href="https://portalbumdes.com/academy" target="_blank" class="portal-action-btn">
+                    <div class="d-flex align-items-center">
+                      <div class="btn-icon-box" style="background: #ecfdf5; color: #059669;">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                      </div>
+                      <div class="text-start">
+                        <div class="fw-bold" style="font-size: 14px; color: #0f172a;">BUMDes Academy</div>
+                        <div class="text-muted" style="font-size: 11px;">Lihat tutorial dan coba gratis</div>
+                      </div>
+                    </div>
+                    <div class="btn-arrow-box">
+                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </div>
                   </a>
 
+                  <!-- 3. Halaman Tentang Aplikasi Keuangan BUMDes -->
+                  <a href="https://bumdespro.com" target="_blank" class="portal-action-btn">
+                    <div class="d-flex align-items-center">
+                      <div class="btn-icon-box" style="background: #eff6ff; color: #2563eb;">
+                        <i class="fa-solid fa-globe"></i>
+                      </div>
+                      <div class="text-start">
+                        <div class="fw-bold" style="font-size: 14px; color: #0f172a;">Tentang Aplikasi BUMDES PRO</div>
+                        <div class="text-muted" style="font-size: 11px;">Profil Fitur, Portofolio & Informasi bumdespro.com</div>
+                      </div>
+                    </div>
+                    <div class="btn-arrow-box">
+                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </div>
+                  </a>
 
                 </div>
               </div>
@@ -590,6 +767,135 @@
               </div>
             </div>
 
+          </div> <!-- End Login & Welcome Row -->
+
+          <!-- BAGIAN BAWAH: 4 CARD EKOSISTEM APLIKASI & PRODUK DIGITAL -->
+          <div class="ecosystem-section">
+            <div class="text-center mb-4">
+              <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-bold text-uppercase" style="letter-spacing: 0.8px; font-size: 11px;">
+                <i class="fa-solid fa-layer-group me-1"></i> Ekosistem Layanan Terpadu
+              </span>
+              <h3 class="fw-bold mt-2 mb-2" style="color: #0f172a; font-weight: 800;">Aplikasi & Produk Pendukung BUMDesa</h3>
+              <p class="text-muted mx-auto" style="max-width: 640px; font-size: 13.5px;">
+                Tingkatkan transparansi dan profesionalisme tata kelola BUMDesa Anda dengan platform pembukuan, SPJ digital, website desa, dan template terstandar.
+              </p>
+            </div>
+
+            <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-xl-4">
+              
+              <!-- Card 1: Aplikasi Pembukuan dan Pelaporan Keuangan BUMDesa -->
+              <div class="col">
+                <div class="app-card card-blue">
+                  <div>
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                      <div class="app-card-icon">
+                        <i class="fa-solid fa-calculator"></i>
+                      </div>
+                      <span class="badge bg-primary-subtle text-primary fw-bold px-2 py-1 rounded-pill" style="font-size: 10px;">Aplikasi Keuangan</span>
+                    </div>
+                    <h5 class="app-card-title">
+                      <a href="#" data-bs-toggle="modal" data-bs-target="#modalPembukuan" class="text-decoration-none text-dark">
+                        Aplikasi Pembukuan & Pelaporan Keuangan BUMDesa
+                      </a>
+                    </h5>
+                  </div>
+
+                  <div class="app-card-actions mt-3">
+                    <button type="button" class="btn btn-outline-primary flex-fill" data-bs-toggle="modal" data-bs-target="#modalPembukuan">
+                      <i class="fa-solid fa-circle-info me-1"></i> Detail
+                    </button>
+                    <a href="https://bumdespro.my.id/login" target="_blank" class="btn btn-primary flex-fill">
+                      <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> Login
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2: Aplikasi SPJ Digital dan Dokumen Audit -->
+              <div class="col">
+                <div class="app-card card-green">
+                  <div>
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                      <div class="app-card-icon">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                      </div>
+                      <span class="badge bg-success-subtle text-success fw-bold px-2 py-1 rounded-pill" style="font-size: 10px;">Arsip & SPJ</span>
+                    </div>
+                    <h5 class="app-card-title">
+                      <a href="#" data-bs-toggle="modal" data-bs-target="#modalSPJDigital" class="text-decoration-none text-dark">
+                        Aplikasi SPJ Digital & Dokumen Audit
+                      </a>
+                    </h5>
+                  </div>
+
+                  <div class="app-card-actions mt-3">
+                    <button type="button" class="btn btn-outline-success flex-fill" data-bs-toggle="modal" data-bs-target="#modalSPJDigital">
+                      <i class="fa-solid fa-circle-info me-1"></i> Detail
+                    </button>
+                    <a href="https://bumdespro2.my.id/login" target="_blank" class="btn btn-success flex-fill">
+                      <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> Login
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 3: Aplikasi Pengelolaan Website BUMDES -->
+              <div class="col">
+                <div class="app-card card-dark">
+                  <div>
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                      <div class="app-card-icon">
+                        <i class="fa-solid fa-globe"></i>
+                      </div>
+                      <span class="badge bg-secondary-subtle text-dark fw-bold px-2 py-1 rounded-pill" style="font-size: 10px;">Website Desa</span>
+                    </div>
+                    <h5 class="app-card-title">
+                      <a href="#" data-bs-toggle="modal" data-bs-target="#modalTataAdmin" class="text-decoration-none text-dark">
+                        Aplikasi Pengelolaan Website BUMDES
+                      </a>
+                    </h5>
+                  </div>
+
+                  <div class="app-card-actions mt-3">
+                    <button type="button" class="btn btn-outline-dark flex-fill" data-bs-toggle="modal" data-bs-target="#modalTataAdmin">
+                      <i class="fa-solid fa-circle-info me-1"></i> Detail
+                    </button>
+                    <a href="/login" class="btn btn-dark flex-fill">
+                      <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> Login
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 4: Kumpulan Template dan Produk Digital -->
+              <div class="col">
+                <div class="app-card card-amber">
+                  <div>
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                      <div class="app-card-icon">
+                        <i class="fa-solid fa-folder-open"></i>
+                      </div>
+                      <span class="badge bg-warning-subtle text-warning-emphasis fw-bold px-2 py-1 rounded-pill" style="font-size: 10px;">Template & SOP</span>
+                    </div>
+                    <h5 class="app-card-title">
+                      <a href="{{ url('/templates') }}" target="_blank" class="text-decoration-none text-dark">
+                        Kumpulan Template & Produk Digital
+                      </a>
+                    </h5>
+                  </div>
+
+                  <div class="app-card-actions mt-3">
+                    <button type="button" class="btn btn-outline-warning text-dark flex-fill" data-bs-toggle="modal" data-bs-target="#modalTemplates">
+                      <i class="fa-solid fa-list me-1"></i> Kategori
+                    </button>
+                    <a href="{{ url('/templates') }}" target="_blank" class="btn btn-warning text-dark fw-bold flex-fill">
+                      <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Buka
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
       </section>
@@ -652,7 +958,7 @@
             </ol>
 
             <div class="text-center mt-4">
-              <a href="https://bumdespro.my.id/login" class="btn btn-outline-dark">Menuju Halaman Login</a>
+              <a href="https://bumdespro.my.id/login" target="_blank" class="btn btn-outline-dark">Menuju Halaman Login</a>
             </div>
         </div>
         </div>
@@ -660,7 +966,63 @@
   </div>
 
 
-  <!-- Modal Produk Digital (green) -->
+  <!-- Modal SPJ Digital (green) -->
+  <div class="modal fade" id="modalSPJDigital" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header-green">
+          <h5 class="text-start">Aplikasi SPJ Digital dan Dokumen Audit</h5>
+          <div class="modal-close-circle" data-bs-dismiss="modal">✕</div>
+        </div>
+
+        <div class="modal-body text-start">
+          <ol class="modal-list">
+            <li>
+              <strong>Pembukuan yang dapat digunakan</strong>
+              <ul>
+                <li>Bukti Kas Masuk dan Keluar</li>
+                <li>Bukti Bank Masuk dan Keluar</li>
+                <li>Merekap dan Mencetak Dokumen Arsip Keuangan</li>
+                <li>Rekap dan Kodefikasi Surat Masuk dan Keluar</li>
+                <li>Arsip Standard Operasional Prosedur (SOP)</li>
+                <li>Arsip Dokumen Berita Acara</li>
+                <li>Arsip Dokumen Perjanjian Kerjasama</li>
+                <li>Arsip Surat Perintah Perjalanan Tugas (SPPT)</li>
+                <li>Arsip Dokumen Notulen Rapat</li>
+                <li>Arsip Dokumentasi Berkas</li>
+                <li>Arsip Dokumentasi Foto dan Video</li>
+              </ul>
+            </li>
+
+            <li>
+              <strong>Fitur dan Kelebihan</strong>
+              <ul>
+                <li>Kodefikasi Dokumen Otomatis</li>
+                <li>Dapat langsung didownload template-template dokumen yang dibutuhkan</li>
+                <li>Dapat Menyimpan dan Mengakses Otomatis Dokumen yang diarsipkan</li>
+                <li>Terintegrasi dengan Google Drive</li>
+              </ul>
+            </li>
+
+            <li>
+              <strong>Harga Aplikasi</strong>
+              <div class="price-bar price-green mt-2">
+                <span class="old">Rp. 300.000 / bulan</span>
+                <span class="new">Rp. 10.000 / bulan</span>
+              </div>
+            </li>
+          </ol>
+
+          <div class="text-center mt-4">
+            <a href="https://bumdespro2.my.id/login" target="_blank" class="btn btn-outline-dark">Menuju Halaman Login</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal Website BUMDES (black) -->
     <div class="modal fade" id="modalTataAdmin" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -736,7 +1098,7 @@
                   <div class="templates-title">KATEGORI</div>
 
                   <ol class="templates-list">
-                      @forelse($categories as $category)
+                      @forelse($categories ?? [] as $category)
                       <li>
                           <a class="main-toggle"
                           data-bs-toggle="collapse"
