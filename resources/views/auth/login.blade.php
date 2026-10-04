@@ -29,12 +29,16 @@
 
   <style>
     .margin-top {
-      margin-top: 150px !important;
+      margin-top: 100px !important;
     }
 
     @media only screen and (max-width: 768px) {
       .margin-top {
-        margin-top: 10px !important;
+        margin-top: 80px !important;
+      }
+
+      .welcome-wrapper {
+        margin-top: 30px !important;
       }
 
       .kontak {
@@ -611,10 +615,10 @@
     <div class="container">
       <section class="">
         <div class="container">
-          <div class="row cols-1 cols-lg-2">
+          <div class="row align-items-center justify-content-center">
 
-            <!-- LEFT: welcome panel for large screens -->
-            <div class="col d-flex align-items-center justify-content-center d-flex welcome-wrapper" style="margin:auto; margin-top: 100px;">
+            <!-- LEFT on desktop (order-lg-1), BOTTOM on mobile (order-2): Welcome & Portals -->
+            <div class="col-lg-7 col-xl-8 d-flex align-items-center justify-content-center welcome-wrapper order-2 order-lg-1" style="margin:auto; margin-top: 100px;">
               <div class="welcome-col text-center">
 
                 <div class="welcome-header">
@@ -628,7 +632,7 @@
 
                 <!-- Portal & Praktikum Group -->
                 <div class="portal-group">
-                  
+
                   <!-- 1. Mode Praktikum (BUMDesa & Koperasi) -->
                   <div class="praktikum-card-box text-start">
                     <div class="d-flex align-items-center justify-content-between mb-2">
@@ -686,8 +690,8 @@
               </div>
             </div>
 
-            <!-- RIGHT: login card -->
-            <div class="col-lg-4 mt-3 margin-top">
+            <!-- RIGHT on desktop (order-lg-2), TOP on mobile (order-1): Login Card -->
+            <div class="col-lg-5 col-xl-4 mt-3 margin-top order-1 order-lg-2">
               <div class="card mb-3">
                 <div class="card-body">
                   <div class="pt-4 pb-2">
