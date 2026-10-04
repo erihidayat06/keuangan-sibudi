@@ -2,8 +2,6 @@
     @php
         $isKoperasi = (int) auth()->user()->referral === 0;
         $demoEntityType = $isKoperasi ? 'Koperasi' : 'BUMDesa';
-        $targetSwitchRef = $isKoperasi ? 1 : 0;
-        $targetSwitchLabel = $isKoperasi ? 'BUMDesa' : 'Koperasi';
     @endphp
     <div id="demo-academy-banner" class="alert shadow-sm border-0 mb-3"
         style="background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%); color: #ffffff; border-radius: 10px;">
@@ -21,10 +19,10 @@
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2 ms-auto">
-                <a href="{{ route('demo.switch', $targetSwitchRef) }}"
-                    class="btn btn-sm btn-outline-light fw-semibold px-2 py-1 rounded-pill shadow-sm"
-                    title="Klik untuk beralih ke mode {{ $targetSwitchLabel }}">
-                    <i class="bi bi-arrow-left-right"></i> Beralih ke Mode {{ $targetSwitchLabel }}
+                <a href="https://bumdespro.my.id/" target="_blank"
+                    class="btn btn-sm btn-warning text-dark fw-bold px-3 py-1 rounded-pill shadow-sm"
+                    title="Buat akun sekarang!">
+                    <i class="bi bi-person-plus-fill"></i> Buat akun sekarang!
                 </a>
                 <div
                     class="bg-white text-primary px-3 py-1 rounded-pill fw-bold small shadow-sm d-flex align-items-center gap-1">
