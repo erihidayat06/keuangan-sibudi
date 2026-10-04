@@ -171,7 +171,7 @@
 
                         <tr>
                             <td>Modal Akhir 1 Januari</td>
-                            <td class=""> {{ (session('selected_year', date('Y')) ?? old('tahun', $ekuitas)) - 1 }}
+                            <td class=""> {{ (session('selected_year', date('Y')) ?? old('tahun', $ekuitas)) + 1 }}
                             </td>
                             <td class="text-end"></td>
                             <td class="text-end red-text">{{ formatRupiah($modal_akhir) }}</td>
