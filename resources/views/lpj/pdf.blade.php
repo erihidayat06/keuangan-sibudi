@@ -124,7 +124,7 @@
 
     <h3 class="judul">LEMBAR PENGESAHAN</h3>
     <h3 class="judul">LEMBAR PERTANGGUNGJAWABAN LAPORAN AKHIR TAHUN </h3>
-    <h3 class="judul mb">{{ session('selected_year', date('Y')) }}</h3>
+    {{-- <h3 class="judul mb">{{ session('selected_year', date('Y')) }}</h3> --}}
 
     <p class="align-justify mb">Laporan tahunan beserta laporan keuangan dan informasi lain dalam
         dokumen ini dibuat sesuai dengan keadaan sebenarnya oleh pelaksana

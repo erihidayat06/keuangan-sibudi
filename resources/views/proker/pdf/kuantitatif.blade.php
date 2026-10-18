@@ -4,7 +4,7 @@
              <th>No</th>
              <th>Indikator</th>
              <th>Sasaran Kinerja</th>
-             <th>Capaian Tahun <br> {{ date('Y') }}</th>
+             <th>Capaian <br></th>
          </tr>
      </thead>
      <tbody>

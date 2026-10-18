@@ -125,7 +125,7 @@
 
     <h3 class="judul">LEMBAR PENGESAHAN</h3>
     <h3 class="judul">RENCANA PROGRAM KERJA BUMDESA TAHUN</h3>
-    <h3 class="judul mb">{{ session('selected_year', date('Y')) + 1 }}</h3>
+    {{-- <h3 class="judul mb">{{ session('selected_year', date('Y')) + 1 }}</h3> --}}
 
     <p class="align-justify mb">Rencana Program Kerja berisi sasaran kinerja, rencana keuangan dan
         permodalan, rencana kegiatan dan kerjasama beserta informasi lain dalam

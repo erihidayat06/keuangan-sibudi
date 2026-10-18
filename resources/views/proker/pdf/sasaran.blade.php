@@ -3,11 +3,9 @@
         <tr class="text-center">
             <th style="vertical-align:top;">No</th>
             <th style="vertical-align:top;">Indikator</th>
-            <th>Capaian Tahun
-                <br>
-                {{ session('selected_year', date('Y')) }}
+            <th>Capaian
             </th>
-            <th>Proyeksi <br>{{ session('selected_year', date('Y')) + 1 }}</th>
+            <th>Proyeksi </th>
         </tr>
     </thead>
     <tbody>
