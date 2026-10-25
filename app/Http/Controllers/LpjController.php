@@ -63,7 +63,7 @@ class LpjController extends Controller
         $profil = Profil::user()->first();
         $units = Unit::user()->get();
         $modals = Modal::user()->get();
-        $labaRugi = labaRugiTahun(session('selected_year', date('Y')));
+        $labaRugi = labaRugi(session('selected_year', date('Y')));
         $neraca = neraca();
         $target = Target::user()->where('tahun', session('selected_year', date('Y')) - 1)->first();
         $proker = Proker::user()->where('tahun', session('selected_year', date('Y')))->first();
@@ -104,7 +104,7 @@ class LpjController extends Controller
             'modal_bersama' => $modal_bersama,
             'ekuitas' => $ekuitas,
             'ditahan' => $neraca['ditahan'],
-            'laba_berjalan' => labaRugiTahun($tahun)['totalLabaRugi']
+            'laba_berjalan' => labaRugi($tahun)['totalLabaRugi']
         ];
 
         // 1. Buat PDF dari Blade View

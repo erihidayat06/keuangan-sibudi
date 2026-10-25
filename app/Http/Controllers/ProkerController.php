@@ -60,7 +60,7 @@ class ProkerController extends Controller
             'ekuitas' => $ekuitas,
             'ditahan' => $neraca['ditahan'],
             'aktiva' => $neraca['aktiva'],
-            'laba_berjalan' => labaRugiTahun($tahun)['totalLabaRugi']
+            'laba_berjalan' => labaRugi($tahun)['totalLabaRugi']
         ]);
     }
 
@@ -164,7 +164,7 @@ class ProkerController extends Controller
             'ekuitas' => $ekuitas,
             'ditahan' => $neraca['ditahan'],
             'aktiva' => $neraca['aktiva'],
-            'laba_berjalan' => labaRugiTahun($tahun)['totalLabaRugi'],
+            'laba_berjalan' => labaRugi($tahun)['totalLabaRugi'],
             'target' => $target
         ]);
     }
