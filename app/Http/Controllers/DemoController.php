@@ -36,12 +36,14 @@ class DemoController extends Controller
         }
 
         $targetReferral = ((int) $referral === 1) ? 1 : 0;
-        $token = $currentUser->demo_token ?: ('demo_' . $currentUser->id);
+        $storedToken = $currentUser->demo_token ?: ('demo_' . $currentUser->id);
+        // Pertahankan device key agar mode switch tetap memakai data perangkat yang sama
+        [$token, $deviceKey] = $sandboxService->splitDeviceScopedToken($storedToken);
 
         // Ambil nama tanpa prefix [Praktikum ...]
         $cleanName = preg_replace('/^\[Praktikum.*?\]\s*/i', '', $currentUser->name);
 
-        $targetUser = $sandboxService->authenticateByToken($token, $targetReferral, $cleanName);
+        $targetUser = $sandboxService->authenticateByToken($token, $targetReferral, $cleanName, $deviceKey);
 
         if ($targetUser) {
             $entity = ($targetReferral === 1) ? 'BUMDesa' : 'Koperasi';

@@ -71,11 +71,65 @@ class DemoSandboxService
     }
 
     /**
+     * Pemisah antara token portal dan device key di kolom users.demo_token.
+     */
+    public const DEVICE_SEPARATOR = '::';
+
+    /**
+     * Ubah device ID mentah (dari localStorage browser) menjadi device key pendek yang aman.
+     * Mengembalikan null jika device ID tidak valid / tidak tersedia.
+     */
+    public function makeDeviceKey(?string $rawDeviceId): ?string
+    {
+        $rawDeviceId = trim((string) $rawDeviceId);
+        if ($rawDeviceId === '' || !preg_match('/^[A-Za-z0-9\-]{8,64}$/', $rawDeviceId)) {
+            return null;
+        }
+
+        return substr(sha1($rawDeviceId), 0, 12);
+    }
+
+    /**
+     * Gabungkan token portal + device key menjadi kunci sesi yang unik per perangkat.
+     */
+    public function buildDeviceScopedToken(string $token, ?string $deviceKey): string
+    {
+        if (empty($deviceKey)) {
+            return $token;
+        }
+
+        // Kolom demo_token maksimal 100 karakter
+        $maxTokenLen = 100 - strlen(self::DEVICE_SEPARATOR) - strlen($deviceKey);
+
+        return substr($token, 0, $maxTokenLen) . self::DEVICE_SEPARATOR . $deviceKey;
+    }
+
+    /**
+     * Pecah demo_token tersimpan menjadi [token portal, device key|null].
+     */
+    public function splitDeviceScopedToken(string $storedToken): array
+    {
+        $pos = strrpos($storedToken, self::DEVICE_SEPARATOR);
+        if ($pos === false) {
+            return [$storedToken, null];
+        }
+
+        $token = substr($storedToken, 0, $pos);
+        $deviceKey = substr($storedToken, $pos + strlen(self::DEVICE_SEPARATOR));
+
+        return [$token, $deviceKey !== '' ? $deviceKey : null];
+    }
+
+    /**
      * Authenticate or create a demo user using the portal token.
      * Mendukung referral: 1 = BUMDesa, 0 = Koperasi.
+     * Jika $deviceKey diberikan, data praktikum dipisah per perangkat (berdasarkan localStorage browser),
+     * sehingga token yang sama di laptop berbeda akan mendapatkan data yang berbeda.
      */
-    public function authenticateByToken(string $token, $referral = null, ?string $customName = null): ?User
+    public function authenticateByToken(string $token, $referral = null, ?string $customName = null, ?string $deviceKey = null): ?User
     {
+        $sessionToken = $this->buildDeviceScopedToken($token, $deviceKey);
+
         // 0. Pastikan migrasi kolom is_demo telah tersedia (auto-heal jika belum di-migrate di production)
         if (!Schema::hasColumn('users', 'is_demo')) {
             try {
@@ -135,12 +189,13 @@ class DemoSandboxService
         $alamatBumdes = $isKoperasi ? 'Koperasi Praktikum Academy' : 'Desa Praktikum Academy';
         $nomorHukum = $isKoperasi ? 'AHU-0000.KOPERASI.2026' : 'AHU-0000.PRAKTIKUM.2026';
 
-        // 2. Cek apakah user demo sudah ada untuk token / portal_user_id DAN jenis referral ini
+        // 2. Cek apakah user demo sudah ada untuk token (per perangkat) DAN jenis referral ini.
+        //    Jika device key tersedia, JANGAN cocokkan via portal_user_id agar data antar perangkat tidak tercampur.
         $user = User::where('is_demo', true)
             ->where('referral', $referralVal)
-            ->where(function ($query) use ($token, $portalUser) {
-                $query->where('demo_token', $token);
-                if (!empty($portalUser->id)) {
+            ->where(function ($query) use ($sessionToken, $portalUser, $deviceKey) {
+                $query->where('demo_token', $sessionToken);
+                if (empty($deviceKey) && !empty($portalUser->id)) {
                     $query->orWhere('portal_user_id', $portalUser->id);
                 }
             })
@@ -157,7 +212,7 @@ class DemoSandboxService
             // Perbarui token dan perpanjang masa aktif 1 jam
             $user->update([
                 'name'               => "[Praktikum {$entityType}] " . $portalUser->name,
-                'demo_token'         => $token,
+                'demo_token'         => $sessionToken,
                 'portal_user_id'     => $portalUser->id,
                 'demo_expires_at'    => now()->addHour(),
                 'status'             => 1,
@@ -183,7 +238,7 @@ class DemoSandboxService
                 'tgl_langganan'      => now()->addDays(30),
                 'user_roles_id'      => 2,
                 'is_demo'            => true,
-                'demo_token'         => $token,
+                'demo_token'         => $sessionToken,
                 'portal_user_id'     => $portalUser->id,
                 'demo_expires_at'    => now()->addHour(),
                 'nama_bumdes'        => $entityName,

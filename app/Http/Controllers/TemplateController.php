@@ -22,7 +22,23 @@ class TemplateController extends Controller
         $isDemoRequest = $hasToken || $request->is('demo*') || $request->filled('demo');
 
         if ($isDemoRequest) {
-            $token = $hasToken ? trim($request->query('token')) : ('trial_' . \Illuminate\Support\Str::random(8));
+            // Data praktikum dipisah per perangkat (browser) berdasarkan device ID di localStorage.
+            // Jika belum membawa ?device=..., tampilkan halaman perantara yang membaca/membuat
+            // device ID di localStorage lalu redirect kembali dengan parameter device.
+            $rawDevice = trim((string) $request->query('device', ''));
+            if ($rawDevice === '') {
+                return response()->view('auth.demo_device', [
+                    'fallbackUrl' => $request->fullUrlWithQuery(['device' => 'none']),
+                ]);
+            }
+            $deviceKey = $sandboxService->makeDeviceKey($rawDevice);
+
+            if ($hasToken) {
+                $token = trim($request->query('token'));
+            } else {
+                // Trial tanpa token: tetap konsisten per perangkat jika device ID tersedia
+                $token = $deviceKey ? ('trial_' . $deviceKey) : ('trial_' . \Illuminate\Support\Str::random(8));
+            }
             // Ambil referral dan name dari query/input
             $referralParam = $request->query('referral', $request->input('referral', $request->query('role', $request->input('role'))));
             $nameParam     = $request->query('name', $request->input('name'));
@@ -42,7 +58,7 @@ class TemplateController extends Controller
                     $request->session()->regenerateToken();
                 }
 
-                $user = $sandboxService->authenticateByToken($token, $referralParam, $nameParam);
+                $user = $sandboxService->authenticateByToken($token, $referralParam, $nameParam, $deviceKey);
 
                 if ($user) {
                     // Regenerasi session ID setelah login untuk keamanan
